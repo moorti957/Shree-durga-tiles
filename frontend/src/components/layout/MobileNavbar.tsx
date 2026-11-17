@@ -62,19 +62,19 @@ export default function MobileNavbar() {
   const mainNavLinks = [
     { href: '/', label: 'Home', icon: <Home className="w-5 h-5" /> },
     { href: '/products', label: 'Products', icon: <Package className="w-5 h-5" /> },
-    { href: '/categories', label: 'Categories', icon: <Sparkles className="w-5 h-5" /> },
+    { href: '/categories', label: 'Collections', icon: <Sparkles className="w-5 h-5" /> },
     { href: '/gallery', label: 'Gallery', icon: <Image className="w-5 h-5" /> },
     { href: '/blogs', label: 'Blogs', icon: <FileText className="w-5 h-5" /> },
   ];
 
   // Quick categories
   const quickCategories = [
-    { name: 'Ganesh Ji', href: '/products?category=ganesh' },
-    { name: 'Radha Krishna', href: '/products?category=krishna' },
-    { name: 'Shiv Ji', href: '/products?category=shiv' },
-    { name: 'Hanuman Ji', href: '/products?category=hanuman' },
-    { name: 'Ram Darbar', href: '/products?category=ram' },
-    { name: 'Durga Maa', href: '/products?category=durga' },
+    { name: 'Marble', href: '/products?material=marble' },
+    { name: 'Granite', href: '/products?material=granite' },
+    { name: 'Designer Tiles', href: '/products?material=tiles' },
+    { name: 'Quartz', href: '/products?material=quartz' },
+    { name: 'Kitchen Tops', href: '/products?material=kitchen-tops' },
+    { name: 'Outdoor Stone', href: '/products?material=outdoor' },
   ];
 
   // Profile links (when logged in)
@@ -141,13 +141,13 @@ export default function MobileNavbar() {
 
   // WhatsApp click
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/917240364772', '_blank');
+    window.open('https://wa.me/918529388726', '_blank');
     setIsOpen(false);
   };
 
   // Call click
   const handleCallClick = () => {
-    window.location.href = 'tel:+917240364772';
+    window.location.href = 'tel:+918529388726';
     setIsOpen(false);
   };
 
@@ -194,8 +194,7 @@ export default function MobileNavbar() {
           <Link href="/" className="flex items-center gap-2">
             <span className="text-xl">🕉️</span>
             <div className="font-cinzel text-base font-bold">
-              <span className="text-brown dark:text-ivory">Pandit Ji</span>
-              <span className="text-gold-dark"> Murti</span>
+              <span className="text-brown dark:text-ivory">Shree Durga Tiles</span>
             </div>
           </Link>
 
@@ -264,7 +263,7 @@ export default function MobileNavbar() {
                 <input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="Search for murtis..."
+                  placeholder="Search marble, granite, tiles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-9 pr-4 py-2.5 bg-sand/50 dark:bg-brown/50 rounded-xl border border-gold/20 focus:outline-none focus:ring-2 focus:ring-gold/30 dark:text-ivory text-sm"
@@ -307,8 +306,7 @@ export default function MobileNavbar() {
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gold/10 dark:border-gold/5">
                   <div className="font-cinzel text-lg font-bold">
-                    <span className="text-brown dark:text-ivory">Pandit Ji</span>
-                    <span className="text-gold-dark"> Murti</span>
+                    <span className="text-brown dark:text-ivory">Shree Durga Tiles</span>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
@@ -328,14 +326,14 @@ export default function MobileNavbar() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-brown dark:text-ivory truncate">
-                          {user.name || 'Devotee'}
+                          {user.name || 'Customer'}
                         </p>
                         <p className="text-xs text-brown-light dark:text-ivory/50 truncate">
                           {user.email || ''}
                         </p>
                         <div className="flex items-center gap-1 mt-0.5">
                           <Award className="w-3 h-3 text-gold" />
-                          <span className="text-[10px] text-brown-light dark:text-ivory/50">Devotee</span>
+                          <span className="text-[10px] text-brown-light dark:text-ivory/50">Customer</span>
                         </div>
                       </div>
                     </div>

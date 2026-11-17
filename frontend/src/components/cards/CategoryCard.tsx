@@ -48,7 +48,16 @@ export function CategoryCard({
   // Card variants
 
 
-  const fallbackImage = '/images/category-placeholder.svg';
+  const categoryName = name.toLowerCase();
+  const textureClass = categoryName.includes('granite')
+    ? 'tx-granite'
+    : categoryName.includes('tile')
+      ? 'tx-tile'
+      : categoryName.includes('quartz')
+        ? 'tx-quartz'
+        : categoryName.includes('outdoor')
+          ? 'tx-outdoor'
+          : 'tx-marble';
 
   // Compact variant (smaller, used in sidebars or quick links)
   if (variant === 'compact') {
@@ -110,15 +119,7 @@ export function CategoryCard({
                 loading={priority ? 'eager' : 'lazy'}
                 onLoad={() => setImageLoaded(true)}
               />
-            ) : (
-              <Image
-                src={fallbackImage}
-                alt={name}
-                fill
-                className="object-cover opacity-70"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              />
-            )}
+            ) : <div aria-hidden="true" className={`absolute inset-0 ${textureClass}`} />}
 
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-brown/80 via-brown/20 to-transparent" />
@@ -149,7 +150,7 @@ export function CategoryCard({
               <div className="flex items-center gap-4 mt-3">
                 {productCount !== undefined && (
                   <span className="text-white/50 text-xs">
-                    {productCount} {productCount === 1 ? 'murti' : 'murtis'}
+                    {productCount} {productCount === 1 ? 'product' : 'products'}
                   </span>
                 )}
                 <span className="inline-flex items-center gap-1 text-gold text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
@@ -175,7 +176,7 @@ export function CategoryCard({
     ease: 'easeOut',
   }}
       className={cn(
-        'group bg-white dark:bg-brown-dark rounded-2xl overflow-hidden shadow-sm border border-gold/5 dark:border-gold/10 hover:shadow-xl transition-all duration-300',
+        'category-card group overflow-hidden rounded-[22px] border border-stone-line bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl',
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -183,7 +184,7 @@ export function CategoryCard({
     >
       <Link href={`/products?category=${slug}`} className="block">
         {/* Image */}
-        <div className="relative aspect-square bg-sand dark:bg-brown overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden bg-sand">
           {image ? (
             <Image
               src={image}
@@ -197,15 +198,7 @@ export function CategoryCard({
              loading={priority ? 'eager' : 'lazy'}
               onLoad={() => setImageLoaded(true)}
             />
-          ) : (
-            <Image
-              src={fallbackImage}
-              alt={name}
-              fill
-              className="object-cover opacity-70 group-hover:scale-110 transition-transform duration-700"
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            />
-          )}
+          ) : <div aria-hidden="true" className={`absolute inset-0 ${textureClass}`} />}
 
           {/* Hover overlay */}
           <div
@@ -229,8 +222,8 @@ export function CategoryCard({
 
           {/* Product count badge */}
           {productCount !== undefined && (
-            <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-brown-dark/90 backdrop-blur text-xs font-medium px-2.5 py-1 rounded-full shadow-sm dark:text-ivory/80">
-              {productCount} {productCount === 1 ? 'murti' : 'murtis'}
+            <div className="absolute bottom-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium shadow-sm backdrop-blur">
+              {productCount} {productCount === 1 ? 'product' : 'products'}
             </div>
           )}
 

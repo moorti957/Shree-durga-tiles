@@ -26,20 +26,15 @@ export default function CategoriesPage() {
   });
 
   const categories = data?.categories;
-  console.log("Categories Data:", data);
-
-console.log("API Response:", data);
-console.log("Categories:", categories);
-console.log("Count:", categories?.length);
 
   // Loading state
   if (isLoading) {
     return (
       <Container className="py-12 md:py-20">
         <div className="text-center mb-12">
-          <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">Browse by Deity</h1>
+          <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">Explore our collections</h1>
           <p className="text-brown-light mt-3 max-w-2xl mx-auto">
-            Explore our collection of handcrafted murtis, each dedicated to a divine form.
+            Find marble, granite, tile, quartz and stone collections for every space.
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
@@ -88,10 +83,10 @@ console.log("Count:", categories?.length);
           <span className="diamond">✦</span>
         </div>
         <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">
-          Browse by Deity
+          Browse by collection
         </h1>
         <p className="text-brown-light mt-3 max-w-2xl mx-auto">
-          Choose from our collection of divine forms, each crafted with precision and devotion.
+          Browse available product categories and find materials for your project.
         </p>
         <div className="mt-6 text-sm text-brown-light/60">
           {categories.length} categories available
@@ -99,7 +94,7 @@ console.log("Count:", categories?.length);
       </motion.div>
 
       {/* Category grid */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {categories.map((category: Category, index: number) => (
           <motion.div
             key={category.id}
@@ -110,10 +105,10 @@ console.log("Count:", categories?.length);
             className="group"
           >
             <Link
-              href={`/products?category=${category.id}`}
+              href={`/products?category=${encodeURIComponent(category.slug)}`}
               className="block bg-white rounded-2xl overflow-hidden shadow-sm border border-gold/5 hover:shadow-xl transition-all duration-300"
             >
-              <div className="relative aspect-square bg-sand overflow-hidden">
+              <div className="relative aspect-[4/3] bg-sand overflow-hidden">
                 {category.image ? (
                   <Image
                     src={category.image}
@@ -134,7 +129,7 @@ console.log("Count:", categories?.length);
                 {/* Product count badge */}
                 {category.productCount !== undefined && (
                   <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-xs font-medium px-2.5 py-1 rounded-full shadow-sm">
-                    {category.productCount} murtis
+                    {category.productCount} products
                   </div>
                 )}
               </div>
@@ -143,7 +138,7 @@ console.log("Count:", categories?.length);
                   {category.name}
                 </h3>
                 <p className="text-xs text-brown-light/60 mt-1">
-                  {category.description || 'Divine collection'}
+                  {category.description || 'Explore this collection'}
                 </p>
               </div>
             </Link>
@@ -192,7 +187,7 @@ console.log("Count:", categories?.length);
                   className="group"
                 >
                   <Link
-                    href={`/products?category=${category.id}`}
+                    href={`/products?category=${encodeURIComponent(category.slug)}`}
                     className="block bg-white rounded-2xl overflow-hidden shadow-sm border border-gold/5 hover:shadow-xl transition-all duration-300"
                   >
                     <div className="relative aspect-square bg-sand overflow-hidden">

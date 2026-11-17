@@ -40,8 +40,8 @@ interface FeaturedProductsProps {
 // ============================================================
 export function FeaturedProducts({
   products,
-  title = 'Featured Murtis',
-  subtitle = 'Timeless sculptures that bring peace, prosperity, and devotion.',
+  title = 'Featured Stones',
+  subtitle = 'Explore materials selected for homes, projects and everyday spaces.',
   viewAllLink = '/products',
   viewAllLabel = 'View All',
   isSlider = true,
@@ -249,7 +249,7 @@ export function FeaturedProducts({
           margin-top: 24px;
         }
         .swiper-pagination-bullet {
-          background: #D4AF37;
+          background: #FF0000;
           opacity: 0.3;
           width: 8px;
           height: 8px;
@@ -260,7 +260,7 @@ export function FeaturedProducts({
           opacity: 1;
           width: 24px;
           border-radius: 4px;
-          background: #D4AF37;
+          background: #FF0000;
         }
         .swiper-button-prev-custom,
         .swiper-button-next-custom {

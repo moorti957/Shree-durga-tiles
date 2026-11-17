@@ -5,42 +5,28 @@
 // ============================================================
 
 /**
- * Main brand colors for Pandit Ji Marble Murti Arts
- * Premium luxury palette inspired by Indian heritage and temple architecture
+ * Main brand colors for the storefront
  */
 export const brandColors = {
-  /** Luxury Gold - primary brand color */
-  gold: '#D4AF37',
-  /** Gold Light - lighter gold for accents */
-  goldLight: '#E8D5A3',
-  /** Gold Dark - darker gold for contrast */
-  goldDark: '#B8962E',
-  /** Marble White - pure white base */
+  /** Primary red */
+  gold: '#FF0000',
+  /** Secondary yellow accent */
+  goldLight: '#FFFF00',
+  /** Primary red */
+  goldDark: '#FF0000',
   marbleWhite: '#FFFFFF',
-  /** Temple Ivory - warm off-white for backgrounds */
-  templeIvory: '#FFFCF7',
-  /** Deep Maroon - sacred, rich accent color */
-  deepMaroon: '#7B1E1E',
-  /** Maroon Dark - darker maroon for depth */
-  maroonDark: '#5C1616',
-  /** Maroon Light - lighter maroon for accents */
-  maroonLight: '#A04040',
-  /** Light Sand - warm neutral background */
-  lightSand: '#F5EDDF',
-  /** Royal Brown - rich, earthy tone */
-  royalBrown: '#6D4C41',
-  /** Brown Light - softer brown */
-  brownLight: '#8D6E63',
-  /** Brown Dark - deeper brown */
-  brownDark: '#4A3428',
-  /** Premium Black - sophisticated dark */
-  premiumBlack: '#1A1814',
-  /** Ivory - soft white with warmth */
-  ivory: '#FFFCF7',
-  /** Sand - warm neutral */
-  sand: '#F5EDDF',
-  /** Brown - primary brown */
-  brown: '#6D4C41',
+  templeIvory: '#000000',
+  deepMaroon: '#FF0000',
+  maroonDark: '#FF0000',
+  maroonLight: '#FF0000',
+  lightSand: '#111111',
+  royalBrown: '#FFFFFF',
+  brownLight: '#FFFFFF',
+  brownDark: '#111111',
+  premiumBlack: '#000000',
+  ivory: '#000000',
+  sand: '#111111',
+  brown: '#FFFFFF',
 } as const;
 
 // ============================================================
@@ -51,48 +37,48 @@ export const brandColors = {
  * Gold shades - from lightest to darkest
  */
 export const goldShades = {
-  50: '#FDF8ED',
-  100: '#F9ECC8',
-  200: '#F4DFA3',
-  300: '#EED37E',
-  400: '#E8C759',
-  500: '#D4AF37', // Main gold
-  600: '#B8962E',
-  700: '#9C7D25',
-  800: '#80641C',
-  900: '#644B13',
+  50: '#FFFF00',
+  100: '#FFFF00',
+  200: '#FFFF00',
+  300: '#FFFF00',
+  400: '#FFFF00',
+  500: '#FF0000',
+  600: '#FF0000',
+  700: '#FF0000',
+  800: '#FF0000',
+  900: '#FF0000',
 } as const;
 
 /**
  * Maroon shades - from lightest to darkest
  */
 export const maroonShades = {
-  50: '#FDF0F0',
-  100: '#F5D6D6',
-  200: '#E8B3B3',
-  300: '#D68A8A',
-  400: '#C46666',
-  500: '#7B1E1E', // Main maroon
-  600: '#6A1818',
-  700: '#5C1616', // Maroon dark
-  800: '#4D1212',
-  900: '#3E0E0E',
+  50: '#FF0000',
+  100: '#FF0000',
+  200: '#FF0000',
+  300: '#FF0000',
+  400: '#FF0000',
+  500: '#FF0000',
+  600: '#FF0000',
+  700: '#FF0000',
+  800: '#FF0000',
+  900: '#FF0000',
 } as const;
 
 /**
  * Brown shades - from lightest to darkest
  */
 export const brownShades = {
-  50: '#F8F4F2',
-  100: '#EFE8E4',
-  200: '#DFD6D0',
-  300: '#C4B5A5',
-  400: '#A89480',
-  500: '#6D4C41', // Main brown
-  600: '#5E4036',
-  700: '#4A3428', // Brown dark
-  800: '#3B2A20',
-  900: '#2C1F18',
+  50: '#111111',
+  100: '#111111',
+  200: '#111111',
+  300: '#333333',
+  400: '#333333',
+  500: '#FFFFFF',
+  600: '#FFFFFF',
+  700: '#FFFFFF',
+  800: '#FFFFFF',
+  900: '#FFFFFF',
 } as const;
 
 /**
@@ -100,31 +86,31 @@ export const brownShades = {
  */
 export const neutralShades = {
   50: '#FFFFFF',
-  100: '#FFFCF7', // Ivory
-  200: '#FDF9F0',
-  300: '#F5EDDF', // Sand
-  400: '#EDE5D5',
-  500: '#E5DCCC',
-  600: '#D5CCBC',
-  700: '#C5BCAC',
-  800: '#B5AC9C',
-  900: '#A59C8C',
+  100: '#FFFFFF',
+  200: '#111111',
+  300: '#111111',
+  400: '#111111',
+  500: '#333333',
+  600: '#333333',
+  700: '#333333',
+  800: '#333333',
+  900: '#333333',
 } as const;
 
 /**
  * Black shades (premium dark tones)
  */
 export const blackShades = {
-  50: '#F5F5F5',
-  100: '#E5E5E5',
-  200: '#CCCCCC',
-  300: '#A3A3A3',
-  400: '#7A7A7A',
-  500: '#525252',
-  600: '#3B3B3B',
-  700: '#2B2B2B',
-  800: '#1A1814', // Premium black
-  900: '#0D0B08',
+  50: '#FFFFFF',
+  100: '#FFFFFF',
+  200: '#FFFFFF',
+  300: '#FFFFFF',
+  400: '#FFFFFF',
+  500: '#333333',
+  600: '#333333',
+  700: '#111111',
+  800: '#111111',
+  900: '#000000',
 } as const;
 
 // ============================================================
@@ -153,35 +139,35 @@ export const colors = {
     contrast: brandColors.marbleWhite,
   },
   secondary: {
-    main: brandColors.deepMaroon,
+    main: '#111111',
     light: brandColors.maroonLight,
     dark: brandColors.maroonDark,
     contrast: brandColors.marbleWhite,
   },
   accent: {
-    main: brandColors.royalBrown,
-    light: brandColors.brownLight,
-    dark: brandColors.brownDark,
+    main: '#FFFF00',
+    light: '#FFFF00',
+    dark: '#FFFF00',
     contrast: brandColors.marbleWhite,
   },
   background: {
-    default: brandColors.ivory,
-    paper: brandColors.marbleWhite,
-    accent: brandColors.lightSand,
-    dark: brandColors.premiumBlack,
+    default: '#000000',
+    paper: '#111111',
+    accent: '#111111',
+    dark: '#000000',
   },
   text: {
-    primary: brandColors.premiumBlack,
-    secondary: brandColors.royalBrown,
-    muted: brandColors.brownLight,
+    primary: '#FFFFFF',
+    secondary: '#FFFFFF',
+    muted: '#FFFFFF',
     light: brandColors.marbleWhite,
     inverse: brandColors.marbleWhite,
   },
   status: {
     success: '#2E7D32',
-    error: '#C62828',
-    warning: '#E65100',
-    info: '#1565C0',
+    error: '#FF0000',
+    warning: '#FFFF00',
+    info: '#FF0000',
   },
 } as const;
 

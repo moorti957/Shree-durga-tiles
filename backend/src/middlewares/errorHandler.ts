@@ -154,9 +154,7 @@ export const errorHandler = (
     logger.error(`[ERROR] ${err.message}`, {
       statusCode,
       stack: err.stack,
-      path: req.path,
       method: req.method,
-      ip: req.ip,
       userId: (req as any).user?.id,
     });
   } else {
@@ -164,9 +162,7 @@ export const errorHandler = (
     logger.warn(`[WARN] ${err.message}`, {
       statusCode,
       code,
-      path: req.path,
       method: req.method,
-      ip: req.ip,
     });
   }
 
@@ -183,8 +179,8 @@ export const errorHandler = (
     statusCode = 409;
     message = 'Duplicate key error';
     code = 'DUPLICATE_KEY';
-    const field = Object.keys(err.keyPattern)[0];
-    details = `${field} already exists`;
+    const field = Object.keys(err.keyPattern ?? {})[0];
+    details = field ? `${field} already exists` : 'A record with the same unique value already exists.';
   }
 
   // Mongoose CastError (invalid ObjectId)
@@ -208,10 +204,17 @@ export const errorHandler = (
   }
 
   // Send response
+  const errorResponse = {
+    code,
+    message,
+    ...(details && { details }),
+  };
+
   res.status(statusCode).json({
     success: false,
     message,
     code,
+    error: errorResponse,
     ...(process.env.NODE_ENV === 'development' && {
       stack: err.stack,
     }),

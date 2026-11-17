@@ -40,10 +40,10 @@ export default function GalleryPage() {
   // Categories for filter
   const categories = [
     { id: 'all', label: 'All' },
-    { id: 'murti', label: 'Divine Murtis' },
-    { id: 'temple', label: 'Temple Projects' },
-    { id: 'workshop', label: 'Craftsmanship' },
-    { id: 'ceremony', label: 'Ceremonies' },
+    { id: 'murti', label: 'Stone & Tile' },
+    { id: 'temple', label: 'Mandir & Pooja Spaces' },
+    { id: 'workshop', label: 'Showroom & Selection' },
+    { id: 'ceremony', label: 'Project Highlights' },
   ];
 
   // Filter items based on active category
@@ -81,9 +81,9 @@ export default function GalleryPage() {
     return (
       <Container className="py-12 md:py-20">
         <div className="text-center mb-12">
-          <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">Divine Gallery</h1>
+          <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">Our Gallery</h1>
           <p className="text-brown-light mt-3 max-w-2xl mx-auto">
-            Explore our collection of handcrafted murtis and temple installations.
+            Explore material details and spaces featuring marble, granite, tiles and stone.
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -140,10 +140,10 @@ export default function GalleryPage() {
             <span className="diamond">✦</span>
           </div>
           <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">
-            Divine Gallery
+            Our Gallery
           </h1>
           <p className="text-brown-light mt-3 max-w-2xl mx-auto">
-            Witness the artistry and devotion behind each handcrafted murti and temple installation.
+            Browse our gallery of materials and project spaces.
           </p>
         </motion.div>
 

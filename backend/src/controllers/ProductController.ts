@@ -1,12 +1,13 @@
 // backend/src/controllers/ProductController.ts
 
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { AuthRequest } from '../middlewares/auth';
 import mongoose from 'mongoose';
 import { Product, IProduct } from '../models/Product';
 import { Category } from '../models/Category';
 import { Review } from '../models/Review';
 import { ProductService } from '../services/ProductService';
+import { processUploadImage } from '../services/imageProcessor';
 import { uploadToCloudinary, deleteFromCloudinary } from '../config/cloudinary';
 
 export class ProductController {
@@ -252,7 +253,7 @@ export class ProductController {
       // Check for duplicate slug
       const existingProduct = await Product.findOne({ slug: productData.slug });
       if (existingProduct) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           message: 'Product slug already exists',
         });
@@ -850,42 +851,40 @@ export class ProductController {
   /**
    * Upload product images (admin)
    */
-  static async uploadImages(req: AuthRequest, res: Response): Promise<Response> {
+  static async uploadImages(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const files = req.files as Express.Multer.File[];
       if (!files || files.length === 0) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           message: 'No images uploaded',
         });
+        return;
       }
 
-      const uploadPromises = files.map((file) =>
-        uploadToCloudinary(file.buffer, {
+      const uploadPromises = files.map(async (file) => {
+        const image = await processUploadImage(file.buffer);
+        return uploadToCloudinary(image.buffer, {
           folder: 'products',
           tags: ['product'],
           quality: 'auto:good',
           format: 'webp',
           width: 800,
           crop: 'scale',
-        })
-      );
+        });
+      });
 
       const results = await Promise.all(uploadPromises);
       const imageUrls = results.map((r) => r.secure_url);
 
-      return res.json({
+      res.json({
         success: true,
         data: {
           images: imageUrls,
         },
       });
     } catch (error) {
-      console.error('Upload images error:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Internal server error',
-      });
+      next(error);
     }
   }
 

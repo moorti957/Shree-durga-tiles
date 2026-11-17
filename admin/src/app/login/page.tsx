@@ -36,14 +36,10 @@ export default function AdminLoginPage() {
 
   // Redirect if already authenticated
   useEffect(() => {
-      console.count("LOAD USER");
-  if (
-    isAuthenticated &&
-    (user?.role === 'admin' || user?.role === 'super-admin')
-  ) {
-    router.replace('/dashboard');
-  }
-}, [isAuthenticated, user, router]);
+    if (isAuthenticated && user?.role === 'owner') {
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, user, router]);
 
   const {
     register,
@@ -103,7 +99,7 @@ export default function AdminLoginPage() {
               Admin Panel
             </h1>
             <p className="text-brown-light dark:text-ivory/60 text-sm mt-1">
-              Pandit Ji Marble Murti Arts
+              Shree Durga Tiles
             </p>
             <div className="ornate-divider my-4">
               <span className="diamond">✦</span>
@@ -120,17 +116,17 @@ export default function AdminLoginPage() {
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light/50" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@panditjimurti.com"
+                  placeholder="owner@shreedurgatiles.in"
                   {...register('email')}
                   className={`pl-9 pr-4 py-2.5 ${errors.email ? 'border-red-400' : ''}`}
                 />
               </div>
               {errors.email && (
-                <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+                <p className="text-xs text-red-600 mt-1">{errors.email.message}</p>
               )}
             </div>
 
@@ -139,7 +135,7 @@ export default function AdminLoginPage() {
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light/50" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light" />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -150,13 +146,13 @@ export default function AdminLoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-brown-light/50 hover:text-brown dark:hover:text-ivory transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-brown-light hover:text-brown dark:hover:text-ivory transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+                <p className="text-xs text-red-600 mt-1">{errors.password.message}</p>
               )}
             </div>
 
@@ -181,11 +177,11 @@ export default function AdminLoginPage() {
 
           {/* Footer */}
           <div className="mt-6 pt-6 border-t border-gold/10 text-center">
-            <p className="text-xs text-brown-light/50 dark:text-ivory/30">
+            <p className="text-xs text-brown-light dark:text-ivory/30">
               🔒 Secure admin access · Protected by JWT authentication
             </p>
-            <p className="text-xs text-brown-light/40 dark:text-ivory/20 mt-2">
-              © {new Date().getFullYear()} Pandit Ji Marble Murti Arts
+            <p className="text-xs text-brown-light dark:text-ivory/20 mt-2">
+              © {new Date().getFullYear()} Shree Durga Tiles
             </p>
           </div>
         </motion.div>

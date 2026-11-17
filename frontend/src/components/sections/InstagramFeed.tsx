@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
@@ -75,11 +75,6 @@ export function InstagramFeed({
 }: InstagramFeedProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Column classes for grid mode
   const columnClasses = {
@@ -188,7 +183,7 @@ export function InstagramFeed({
               )}
             </div>
             <Link
-              href="https://instagram.com/panditjimurti"
+              href="https://www.instagram.com/panditjimarblemurtiart/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-medium text-gold-dark dark:text-gold hover:text-gold transition-colors group"
@@ -258,7 +253,7 @@ export function InstagramFeed({
             className="text-center mt-8"
           >
             <Link
-              href="https://instagram.com/panditjimurti"
+              href="https://www.instagram.com/panditjimarblemurtiart/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:shadow-lg transition-shadow"
@@ -301,7 +296,7 @@ export function InstagramFeed({
             )}
           </div>
           <Link
-            href="https://instagram.com/panditjimurti"
+            href="https://www.instagram.com/panditjimarblemurtiart/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-gold-dark dark:text-gold hover:text-gold transition-colors group"
@@ -387,7 +382,7 @@ export function InstagramFeed({
           </Swiper>
 
           {/* Custom Navigation Buttons */}
-          {isMounted && posts.length > (slidesPerView || 4) && (
+          {posts.length > (slidesPerView || 4) && (
             <>
               <button
                 className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-1/2 md:-translate-x-4 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-brown-dark shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-brown dark:text-ivory hover:text-gold-dark dark:hover:text-gold border border-gold/10"
@@ -413,7 +408,7 @@ export function InstagramFeed({
           className="text-center mt-8"
         >
           <Link
-            href="https://instagram.com/panditjimurti"
+            href="https://www.instagram.com/panditjimarblemurtiart/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:shadow-lg transition-shadow"
@@ -432,7 +427,7 @@ export function InstagramFeed({
           margin-top: 20px;
         }
         .swiper-pagination-bullet {
-          background: #D4AF37;
+          background: #FF0000;
           opacity: 0.3;
           width: 8px;
           height: 8px;
@@ -443,7 +438,7 @@ export function InstagramFeed({
           opacity: 1;
           width: 24px;
           border-radius: 4px;
-          background: #D4AF37;
+          background: #FF0000;
         }
         .swiper-button-prev-custom,
         .swiper-button-next-custom {
@@ -490,7 +485,7 @@ export function CompactInstagramFeed({
         </div>
         <p className="text-xs text-brown-light dark:text-ivory/50">Follow us for daily inspiration.</p>
         <Link
-          href="https://instagram.com/panditjimurti"
+          href="https://www.instagram.com/panditjimarblemurtiart/"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block mt-2 text-xs text-gold-dark hover:text-gold"
@@ -509,7 +504,7 @@ export function CompactInstagramFeed({
           <h3 className="font-cinzel text-lg font-semibold text-brown dark:text-ivory">Instagram</h3>
         </div>
         <Link
-          href="https://instagram.com/panditjimurti"
+          href="https://www.instagram.com/panditjimarblemurtiart/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs text-gold-dark hover:text-gold transition-colors"

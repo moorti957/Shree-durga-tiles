@@ -8,8 +8,8 @@ import { AdminLayout } from '@/components/layout/AdminLayout';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
-  title: 'Admin Panel | Pandit Ji Marble Murti Arts',
-  description: 'Admin dashboard for Pandit Ji Marble Murti Arts',
+  title: 'Admin Panel | Shree Durga Tiles',
+  description: 'Admin dashboard for Shree Durga Tiles',
 };
 
 export default function RootLayout({

@@ -11,11 +11,11 @@ export default function Loading() {
         {/* Brand */}
         <div className="mt-6 text-center">
           <h1 className="font-cinzel text-2xl font-bold text-brown dark:text-white">
-            PANDIT JI MARBLE <span className="text-gold-dark">MURTI ART</span>
+            Shree Durga Tiles
           </h1>
 
           <p className="mt-2 text-sm text-brown-light dark:text-white/70 animate-pulse">
-            Loading divine collection...
+            Preparing your showroom...
           </p>
         </div>
       </div>

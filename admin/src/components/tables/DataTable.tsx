@@ -110,7 +110,7 @@ function SortableHeader<T>({
     >
       <span>{label}</span>
       {column.getCanSort() && (
-        <span className="text-brown-light/50 group-hover:text-gold-dark dark:text-ivory/40 dark:group-hover:text-gold">
+        <span className="text-brown-light group-hover:text-gold-dark dark:text-ivory/40 dark:group-hover:text-gold">
           {isSorted === 'asc' ? (
             <ChevronUp className="w-4 h-4" />
           ) : isSorted === 'desc' ? (
@@ -292,7 +292,7 @@ export function DataTable<T>({
   if (error) {
     return (
       <GlassCard className="p-8 text-center border-red-200 dark:border-red-800">
-        <p className="text-red-500 dark:text-red-400">Failed to load data</p>
+        <p className="text-red-600 dark:text-red-400">Failed to load data</p>
         <p className="text-sm text-brown-light dark:text-ivory/50 mt-1">
           {error.message}
         </p>
@@ -323,7 +323,7 @@ export function DataTable<T>({
         {/* Search */}
         {(onSearch || true) && (
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light/50" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light" />
             <Input
               value={globalFilter}
               onChange={(e) => handleSearchChange(e.target.value)}
@@ -333,7 +333,7 @@ export function DataTable<T>({
             {globalFilter && (
               <button
                 onClick={() => handleSearchChange('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-brown-light/50 hover:text-brown dark:hover:text-ivory transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brown-light hover:text-brown dark:hover:text-ivory transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -612,7 +612,7 @@ export const columnHelpers = {
       };
       const style = (colorMap && colorMap[value]) || colors[value] || {
         bg: 'bg-gray-100 dark:bg-gray-900/30',
-        text: 'text-gray-700 dark:text-gray-400',
+        text: 'text-gray-700 dark:text-gray-500',
         label: String(value || 'Unknown'),
       };
       return (

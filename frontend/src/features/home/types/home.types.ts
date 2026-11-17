@@ -22,6 +22,7 @@ export interface HomeBanner {
  */
 export interface FeaturedCategory {
   id: string;
+  _id?: string;
   name: string;
   slug: string;
   image?: string;
@@ -33,6 +34,7 @@ export interface FeaturedCategory {
  */
 export interface FeaturedProduct {
   id: string;
+  _id?: string;
   name: string;
   slug: string;
   price: number;
@@ -72,6 +74,7 @@ export interface HomeStats {
   totalCustomers?: number;
   totalProducts?: number;
   totalOrders?: number;
+  projectsSupplied?: number;
   yearsOfExperience?: number;
 }
 

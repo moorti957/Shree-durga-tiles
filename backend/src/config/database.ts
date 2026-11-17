@@ -5,7 +5,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/panditji';
+const MONGO_URI =
+  process.env.MONGODB_URI ||
+  (process.env.NODE_ENV === 'production' ? '' : 'mongodb://localhost:27017/shree-durga-tiles');
+
+if (!MONGO_URI) {
+  throw new Error('MONGODB_URI must be configured for production.');
+}
 
 /**
  * Connect to MongoDB using Mongoose

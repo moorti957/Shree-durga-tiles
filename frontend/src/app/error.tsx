@@ -41,7 +41,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
           animation: float 3s ease-in-out infinite;
         }
         .shimmer {
-          background: linear-gradient(90deg, #D4AF37 0%, #FFFCF7 50%, #D4AF37 100%);
+          background: linear-gradient(90deg, #D4B27A 0%, #F5F3EF 50%, #D4B27A 100%);
           background-size: 200% 100%;
           animation: shimmer 2s ease-in-out infinite;
         }
@@ -62,7 +62,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
           <div className="relative w-24 h-24 mx-auto mb-8">
             <div className="absolute inset-0 rounded-full bg-gold/10 animate-float" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-5xl">🕉️</span>
+              <span aria-hidden="true" className="font-devanagari text-5xl text-gold-dark">ॐ</span>
             </div>
           </div>
 

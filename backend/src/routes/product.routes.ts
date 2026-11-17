@@ -8,10 +8,12 @@ import mongoose from 'mongoose';
 import { ProductController } from '../controllers/ProductController';
 import { validate } from '../middlewares/validate';
 import { auth } from '../middlewares/auth';
+import { adminRouteGuard } from '../middlewares/adminRouteGuard';
 
 import { upload } from '../middlewares/upload';
 
 const router = Router();
+const legacyCommerceEnabled = process.env.ENABLE_LEGACY_COMMERCE === 'true';
 
 // Rate limiting for product creation/update (admin)
 const productWriteLimiter = rateLimit({
@@ -235,11 +237,9 @@ router.get(
 );
 
 // Recently viewed products (requires authentication)
-router.get(
-  '/recently-viewed',
-  auth,
-  ProductController.getRecentlyViewed
-);
+if (legacyCommerceEnabled) {
+  router.get('/recently-viewed', auth, ProductController.getRecentlyViewed);
+}
 
 // Get related products
 router.get(
@@ -269,13 +269,15 @@ router.get(
 );
 
 // Submit a review (requires authentication)
-router.post(
-  '/:id/reviews',
-  auth,
-  reviewValidation,
-  validate,
-  ProductController.submitReview
-);
+if (legacyCommerceEnabled) {
+  router.post(
+    '/:id/reviews',
+    auth,
+    reviewValidation,
+    validate,
+    ProductController.submitReview
+  );
+}
 
 // Track product view (public, no validation needed)
 router.post(
@@ -294,13 +296,15 @@ router.get(
 );
 
 // Custom murti request (public, with rate limit)
-router.post(
-  '/custom-request',
-  customRequestLimiter,
-  customRequestValidation,
-  validate,
-  ProductController.customRequest
-);
+if (legacyCommerceEnabled) {
+  router.post(
+    '/custom-request',
+    customRequestLimiter,
+    customRequestValidation,
+    validate,
+    ProductController.customRequest
+  );
+}
 
 // Get product by slug
 router.get(
@@ -320,8 +324,7 @@ router.get(
 // Create product
 router.post(
   '/',
-  auth,
-  // admin, // uncomment when role middleware is available
+  adminRouteGuard,
   productWriteLimiter,
   createProductValidation,
   validate,
@@ -331,8 +334,7 @@ router.post(
 // Update product
 router.put(
   '/:id',
-  auth,
-  // admin,
+  adminRouteGuard,
   productWriteLimiter,
   updateProductValidation,
   validate,
@@ -342,8 +344,7 @@ router.put(
 // Delete product
 router.delete(
   '/:id',
-  auth,
-  // admin,
+  adminRouteGuard,
   productIdParamValidation,
   validate,
   ProductController.delete
@@ -352,8 +353,7 @@ router.delete(
 // Bulk import products (admin only)
 router.post(
   '/bulk-import',
-  auth,
-  // admin,
+  adminRouteGuard,
   upload.single('file'),
   ProductController.bulkImport
 );
@@ -361,8 +361,7 @@ router.post(
 // Upload product images (admin only) - separate endpoint for image upload
 router.post(
   '/upload-images',
-  auth,
-  // admin,
+  adminRouteGuard,
   upload.array('images', 10), // max 10 images
   ProductController.uploadImages
 );
@@ -374,8 +373,7 @@ router.post(
 // Add variant to product
 router.post(
   '/:id/variants',
-  auth,
-  // admin,
+  adminRouteGuard,
   productIdParamValidation,
   body('name').notEmpty(),
   body('price').isNumeric(),
@@ -388,8 +386,7 @@ router.post(
 // Update variant
 router.put(
   '/:id/variants/:variantId',
-  auth,
-  // admin,
+  adminRouteGuard,
   param('id').isMongoId(),
   param('variantId').isMongoId(),
   validate,
@@ -399,8 +396,7 @@ router.put(
 // Delete variant
 router.delete(
   '/:id/variants/:variantId',
-  auth,
-  // admin,
+  adminRouteGuard,
   param('id').isMongoId(),
   param('variantId').isMongoId(),
   validate,

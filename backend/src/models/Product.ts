@@ -37,9 +37,15 @@ export interface IProduct extends Document {
   slug: string;
   description: string;
   excerpt?: string;
-  price: number;
+  price: number | null;
+  priceUnit: 'sq_ft' | 'box' | 'piece';
+  size?: string;
+  quality?: 'Premium' | 'Standard' | 'Economy';
+  stock?: string | number;
+  usage?: string;
   originalPrice?: number;
   images: string[];
+  imageDetails: Array<{ url: string; alt?: string }>;
   images360?: string[];
   videoUrl?: string;
   material?: string;
@@ -47,7 +53,14 @@ export interface IProduct extends Document {
   finish?: string;
   colors?: string[];
   category: mongoose.Types.ObjectId;
+  categoryId?: mongoose.Types.ObjectId;
   subCategory?: mongoose.Types.ObjectId;
+  collectionIds: mongoose.Types.ObjectId[];
+  sortOrder: number;
+  status: 'draft' | 'published';
+  publishedAt?: Date;
+  deletedAt?: Date;
+  isSample: boolean;
   height?: number;
   width?: number;
   depth?: number;
@@ -152,15 +165,36 @@ const ProductSchema = new Schema<IProduct>(
     },
     price: {
       type: Number,
-      required: true,
+      default: null,
       min: 0,
     },
+    priceUnit: {
+      type: String,
+      enum: ['sq_ft', 'box', 'piece'],
+      default: 'sq_ft',
+    },
+    size: { type: String, trim: true, maxlength: 100 },
+    quality: { type: String, enum: ['Premium', 'Standard', 'Economy'] },
+    stock: { type: Schema.Types.Mixed },
+    usage: { type: String, trim: true, maxlength: 200 },
     originalPrice: {
       type: Number,
       min: 0,
     },
     images: {
       type: [String],
+      default: [],
+    },
+    imageDetails: {
+      type: [
+        new Schema(
+          {
+            url: { type: String, required: true, trim: true },
+            alt: { type: String, trim: true, maxlength: 200 },
+          },
+          { _id: false }
+        ),
+      ],
       default: [],
     },
     images360: {
@@ -192,10 +226,23 @@ const ProductSchema = new Schema<IProduct>(
       ref: 'Category',
       required: true,
     },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+    },
     subCategory: {
       type: Schema.Types.ObjectId,
       ref: 'Category',
     },
+    collectionIds: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'Collection' }],
+      default: [],
+    },
+    sortOrder: { type: Number, default: 0 },
+    status: { type: String, enum: ['draft', 'published'], default: 'draft' },
+    publishedAt: { type: Date },
+    deletedAt: { type: Date, default: null },
+    isSample: { type: Boolean, default: false },
     height: {
       type: Number,
       min: 0,
@@ -282,6 +329,9 @@ const ProductSchema = new Schema<IProduct>(
 
 ProductSchema.index({ slug: 1 });
 ProductSchema.index({ category: 1, isActive: 1 });
+ProductSchema.index({ categoryId: 1, status: 1, sortOrder: 1 });
+ProductSchema.index({ status: 1, publishedAt: -1 });
+ProductSchema.index({ deletedAt: 1 });
 ProductSchema.index({ price: 1 });
 ProductSchema.index({ createdAt: -1 });
 ProductSchema.index({ rating: -1 });
@@ -309,12 +359,18 @@ ProductSchema.pre<IProduct>('save', function (next) {
   next();
 });
 
+ProductSchema.pre<IProduct>('validate', function (next) {
+  if (!this.category && this.categoryId) this.category = this.categoryId;
+  if (!this.categoryId && this.category) this.categoryId = this.category;
+  next();
+});
+
 // ============================================================
 // Pre-save Hook: Set isOnSale based on originalPrice
 // ============================================================
 
 ProductSchema.pre<IProduct>('save', function (next) {
-  if (this.originalPrice && this.originalPrice > this.price) {
+  if (this.originalPrice && this.price !== null && this.originalPrice > this.price) {
     this.isOnSale = true;
   } else {
     this.isOnSale = false;
@@ -357,14 +413,14 @@ ProductSchema.methods.incrementSalesCount = async function (quantity: number = 1
 };
 
 ProductSchema.methods.getDiscountedPrice = function (): number {
-  if (this.originalPrice && this.originalPrice > this.price) {
+  if (this.originalPrice && this.price !== null && this.originalPrice > this.price) {
     return this.originalPrice - this.price;
   }
   return 0;
 };
 
 ProductSchema.methods.getDiscountPercentage = function (): number {
-  if (this.originalPrice && this.originalPrice > this.price) {
+  if (this.originalPrice && this.price !== null && this.originalPrice > this.price) {
     return Math.round(((this.originalPrice - this.price) / this.originalPrice) * 100);
   }
   return 0;

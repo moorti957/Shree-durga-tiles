@@ -228,7 +228,7 @@ export function Sidebar({
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium text-brown dark:text-ivory truncate">
-              {user.name || 'Devotee'}
+              {user.name || 'Customer'}
             </p>
             <p className="text-xs text-brown-light dark:text-ivory/50 truncate">
               {user.email || ''}
@@ -236,7 +236,7 @@ export function Sidebar({
             <div className="flex items-center gap-1 mt-0.5">
               <Award className="w-3 h-3 text-gold" />
               <span className="text-[10px] text-brown-light dark:text-ivory/50">
-                {variant === 'admin' ? 'Admin' : 'Devotee'}
+                {variant === 'admin' ? 'Admin' : 'Customer'}
               </span>
             </div>
           </div>
@@ -307,8 +307,7 @@ export function Sidebar({
               {/* Header with close button */}
               <div className="flex items-center justify-between p-4 border-b border-gold/10">
                 <div className="font-cinzel text-xl font-bold">
-                  <span className="text-brown dark:text-ivory">Pandit Ji</span>
-                  <span className="text-gold-dark"> Murti</span>
+                  <span className="text-brown dark:text-ivory">Shree Durga Tiles</span>
                 </div>
                 <button
                   onClick={onClose}

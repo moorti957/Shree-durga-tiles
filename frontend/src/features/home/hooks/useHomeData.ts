@@ -1,6 +1,6 @@
 // frontend/src/features/home/hooks/useHomeData.ts
 
-import { useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import { useQuery, type QueryClient, type UseQueryResult } from '@tanstack/react-query';
 import { homeApi } from '@/features/home/api/homeApi';
 import type { 
   HomeData, 
@@ -54,6 +54,11 @@ export interface UseHomeDataOptions {
    * @default undefined
    */
   refetchInterval?: number;
+  /**
+   * Retry attempts after a failed request
+   * @default 1
+   */
+  retry?: number;
   /**
    * Whether to refetch on window focus
    * @default true
@@ -144,6 +149,7 @@ export function useHomeData(options: UseHomeDataOptions = {}): UseHomeDataReturn
     refetchInterval,
     refetchOnWindowFocus = true,
     refetchOnReconnect = true,
+    retry = 1,
   } = options;
 
   // Fetch home data
@@ -159,14 +165,13 @@ export function useHomeData(options: UseHomeDataOptions = {}): UseHomeDataReturn
     refetchInterval,
     refetchOnWindowFocus,
     refetchOnReconnect,
+    retry,
   });
 
   // Destructure data with defaults
   const data = query.data;
   const isLoading = query.isLoading;
   const isFetching = query.isFetching;
-  const error = query.error;
-
   return {
     ...query,
     // Main data
@@ -316,7 +321,7 @@ export function useHomeYouTube(options: Omit<UseHomeDataOptions, 'staleTime'> = 
  * ```
  */
 export async function prefetchHomeData(
-  queryClient: any
+  queryClient: QueryClient
 ): Promise<void> {
   await queryClient.prefetchQuery({
     queryKey: homeQueryKeys.data(),
@@ -329,36 +334,53 @@ export async function prefetchHomeData(
  * Prefetch individual home data sections
  */
 export async function prefetchHomeSection(
-  queryClient: any,
+  queryClient: QueryClient,
   section: 'banners' | 'categories' | 'products' | 'testimonials' | 'faqs' | 'stats' | 'instagram' | 'youtube'
 ): Promise<void> {
-  const queryKeyMap = {
-    banners: homeQueryKeys.banners(),
-    categories: homeQueryKeys.categories(),
-    products: homeQueryKeys.products(),
-    testimonials: homeQueryKeys.testimonials(),
-    faqs: homeQueryKeys.faqs(),
-    stats: homeQueryKeys.stats(),
-    instagram: homeQueryKeys.instagram(),
-    youtube: homeQueryKeys.youtube(),
+  const prefetchSection = {
+    banners: () => queryClient.prefetchQuery({
+      queryKey: homeQueryKeys.banners(),
+      queryFn: homeApi.getBanners,
+      staleTime: 5 * 60 * 1000,
+    }),
+    categories: () => queryClient.prefetchQuery({
+      queryKey: homeQueryKeys.categories(),
+      queryFn: homeApi.getCategories,
+      staleTime: 5 * 60 * 1000,
+    }),
+    products: () => queryClient.prefetchQuery({
+      queryKey: homeQueryKeys.products(),
+      queryFn: homeApi.getFeaturedProducts,
+      staleTime: 5 * 60 * 1000,
+    }),
+    testimonials: () => queryClient.prefetchQuery({
+      queryKey: homeQueryKeys.testimonials(),
+      queryFn: homeApi.getTestimonials,
+      staleTime: 5 * 60 * 1000,
+    }),
+    faqs: () => queryClient.prefetchQuery({
+      queryKey: homeQueryKeys.faqs(),
+      queryFn: homeApi.getFAQs,
+      staleTime: 5 * 60 * 1000,
+    }),
+    stats: () => queryClient.prefetchQuery({
+      queryKey: homeQueryKeys.stats(),
+      queryFn: homeApi.getStats,
+      staleTime: 5 * 60 * 1000,
+    }),
+    instagram: () => queryClient.prefetchQuery({
+      queryKey: homeQueryKeys.instagram(),
+      queryFn: homeApi.getInstagramPosts,
+      staleTime: 5 * 60 * 1000,
+    }),
+    youtube: () => queryClient.prefetchQuery({
+      queryKey: homeQueryKeys.youtube(),
+      queryFn: homeApi.getYouTubeVideos,
+      staleTime: 5 * 60 * 1000,
+    }),
   };
 
-  const queryFnMap = {
-    banners: homeApi.getBanners,
-    categories: homeApi.getCategories,
-    products: homeApi.getFeaturedProducts,
-    testimonials: homeApi.getTestimonials,
-    faqs: homeApi.getFAQs,
-    stats: homeApi.getStats,
-    instagram: homeApi.getInstagramPosts,
-    youtube: homeApi.getYouTubeVideos,
-  };
-
-  await queryClient.prefetchQuery({
-    queryKey: queryKeyMap[section],
-    queryFn: queryFnMap[section],
-    staleTime: 5 * 60 * 1000,
-  });
+  await prefetchSection[section]();
 }
 
 // ============================================================
@@ -378,7 +400,7 @@ export function isHomeDataStale(lastUpdated: Date | string, maxAgeMinutes: numbe
 /**
  * Get home data cache size (for monitoring)
  */
-export function getHomeDataCacheSize(queryClient: any): number {
+export function getHomeDataCacheSize(queryClient: QueryClient): number {
   const query = queryClient.getQueryData(homeQueryKeys.data());
   if (!query) return 0;
   return new Blob([JSON.stringify(query)]).size;

@@ -209,7 +209,7 @@ export default function UsersPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light/50" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light" />
           <Input
             type="text"
             placeholder="Search by name or email..."
@@ -340,9 +340,9 @@ export default function UsersPage() {
           {/* Email Verified */}
           <td className="py-3 px-4 text-center">
             {isVerified ? (
-              <CheckCircle className="w-4 h-4 text-green-500 mx-auto" />
+              <CheckCircle className="w-4 h-4 text-green-700 mx-auto" />
             ) : (
-              <XCircle className="w-4 h-4 text-gray-400 mx-auto" />
+              <XCircle className="w-4 h-4 text-gray-500 mx-auto" />
             )}
           </td>
 
@@ -399,7 +399,7 @@ export default function UsersPage() {
 
               <button
                 onClick={() => handleDelete(user)}
-                className="p-1.5 rounded-lg hover:bg-red-50 transition-colors text-black dark:text-black hover:text-red-500"
+                className="p-1.5 rounded-lg hover:bg-red-50 transition-colors text-black dark:text-black hover:text-red-600"
                 aria-label="Delete"
               >
                 <Trash2 className="w-4 h-4" />

@@ -87,9 +87,8 @@ export default function ShippingPolicyPage() {
                 Our Shipping Commitment
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                At Pandit Ji Marble Murti Arts, we understand that your divine murti is more than just
-                a purchase – it&apos;s a sacred addition to your home or temple. That&apos;s why we take the utmost
-                care in packaging and shipping every order to ensure it arrives safely and on time.
+                At Shree Durga Tiles, we understand that stone and tile orders need careful handling.
+                We take care in packing orders and arranging delivery to your location.
               </p>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed mt-3">
                 This Shipping Policy outlines our shipping methods, costs, delivery times, and related
@@ -104,20 +103,15 @@ export default function ShippingPolicyPage() {
                 Shipping Destinations
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                We ship our handcrafted murtis to customers across the globe. Our shipping destinations include:
+                We provide delivery across India for stone and tile orders.
               </p>
               <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
                 <li>
                   <strong>Domestic (India):</strong> All states and union territories across India.
                 </li>
-                <li>
-                  <strong>International:</strong> We ship to over 50 countries including USA, UK, Canada,
-                  Australia, UAE, Singapore, Germany, France, Japan, and many more.
-                </li>
               </ul>
               <p className="text-brown-light dark:text-ivory/70 text-sm mt-3">
-                If you are located in a country not listed, please contact us and we will do our best
-                to arrange shipping to your location.
+                Contact us to confirm delivery availability for your pincode and project requirements.
               </p>
             </GlassCard>
 
@@ -185,7 +179,7 @@ export default function ShippingPolicyPage() {
                 Order Processing Time
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                Every murti is handcrafted with care and devotion. Our order processing time includes
+                Order preparation and dispatch timing depends on the products and project requirements.
                 the time needed for quality checks and packaging:
               </p>
               <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
@@ -332,7 +326,7 @@ export default function ShippingPolicyPage() {
                 Premium Packaging
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                Every murti is carefully packaged to ensure it reaches you in perfect condition. Our packaging includes:
+                Products are packed for transport to help protect them in transit. Contact us for details about your order.
               </p>
               <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
                 <li>Custom-designed boxes with protective cushioning</li>
@@ -361,30 +355,30 @@ export default function ShippingPolicyPage() {
                     <p>
                       <strong>Email:</strong>{' '}
                       <a
-                        href="mailto:info@panditjimurti.com"
+                        href="mailto:dileepsaini8726@gmail.com"
                         className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                       >
-                        info@panditjimurti.com
+                        dileepsaini8726@gmail.com
                       </a>
                     </p>
                     <p>
                       <strong>WhatsApp:</strong>{' '}
                       <a
-                        href="https://wa.me/917240364772"
+                        href="https://wa.me/918529388726"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                       >
-                        +91 72403 64772
+                        +91 85293 88726
                       </a>
                     </p>
                     <p>
                       <strong>Phone:</strong>{' '}
                       <a
-                        href="tel:+917240364772"
+                        href="tel:+918529388726"
                         className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                       >
-                        +91 72403 64772
+                        +91 85293 88726
                       </a>
                     </p>
                     <p>

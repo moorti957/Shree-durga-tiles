@@ -23,8 +23,10 @@ export interface Product {
   /** Short excerpt/summary of the product */
   excerpt?: string;
   
-  /** Current selling price in INR */
+  /** Current indicative price in INR; quoteOnly products have no listed price. */
   price: number;
+  priceUnit?: 'sq_ft' | 'box' | 'piece';
+  quoteOnly?: boolean;
   
   /** Original price before discount (if any) */
   originalPrice?: number;
@@ -49,14 +51,15 @@ export interface Product {
   
   /** Finish type (e.g., 'Polished', 'Matte', 'Antique') */
   finish?: string;
+
+  /** Quality grade supplied by the catalogue */
+  quality?: 'Premium' | 'Standard' | 'Economy';
   
   /** Available colors */
   colors?: string[];
   
   /** Product category ID */
   category: string;
-  
-  /** Product category name */
   categoryName?: string;
   
   /** Product sub-category ID */
@@ -78,7 +81,7 @@ export interface Product {
   weight?: number;
   
   /** Whether the product is in stock */
-  inStock: boolean;
+  inStock?: boolean;
   
   /** Current stock quantity */
   stockQuantity?: number;
@@ -112,6 +115,7 @@ export interface Product {
   
   /** Product specifications */
   specifications?: ProductSpecification[];
+  relatedProducts?: Product[];
   
   /** Product variants (if any) */
   variants?: ProductVariant[];
@@ -198,7 +202,7 @@ export interface ProductSEO {
   ogImage?: string;
   
   /** Structured data (JSON-LD) */
-  structuredData?: Record<string, any>;
+  structuredData?: Record<string, unknown>;
 }
 
 // ============================================================
@@ -277,10 +281,7 @@ export type ProductSortOption =
   | 'newest'
   | 'price-asc'
   | 'price-desc'
-  | 'popular'
-  | 'rating'
-  | 'name-asc'
-  | 'name-desc';
+  | 'name-asc';
 
 /**
  * Product list response with pagination metadata

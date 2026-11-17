@@ -1,7 +1,6 @@
 // frontend/src/features/products/api/productsApi.ts
 
 import { apiClient } from '@/services/apiClient';
-import { logProductView } from '@/features/activity/api/activityApi';
 import type {
   Product,
   ProductFilters,
@@ -30,6 +29,57 @@ export const productQueryKeys = {
 // API Functions
 // ============================================================
 
+export interface PublicProductPayload extends Omit<Partial<Product>, 'category' | 'images' | 'price' | 'relatedProducts'> {
+  id?: string;
+  _id?: string;
+  category?: string | { id?: string; name?: string } | null;
+  categoryId?: string;
+  coverImage?: string;
+  images?: Array<string | { url?: string }>;
+  price?: number | null;
+  relatedProducts?: PublicProductPayload[];
+}
+
+export interface PublicCategoryPayload {
+  id?: string;
+  _id?: string;
+  slug?: string;
+  name?: string;
+  image?: string;
+  productCount?: number;
+  showInHeroStrip?: boolean;
+}
+
+export const normalizePublicProduct = (product: PublicProductPayload): Product => {
+  const rawImages = Array.isArray(product?.images) ? product.images : [];
+  const images = rawImages
+    .map((image) => typeof image === 'string' ? image : image.url)
+    .filter((image): image is string => Boolean(image));
+  const price = typeof product?.price === 'number' ? product.price : null;
+  const category = product?.category;
+
+  return {
+    ...product,
+    id: product?.id || product?._id || '',
+    name: product?.name || '',
+    slug: product?.slug || '',
+    description: product?.description || '',
+    category: (typeof category === 'object' ? category?.id : category) || product?.categoryId || '',
+    categoryName: (typeof category === 'object' ? category?.name : undefined) || product?.categoryName || '',
+    images: images.length ? images : product?.coverImage ? [product.coverImage] : [],
+    price: price ?? 0,
+    quoteOnly: price === null,
+    priceUnit: product?.priceUnit,
+    isNew: Boolean(product?.isNew),
+    specifications: product?.specifications || [],
+    createdAt: product?.createdAt || '',
+    updatedAt: product?.updatedAt || '',
+    relatedProducts: Array.isArray(product?.relatedProducts)
+      ? product.relatedProducts.map(normalizePublicProduct)
+      : undefined,
+  };
+};
+
 /**
  * Get all products with optional filters, sorting, and pagination
  * 
@@ -55,45 +105,28 @@ export const productsApi = {
   getAll: async (filters: ProductFilters = {}): Promise<ProductListResponse> => {
     const params = new URLSearchParams();
 
-    // Apply filters
     if (filters.category) params.append('category', filters.category);
-    if (filters.subCategory) params.append('subCategory', filters.subCategory);
-    if (filters.search) params.append('search', filters.search);
-    if (filters.minPrice !== undefined) params.append('minPrice', String(filters.minPrice));
-    if (filters.maxPrice !== undefined) params.append('maxPrice', String(filters.maxPrice));
-    if (filters.material) params.append('material', filters.material);
-    if (filters.colors && filters.colors.length > 0) {
-      filters.colors.forEach((color) => params.append('colors', color));
-    }
-    if (filters.height !== undefined) params.append('height', String(filters.height));
-    if (filters.weight !== undefined) params.append('weight', String(filters.weight));
-    if (filters.inStock !== undefined) params.append('inStock', String(filters.inStock));
-    if (filters.isFeatured !== undefined) params.append('isFeatured', String(filters.isFeatured));
-    if (filters.isNew !== undefined) params.append('isNew', String(filters.isNew));
-    if (filters.rating !== undefined) params.append('rating', String(filters.rating));
-    if (filters.tags && filters.tags.length > 0) {
-      filters.tags.forEach((tag) => params.append('tags', tag));
-    }
-    
-    // Apply sort
+    if (filters.search) params.append('q', filters.search);
+    if (filters.isFeatured !== undefined) params.append('featured', String(filters.isFeatured));
     if (filters.sort) params.append('sort', filters.sort);
-    
-    // Apply pagination
     if (filters.page) params.append('page', String(filters.page));
     if (filters.limit) params.append('limit', String(filters.limit));
 
     const queryString = params.toString();
-    const url = queryString ? `/products?${queryString}` : '/products';
+    const url = queryString ? `/public/products?${queryString}` : '/public/products';
     const response = await apiClient.get(url);
-
-    const products = response.data.data.products.map((product: any) => ({
-      ...product,
-      id: product.id || product._id,
-    }));
+    const payload = response.data.data;
+    const products = Array.isArray(payload) ? payload.map(normalizePublicProduct) : [];
+    const page = response.data.meta?.page ?? filters.page ?? 1;
+    const limit = response.data.meta?.limit ?? filters.limit ?? products.length;
+    const total = response.data.meta?.total ?? products.length;
 
     return {
-      ...response.data.data,
       products,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / Math.max(limit, 1)),
     };
   },
 
@@ -104,16 +137,16 @@ export const productsApi = {
    * @returns Promise with product details
    */
   getBySlug: async (slug: string): Promise<Product> => {
-    const response = await apiClient.get(`/products/${slug}`);
-    return response.data.data;
+    const response = await apiClient.get(`/public/products/${encodeURIComponent(slug)}`);
+    return normalizePublicProduct(response.data.data);
   },
 
   /**
    * Get a single product by ID
    */
   getById: async (id: string): Promise<Product> => {
-    const response = await apiClient.get(`/products/id/${id}`);
-    return response.data.data;
+    const response = await apiClient.get(`/public/products/${encodeURIComponent(id)}`);
+    return normalizePublicProduct(response.data.data);
   },
 
   /**
@@ -124,16 +157,23 @@ export const productsApi = {
    * @returns Promise with array of related products
    */
   getRelated: async (productId: string, limit: number = 6): Promise<Product[]> => {
-    const response = await apiClient.get(`/products/${productId}/related?limit=${limit}`);
-    return response.data.data;
+    const response = await apiClient.get(`/public/products/${encodeURIComponent(productId)}`);
+    return (response.data.data.relatedProducts || [])
+      .slice(0, limit)
+      .map(normalizePublicProduct);
   },
 
   /**
    * Get product categories
    */
   getCategories: async (): Promise<Array<{ id: string; name: string; slug: string; count: number }>> => {
-    const response = await apiClient.get('/products/categories');
-    return response.data.data;
+    const response = await apiClient.get<{ data: PublicCategoryPayload[] }>('/public/categories');
+    return (response.data.data || []).map((category) => ({
+      id: category.id || category._id || '',
+      name: category.name || '',
+      slug: category.slug || '',
+      count: category.productCount || 0,
+    }));
   },
 
   /**
@@ -155,16 +195,15 @@ export const productsApi = {
    * Get product reviews
    */
   getReviews: async (
-    productId: string,
-    page: number = 1,
-    limit: number = 10
+    _productId: string,
+    _page: number = 1,
+    _limit: number = 10
   ): Promise<{
     reviews: ProductReview[];
     total: number;
     averageRating: number;
   }> => {
-    const response = await apiClient.get(`/products/${productId}/reviews?page=${page}&limit=${limit}`);
-    return response.data.data;
+    return { reviews: [], total: 0, averageRating: 0 };
   },
 
   /**
@@ -195,72 +234,67 @@ export const productsApi = {
    * Get product specifications
    */
   getSpecifications: async (productId: string): Promise<ProductSpecification[]> => {
-    const response = await apiClient.get(`/products/${productId}/specifications`);
-    return response.data.data;
+    const product = await productsApi.getById(productId);
+    return product.specifications || [];
   },
 
   /**
    * Search products with autocomplete (for live search)
    */
   autocomplete: async (query: string, limit: number = 5): Promise<Product[]> => {
-    const response = await apiClient.get(`/products/search/autocomplete?q=${encodeURIComponent(query)}&limit=${limit}`);
-    return response.data.data;
+    const response = await productsApi.getAll({ search: query, limit });
+    return response.products;
   },
 
   /**
    * Get featured products
    */
   getFeatured: async (limit: number = 8): Promise<Product[]> => {
-    const response = await apiClient.get(`/products/featured?limit=${limit}`);
-    return response.data.data;
+    const response = await productsApi.getAll({ isFeatured: true, limit });
+    return response.products;
   },
 
   /**
    * Get new arrivals
    */
   getNewArrivals: async (limit: number = 8): Promise<Product[]> => {
-    const response = await apiClient.get(`/products/new?limit=${limit}`);
-    return response.data.data;
+    const response = await productsApi.getAll({ sort: 'newest', limit });
+    return response.products;
   },
 
   /**
    * Get best sellers
    */
   getBestSellers: async (limit: number = 8): Promise<Product[]> => {
-    const response = await apiClient.get(`/products/best-sellers?limit=${limit}`);
-    return response.data.data;
+    return productsApi.getFeatured(limit);
   },
 
   /**
    * Get trending products
    */
   getTrending: async (limit: number = 8): Promise<Product[]> => {
-    const response = await apiClient.get(`/products/trending?limit=${limit}`);
-    return response.data.data;
+    return productsApi.getFeatured(limit);
   },
 
   /**
    * Get recently viewed products (requires auth or session)
    */
   getRecentlyViewed: async (): Promise<Product[]> => {
-    const response = await apiClient.get<Product[]>('/products/recently-viewed');
-    return response.data;
+    return [];
   },
 
   /**
    * Track product view (for analytics)
    */
   trackView: async (productId: string): Promise<void> => {
-    await logProductView(productId);
+    void productId;
   },
 
   /**
    * Compare multiple products
    */
   compare: async (productIds: string[]): Promise<Product[]> => {
-    const ids = productIds.join(',');
-    const response = await apiClient.get<Product[]>(`/products/compare?ids=${ids}`);
-    return response.data;
+    return Promise.all(productIds.map((id) => productsApi.getById(id)));
   },
 
   /**

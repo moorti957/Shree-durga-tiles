@@ -39,8 +39,10 @@ const productSchema = z.object({
   name: z.string().min(2, 'Product name is required').max(100),
   slug: z.string().optional(),
   description: z.string().min(10, 'Description must be at least 10 characters'),
-  price: z.number().min(0, 'Price must be 0 or greater'),
-  originalPrice: z.number().min(0).optional(),
+  price: z.number().min(0, 'Price must be 0 or greater').nullable().optional(),
+  priceUnit: z.enum(['sq_ft', 'box', 'piece']).default('sq_ft'),
+  status: z.enum(['draft', 'published']).default('draft'),
+  originalPrice: z.number().min(0).nullable().optional(),
   category: z.string().min(1, 'Category is required'),
   material: z.string().optional(),
   marbleType: z.string().optional(),
@@ -112,8 +114,10 @@ export default function ProductEditPage() {
     defaultValues: {
       name: '',
       description: '',
-      price: 0,
-      originalPrice: 0,
+      price: null,
+      priceUnit: 'sq_ft',
+      status: 'draft',
+      originalPrice: null,
       category: '',
       material: '',
       marbleType: '',
@@ -149,15 +153,19 @@ export default function ProductEditPage() {
         name: product.name || '',
         slug: product.slug || '',
         description: product.description || '',
-        price: product.price || 0,
-        originalPrice: product.originalPrice || 0,
+        price: product.price ?? null,
+        priceUnit: product.priceUnit || 'sq_ft',
+        status: product.status || 'draft',
+        originalPrice: product.originalPrice ?? null,
         category: product.category?._id || product.category || '',
         material: product.material || '',
         marbleType: product.marbleType || '',
         finish: product.finish || '',
         colors: Array.isArray(product.colors)
-  ? product.colors.join(", ")
-  : product.colors || "",
+          ? product.colors
+          : typeof product.colors === 'string'
+            ? product.colors.split(',').map((item: string) => item.trim()).filter(Boolean)
+            : [],
         height: product.height || 0,
         width: product.width || 0,
         depth: product.depth || 0,
@@ -166,9 +174,11 @@ export default function ProductEditPage() {
         stockQuantity: product.stockQuantity || 0,
         isFeatured: product.isFeatured || false,
         isNew: product.isNew || false,
-       tags: Array.isArray(product.tags)
-  ? product.tags.join(", ")
-  : product.tags || "",
+        tags: Array.isArray(product.tags)
+          ? product.tags
+          : typeof product.tags === 'string'
+            ? product.tags.split(',').map((item: string) => item.trim()).filter(Boolean)
+            : [],
         specifications: product.specifications || [],
         images: product.images || [],
       });
@@ -237,8 +247,6 @@ const onSubmit = (data: ProductFormData) => {
    
   };
 
-  console.log("SUBMIT DATA:", payload);
-
   setIsSubmitting(true);
 
   if (isCreateMode) {
@@ -248,8 +256,8 @@ const onSubmit = (data: ProductFormData) => {
   }
 };
 
-const onError = (errors: any) => {
-  console.log("FORM ERRORS:", errors);
+const onError = () => {
+  toast.error('Please review the highlighted fields.');
 };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -291,7 +299,7 @@ const onError = (errors: any) => {
   if (!isCreateMode && !product) {
     return (
       <div className="text-center py-12">
-        <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+        <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
         <h2 className="font-cinzel text-xl text-brown dark:text-ivory">Product not found</h2>
         <Link href="/products" className="btn-gold inline-block mt-4">
           Back to Products
@@ -367,7 +375,7 @@ const onError = (errors: any) => {
                   className={errors.name ? 'border-red-400' : ''}
                 />
                 {errors.name && (
-                  <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+                  <p className="text-xs text-red-600 mt-1">{errors.name.message}</p>
                 )}
               </div>
 
@@ -379,7 +387,7 @@ const onError = (errors: any) => {
                   {...register('slug')}
                   placeholder="e.g., ganesh-murti-marble"
                 />
-                <p className="text-xs text-brown-light/60 mt-1">
+                <p className="text-xs text-brown-light mt-1">
                   Leave blank to auto-generate from name
                 </p>
               </div>
@@ -395,7 +403,7 @@ const onError = (errors: any) => {
                   className={errors.description ? 'border-red-400' : ''}
                 />
                 {errors.description && (
-                  <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>
+                  <p className="text-xs text-red-600 mt-1">{errors.description.message}</p>
                 )}
               </div>
             </div>
@@ -409,16 +417,17 @@ const onError = (errors: any) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-black dark:text-black mb-1">
-                  Price * ()
+                  Price (leave blank to request a quote)
                 </label>
                 <Input
-                  {...register('price', { valueAsNumber: true })}
+                  {...register('price', { setValueAs: (value) => value === '' ? null : Number(value) })}
                   type="number"
-                  placeholder="0"
+                  step="0.01"
+                  placeholder="Quote on request"
                   className={errors.price ? 'border-red-400' : ''}
                 />
                 {errors.price && (
-                  <p className="text-xs text-red-500 mt-1">{errors.price.message}</p>
+                  <p className="text-xs text-red-600 mt-1">{errors.price.message}</p>
                 )}
               </div>
               <div>
@@ -426,9 +435,22 @@ const onError = (errors: any) => {
                   Original Price ()
                 </label>
                 <Input
-                  {...register('originalPrice', { valueAsNumber: true })}
+                  {...register('originalPrice', { setValueAs: (value) => value === '' ? null : Number(value) })}
                   type="number"
                   placeholder="0"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-black dark:text-black mb-1">
+                  Price Unit
+                </label>
+                <Select
+                  {...register('priceUnit')}
+                  options={[
+                    { value: 'sq_ft', label: 'Per square foot' },
+                    { value: 'box', label: 'Per box' },
+                    { value: 'piece', label: 'Per piece' },
+                  ]}
                 />
               </div>
               <div>
@@ -471,7 +493,7 @@ const onError = (errors: any) => {
                   className={errors.category ? 'border-red-400' : ''}
                 />
                 {errors.category && (
-                  <p className="text-xs text-red-500 mt-1">{errors.category.message}</p>
+                  <p className="text-xs text-red-600 mt-1">{errors.category.message}</p>
                 )}
               </div>
 
@@ -585,6 +607,16 @@ const onError = (errors: any) => {
                 label="New Arrival"
               />
             </div>
+            <div className="mt-4 max-w-xs">
+              <label className="mb-1 block text-sm font-medium text-admin-text">Publication status</label>
+              <Select
+                {...register('status')}
+                options={[
+                  { value: 'draft', label: 'Draft (not public)' },
+                  { value: 'published', label: 'Published' },
+                ]}
+              />
+            </div>
           </GlassCard>
 
           {/* Specifications */}
@@ -620,7 +652,7 @@ const onError = (errors: any) => {
                   <button
                     type="button"
                     onClick={() => remove(index)}
-                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -692,7 +724,7 @@ const onError = (errors: any) => {
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
-                      className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>

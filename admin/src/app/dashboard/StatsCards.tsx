@@ -105,12 +105,12 @@ function StatCard({ stat, index }: { stat: StatCardData; index: number }) {
       {change !== undefined && (
         <div className="flex items-center gap-1.5 mt-3">
           {changeType !== 'neutral' && (
-            <ChangeIcon className={cn('w-3.5 h-3.5', isPositive ? 'text-green-500' : 'text-red-500')} />
+            <ChangeIcon className={cn('w-3.5 h-3.5', isPositive ? 'text-green-700' : 'text-red-600')} />
           )}
           <span
             className={cn(
               'text-xs font-medium',
-              isPositive ? 'text-green-500' : changeType === 'negative' ? 'text-red-500' : 'text-brown-light dark:text-ivory/50'
+              isPositive ? 'text-green-700' : changeType === 'negative' ? 'text-red-600' : 'text-brown-light dark:text-ivory/50'
             )}
           >
             {isPositive ? '+' : ''}{change}%
@@ -146,7 +146,7 @@ export function StatsCards({
   if (error) {
     return (
       <div className="bg-white dark:bg-brown-dark rounded-2xl p-6 border border-red-200 dark:border-red-800 text-center">
-        <p className="text-red-500 dark:text-red-400">Failed to load statistics</p>
+        <p className="text-red-600 dark:text-red-400">Failed to load statistics</p>
         <p className="text-sm text-brown-light dark:text-ivory/50 mt-1">{error.message}</p>
       </div>
     );

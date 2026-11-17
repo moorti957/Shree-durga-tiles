@@ -41,7 +41,49 @@ export interface ApiErrorPayload {
 // Constants
 // ============================================================
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const isPrivateOrLocalHostname = (hostname: string): boolean => {
+  const host = hostname.replace(/^\[|\]$/g, '').toLowerCase();
+  if (host === 'localhost' || host.endsWith('.localhost') || host.endsWith('.local')) return true;
+  if (host === '::1' || host.startsWith('fc') || host.startsWith('fd') || host.startsWith('fe80:')) return true;
+  const octets = host.split('.').map(Number);
+  if (octets.length !== 4 || !octets.every((octet) => Number.isInteger(octet) && octet >= 0 && octet <= 255)) {
+    return false;
+  }
+  const [first, second] = octets;
+  return first === 0 || first === 10 || first === 127 ||
+    (first === 169 && second === 254) ||
+    (first === 172 && second >= 16 && second <= 31) ||
+    (first === 192 && second === 168) ||
+    (first === 100 && second >= 64 && second <= 127);
+};
+
+const getApiBaseUrl = (): string => {
+  const configuredUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+  const baseUrl = configuredUrl || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000/api' : '');
+  if (!baseUrl) {
+    throw new Error('NEXT_PUBLIC_API_URL is required. Configure the public HTTPS backend URL for this deployment.');
+  }
+
+  let url: URL;
+  try {
+    url = new URL(baseUrl);
+  } catch {
+    throw new Error('NEXT_PUBLIC_API_URL must be an absolute HTTP(S) URL ending in /api.');
+  }
+  if (!['http:', 'https:'].includes(url.protocol) || !url.pathname.replace(/\/+$/, '').endsWith('/api')) {
+    throw new Error('NEXT_PUBLIC_API_URL must be an HTTP(S) URL ending in /api.');
+  }
+  if (url.username || url.password) {
+    throw new Error('NEXT_PUBLIC_API_URL must not contain embedded credentials.');
+  }
+  if (process.env.NODE_ENV === 'production' &&
+    (url.protocol !== 'https:' || isPrivateOrLocalHostname(url.hostname))) {
+    throw new Error('Production NEXT_PUBLIC_API_URL must use HTTPS and a public hostname.');
+  }
+  return baseUrl.replace(/\/+$/, '');
+};
+
+const BASE_URL = getApiBaseUrl();
 const TOKEN_KEY = 'panditji-auth-storage';
 const REFRESH_TOKEN_ENDPOINT = '/auth/refresh-token';
 
@@ -220,9 +262,15 @@ apiClient.interceptors.response.use(
     // Handle other errors
     const errorPayload = error.response?.data as ApiErrorPayload | undefined;
     const apiError: ApiError = {
-      status: error.response?.status || 500,
-      message: errorPayload?.message || getUserFriendlyErrorDetails(error).title,
-      code: errorPayload?.code,
+      status: error.response?.status || 0,
+      message: errorPayload?.message || (
+        !error.response
+          ? error.code === 'ECONNABORTED'
+            ? 'The API request timed out. Please try again.'
+            : 'Unable to reach the API. Check the backend URL and your network connection.'
+          : getUserFriendlyErrorDetails(error).title
+      ),
+      code: errorPayload?.code || error.code,
       errors: errorPayload?.errors || (errorPayload as { details?: Record<string, string[]> } | undefined)?.details,
     };
 

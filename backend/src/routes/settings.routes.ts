@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { Setting } from '../models/Setting';
-import { auth } from '../middlewares/auth';
+import { adminRouteGuard } from '../middlewares/adminRouteGuard';
 
 const router = Router();
 
 // Get settings
-router.get('/', async (_req, res) => {
+router.get('/', adminRouteGuard, async (_req, res) => {
   try {
     let settings = await Setting.findOne({});
     if (!settings) {
@@ -18,7 +18,7 @@ router.get('/', async (_req, res) => {
 });
 
 // Update Store Settings
-router.put('/store', auth, async (req, res) => {
+router.put('/store', adminRouteGuard, async (req, res) => {
   try {
     const { storeName, storeEmail, storePhone, storeAddress, storeDescription, currency } = req.body;
     const settings = await Setting.findOneAndUpdate(
@@ -42,7 +42,7 @@ router.put('/store', auth, async (req, res) => {
 });
 
 // Update Payment Settings
-router.put('/payment', auth, async (req, res) => {
+router.put('/payment', adminRouteGuard, async (req, res) => {
   try {
     const { taxRate, codEnabled, codFee, upiEnabled, cardEnabled } = req.body;
     const settings = await Setting.findOneAndUpdate(
@@ -69,7 +69,7 @@ router.put('/payment', auth, async (req, res) => {
 });
 
 // Update Shipping Settings
-router.put('/shipping', auth, async (req, res) => {
+router.put('/shipping', adminRouteGuard, async (req, res) => {
   try {
     const { freeShippingThreshold, standardShippingCost, expressShippingCost, internationalShippingEnabled } = req.body;
     const settings = await Setting.findOneAndUpdate(
@@ -93,7 +93,7 @@ router.put('/shipping', auth, async (req, res) => {
 });
 
 // Update Social Settings
-router.put('/social', auth, async (req, res) => {
+router.put('/social', adminRouteGuard, async (req, res) => {
   try {
     const { facebook, instagram, youtube, twitter, whatsapp } = req.body;
     const settings = await Setting.findOneAndUpdate(
@@ -116,7 +116,7 @@ router.put('/social', auth, async (req, res) => {
 });
 
 // Update SEO Settings
-router.put('/seo', auth, async (req, res) => {
+router.put('/seo', adminRouteGuard, async (req, res) => {
   try {
     const { metaTitle, metaDescription, metaKeywords, googleAnalyticsId } = req.body;
     const settings = await Setting.findOneAndUpdate(
@@ -138,7 +138,7 @@ router.put('/seo', auth, async (req, res) => {
 });
 
 // Update Contact Settings
-router.put('/contact', auth, async (req, res) => {
+router.put('/contact', adminRouteGuard, async (req, res) => {
   try {
     const { contactEmail, contactPhone, contactAddress, whatsappNumber } = req.body;
     const settings = await Setting.findOneAndUpdate(
@@ -160,4 +160,3 @@ router.put('/contact', auth, async (req, res) => {
 });
 
 export default router;
-

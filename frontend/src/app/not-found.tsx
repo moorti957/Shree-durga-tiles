@@ -27,12 +27,12 @@ export default function NotFound() {
           animation: float 3s ease-in-out infinite;
         }
         .shimmer-line {
-          background: linear-gradient(90deg, #D4AF37 0%, #FFFCF7 50%, #D4AF37 100%);
+          background: linear-gradient(90deg, #D4B27A 0%, #F5F3EF 50%, #D4B27A 100%);
           background-size: 200% 100%;
           animation: shimmer 2s ease-in-out infinite;
         }
         .divine-glow {
-          box-shadow: 0 0 60px rgba(212, 175, 55, 0.15);
+          box-shadow: 0 10px 24px rgba(134, 101, 47, .2);
         }
       `}</style>
 
@@ -55,7 +55,7 @@ export default function NotFound() {
           <div className="relative w-28 h-28 mx-auto mb-6">
             <div className="absolute inset-0 rounded-full bg-gold/10 animate-float divine-glow" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-6xl">🪷</span>
+              <span aria-hidden="true" className="font-devanagari text-5xl text-gold-dark">ॐ</span>
             </div>
           </div>
 
@@ -74,17 +74,16 @@ export default function NotFound() {
 
           {/* Description */}
           <p className="text-brown-light text-base md:text-lg leading-relaxed max-w-sm mx-auto">
-            The divine path you&apos;re looking for seems to have wandered off. 
-            Let&apos;s guide you back to the sacred collection.
+            The page you&apos;re looking for could not be found. Browse our collections or return to the homepage.
           </p>
 
           {/* Action buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/" className="btn-gold px-8 py-3 text-sm font-medium inline-flex items-center gap-2">
-              <span>🏛️</span> Visit Home
+              Visit Home
             </Link>
             <Link href="/products" className="btn-maroon px-8 py-3 text-sm font-medium inline-flex items-center gap-2">
-              <span>🕉️</span> Browse Murtis
+              Browse Products
             </Link>
           </div>
 
@@ -105,7 +104,7 @@ export default function NotFound() {
 
           {/* Footer note */}
           <p className="mt-12 text-xs text-brown-light/30">
-            © Pandit Ji Marble Murti Arts · Divine craftsmanship since 1991
+            © Shree Durga Tiles · Govindgarh, Alwar
           </p>
         </motion.div>
       </div>

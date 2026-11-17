@@ -6,6 +6,7 @@ import { Category } from '../models/Category';
 import { Review } from '../models/Review';
 
 import { uploadToCloudinary, deleteFromCloudinary } from '../config/cloudinary';
+import { processUploadImage } from './imageProcessor';
 import { AppError } from '../utils/AppError';
 import { logger } from '../utils/logger';
 
@@ -514,16 +515,17 @@ export class ProductService {
    * Upload product images
    */
   static async uploadImages(files: Express.Multer.File[]) {
-    const uploadPromises = files.map((file) =>
-      uploadToCloudinary(file.buffer, {
+    const uploadPromises = files.map(async (file) => {
+      const image = await processUploadImage(file.buffer);
+      return uploadToCloudinary(image.buffer, {
         folder: 'products',
         tags: ['product'],
         quality: 'auto:good',
         format: 'webp',
         width: 800,
         crop: 'scale',
-      })
-    );
+      });
+    });
     const results = await Promise.all(uploadPromises);
     return results.map((r) => r.secure_url);
   }

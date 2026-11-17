@@ -11,6 +11,7 @@ import {
 } from '../config/cloudinary';
 import { asyncHandler, AppError } from '../middlewares/errorHandler';
 import { UploadedFile } from '../types';
+import { processUploadImage } from '../services/imageProcessor';
 
 // ============================================================
 // Upload Controller
@@ -29,12 +30,13 @@ export class UploadController {
     const folder = req.body.folder || 'general';
     const tags = req.body.tags ? req.body.tags.split(',') : [];
 
-    const result = await uploadToCloudinary(file.buffer, {
-      folder: `panditji/${folder}`,
+    const image = await processUploadImage(file.buffer);
+    const result = await uploadToCloudinary(image.buffer, {
+      folder: `shree-durga-tiles/${folder}`,
       tags,
       public_id: req.body.publicId || uuidv4(),
       quality: req.body.quality || 'auto:good',
-      format: req.body.format || 'webp',
+      format: 'webp',
     });
 
     res.status(201).json({
@@ -63,15 +65,16 @@ export class UploadController {
     const folder = req.body.folder || 'general';
     const tags = req.body.tags ? req.body.tags.split(',') : [];
 
-    const uploadPromises = files.map((file) =>
-      uploadToCloudinary(file.buffer, {
-        folder: `panditji/${folder}`,
+    const uploadPromises = files.map(async (file) => {
+      const image = await processUploadImage(file.buffer);
+      return uploadToCloudinary(image.buffer, {
+        folder: `shree-durga-tiles/${folder}`,
         tags,
         public_id: uuidv4(),
         quality: req.body.quality || 'auto:good',
-        format: req.body.format || 'webp',
+        format: 'webp',
       })
-    );
+    });
 
     const results = await Promise.all(uploadPromises);
 
@@ -103,9 +106,10 @@ export class UploadController {
     const folder = `products/${productId}`;
     const tags = ['product', productId];
 
-    const uploadPromises = files.map((file) =>
-      uploadToCloudinary(file.buffer, {
-        folder: `panditji/${folder}`,
+    const uploadPromises = files.map(async (file) => {
+      const image = await processUploadImage(file.buffer);
+      return uploadToCloudinary(image.buffer, {
+        folder: `shree-durga-tiles/${folder}`,
         tags,
         public_id: uuidv4(),
         quality: 'auto:good',
@@ -113,7 +117,7 @@ export class UploadController {
         width: 800,
         crop: 'scale',
       })
-    );
+    });
 
     const results = await Promise.all(uploadPromises);
 
@@ -141,7 +145,8 @@ export class UploadController {
 
     const userId = req.user?.id || 'unknown';
 
-    const result = await uploadToCloudinary(file.buffer, {
+    const image = await processUploadImage(file.buffer);
+    const result = await uploadToCloudinary(image.buffer, {
       folder: `panditji/avatars`,
       tags: ['avatar', userId],
       public_id: `${userId}_${Date.now()}`,
@@ -176,15 +181,16 @@ export class UploadController {
     const galleryId = req.body.galleryId || 'general';
     const folder = `gallery/${galleryId}`;
 
-    const uploadPromises = files.map((file) =>
-      uploadToCloudinary(file.buffer, {
+    const uploadPromises = files.map(async (file) => {
+      const image = await processUploadImage(file.buffer);
+      return uploadToCloudinary(image.buffer, {
         folder: `panditji/${folder}`,
         tags: ['gallery', galleryId],
         public_id: uuidv4(),
         quality: 'auto:good',
         format: 'webp',
-      })
-    );
+      });
+    });
 
     const results = await Promise.all(uploadPromises);
 
@@ -211,15 +217,16 @@ export class UploadController {
     const blogId = req.body.blogId || 'unknown';
     const folder = `blogs/${blogId}`;
 
-    const uploadPromises = files.map((file) =>
-      uploadToCloudinary(file.buffer, {
+    const uploadPromises = files.map(async (file) => {
+      const image = await processUploadImage(file.buffer);
+      return uploadToCloudinary(image.buffer, {
         folder: `panditji/${folder}`,
         tags: ['blog', blogId],
         public_id: uuidv4(),
         quality: 'auto:good',
         format: 'webp',
-      })
-    );
+      });
+    });
 
     const results = await Promise.all(uploadPromises);
 
@@ -284,33 +291,12 @@ export class UploadController {
    * Get a signed upload URL for client-side direct upload (optional)
    * Returns a timestamp and signature for secure upload
    */
-  static getSignedUploadUrl = asyncHandler(async (req: AuthRequest, res: Response) => {
-    const { type = 'general', folder } = req.query;
-
-    // If you need to generate a signed URL, you can implement Cloudinary's
-    // upload preset or generate a signature. Here's a simple example:
-
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
-    const apiKey = process.env.CLOUDINARY_API_KEY!;
-
-    // For production, you'd generate a signature using your secret
-    // const signature = cloudinary.utils.api_sign_request({ timestamp, folder }, process.env.CLOUDINARY_API_SECRET);
-
-    // For simplicity, we'll return an upload preset approach
-    // You can create upload presets in Cloudinary dashboard and use them.
-
-    res.json({
-      success: true,
-      data: {
-        cloudName,
-        apiKey,
-        timestamp,
-        // signature, // uncomment when implementing signature
-        folder: `panditji/${folder || type}`,
-        uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET || `panditji_${type}`,
-      },
-    });
+  static getSignedUploadUrl = asyncHandler(async () => {
+    throw new AppError(
+      'Direct uploads are disabled. Use the authenticated server upload endpoint so images can be validated and resized.',
+      410,
+      'DIRECT_UPLOAD_DISABLED'
+    );
   });
 
   /**

@@ -108,14 +108,14 @@ export function RevenueChart({
   const periods = ['Today', 'Week', 'Month', 'Quarter', 'Year'];
 
   // Chart colors
-  const gradientColor = '#D4AF37'; // gold
-  const gradientColorDark = '#B8962E';
+  const gradientColor = '#FF0000';
+  const gradientColorDark = '#FFFF00';
 
   // If error
   if (error) {
     return (
       <div className={cn('bg-white dark:bg-brown-dark rounded-2xl p-5 border border-red-200 dark:border-red-800', className)}>
-        <div className="flex items-center justify-center h-32 text-red-500 dark:text-red-400">
+        <div className="flex items-center justify-center h-32 text-red-600 dark:text-red-400">
           <p>Failed to load revenue data</p>
         </div>
       </div>

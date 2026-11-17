@@ -6,16 +6,21 @@ import rateLimit from 'express-rate-limit';
 import { UploadController } from '../controllers/UploadController';
 import { validate } from '../middlewares/validate';
 import { auth } from '../middlewares/auth';
-
-// import { admin } from '../middlewares/auth'; // uncomment when role middleware is ready
+import { adminRouteGuard } from '../middlewares/adminRouteGuard';
+import { upload } from '../middlewares/upload';
 
 const router = Router();
+const legacyCommerceEnabled = process.env.ENABLE_LEGACY_COMMERCE === 'true';
 
 // Rate limiting for upload operations
 const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 30,
-  message: { message: 'Too many upload attempts, please try again later.' },
+  handler: (_req, res) => {
+    res.status(429).json({
+      error: { code: 'RATE_LIMIT', message: 'Too many upload attempts. Try again later.' },
+    });
+  },
 });
 
 // ============================================================
@@ -37,7 +42,8 @@ const uploadTypeValidation = [
 // Upload a single file
 router.post(
   '/',
-  auth,
+  adminRouteGuard,
+  upload.single('file'),
   uploadLimiter,
   uploadTypeValidation,
   validate,
@@ -47,7 +53,8 @@ router.post(
 // Upload multiple files
 router.post(
   '/multiple',
-  auth,
+  adminRouteGuard,
+  upload.array('files', 10),
   uploadLimiter,
   uploadTypeValidation,
   validate,
@@ -57,8 +64,8 @@ router.post(
 // Upload product images (specific)
 router.post(
   '/product',
-  auth,
-  // admin, // uncomment when role middleware is ready
+  adminRouteGuard,
+  upload.array('images', 10),
   uploadLimiter,
   body('productId').isMongoId().withMessage('Invalid product ID'),
   validate,
@@ -66,18 +73,15 @@ router.post(
 );
 
 // Upload avatar
-router.post(
-  '/avatar',
-  auth,
-  uploadLimiter,
-  UploadController.uploadAvatar
-);
+if (legacyCommerceEnabled) {
+  router.post('/avatar', auth, uploadLimiter, UploadController.uploadAvatar);
+}
 
 // Upload gallery images
 router.post(
   '/gallery',
-  auth,
-  // admin,
+  adminRouteGuard,
+  upload.array('images', 10),
   uploadLimiter,
   body('galleryId').optional().isMongoId(),
   validate,
@@ -87,39 +91,37 @@ router.post(
 // Upload blog images
 router.post(
   '/blog',
-  auth,
-  // admin,
+  adminRouteGuard,
+  upload.array('images', 10),
   uploadLimiter,
   body('blogId').optional().isMongoId(),
   validate,
   UploadController.uploadBlogImages
 );
 
-// Delete a file from Cloudinary
-router.delete(
-  '/:publicId',
-  auth,
-  // admin,
-  deleteFileValidation,
-  validate,
-  UploadController.deleteFile
-);
-
 // Delete multiple files
 router.delete(
   '/bulk',
-  auth,
-  // admin,
+  adminRouteGuard,
   body('publicIds').isArray().withMessage('Public IDs array is required'),
   body('publicIds.*').notEmpty().withMessage('Each public ID must be non-empty'),
   validate,
   UploadController.deleteMultipleFiles
 );
 
+// Delete a file from Cloudinary
+router.delete(
+  '/:publicId',
+  adminRouteGuard,
+  deleteFileValidation,
+  validate,
+  UploadController.deleteFile
+);
+
 // Get signed upload URL (for client-side direct uploads)
 router.get(
   '/signed-url',
-  auth,
+  adminRouteGuard,
   query('type').optional().isIn(['avatar', 'product', 'gallery', 'blog']),
   query('folder').optional().trim(),
   validate,

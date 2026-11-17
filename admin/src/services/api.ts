@@ -1,13 +1,7 @@
 // admin/src/services/api.ts
 
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  AxiosError,
-  InternalAxiosRequestConfig,
-} from 'axios';
-import { toast } from 'react-hot-toast';
+import type { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { apiClient as sharedApiClient } from './adminApi';
 
 // ============================================================
 // Types
@@ -30,7 +24,6 @@ export interface ApiResponse<T = any> {
 // ============================================================
 // Constants
 // ============================================================
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 const TOKEN_KEY = 'panditji-admin-token';
 
 // ============================================================
@@ -52,63 +45,8 @@ export const removeToken = (): void => {
 };
 
 // ============================================================
-// Create Axios Instance
-// ============================================================
-export const apiClient: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
-  timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
-});
-
-// ============================================================
-// Request Interceptor
-// ============================================================
-apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error: AxiosError) => Promise.reject(error)
-);
-
-// ============================================================
-// Response Interceptor
-// ============================================================
-apiClient.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
-
-    // Handle 401 Unauthorized - token expired
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      
-      // Clear token and redirect to login
-      removeToken();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
-      
-      return Promise.reject(error);
-    }
-
-    // Handle other errors
-    const apiError: ApiError = {
-      status: error.response?.status || 500,
-      message: (error.response?.data as any)?.message || error.message || 'An unexpected error occurred',
-      code: (error.response?.data as any)?.code,
-      errors: (error.response?.data as any)?.errors,
-    };
-
-    return Promise.reject(apiError);
-  }
-);
+// Both service modules share the admin API client's auth interceptors and base URL.
+export const apiClient: AxiosInstance = sharedApiClient;
 
 // ============================================================
 // API Client Methods (for convenience)

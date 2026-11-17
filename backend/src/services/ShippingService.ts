@@ -48,8 +48,8 @@ interface ICacheEntry {
 }
 
 // Origin business location: Pandit Ji Marble Murti Arts, Govindgarh, Alwar, Rajasthan
-const ORIGIN_BUSINESS_NAME = 'Pandit Ji Marble Murti Arts';
-const ORIGIN_ADDRESS_STRING = 'Govindgarh, Alwar, Rajasthan, India';
+const ORIGIN_BUSINESS_NAME = 'shree Durga Tiles';
+const ORIGIN_ADDRESS_STRING = 'Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.';
 const ORIGIN_LAT = 27.4699;
 const ORIGIN_LNG = 77.0195;
 

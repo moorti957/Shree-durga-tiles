@@ -47,7 +47,7 @@ export const authApi = {
    * const response = await authApi.register({
    *   name: 'Devotee Sharma',
    *   email: 'devotee@example.com',
-   *   phone: '+917240364772',
+   *   phone: '+918529388726',
    *   password: 'SecurePassword123',
    *   confirmPassword: 'SecurePassword123',
    * });

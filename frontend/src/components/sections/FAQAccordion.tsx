@@ -34,7 +34,7 @@ interface FAQAccordionProps {
 export function FAQAccordion({
   faqs,
   title = 'Frequently Asked Questions',
-  subtitle = 'Find answers to the most common questions about our murtis and services.',
+  subtitle = 'Find answers to common questions about materials, orders and delivery.',
   className,
   defaultOpen = null,
   variant = 'default',

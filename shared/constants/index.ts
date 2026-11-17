@@ -1,1 +1,1 @@
-export const APP_NAME = 'Pandit Ji Marble Murti Art';
+export const APP_NAME = 'Saraswati Murti Kala Kendra';

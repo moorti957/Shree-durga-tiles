@@ -121,10 +121,10 @@ export default function BlogsPage() {
           <span className="diamond">✦</span>
         </div>
         <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">
-          Divine Insights
+          Stone &amp; Tile Journal
         </h1>
         <p className="text-brown-light mt-3 max-w-2xl mx-auto">
-          Stories, wisdom, and behind-the-scenes from the world of handcrafted murtis.
+          Ideas, material guides and updates from Shree Durga Tiles.
         </p>
       </motion.div>
 

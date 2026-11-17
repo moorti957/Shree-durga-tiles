@@ -68,8 +68,8 @@ interface TestimonialsProps {
 // ============================================================
 export function Testimonials({
   testimonials,
-  title = 'Devotee Reviews',
-  subtitle = 'Hear from those who have brought divine energy into their homes.',
+  title = 'Customer Words',
+  subtitle = 'Hear from customers who have chosen materials for their spaces.',
   displayMode = 'slider',
   columns = 3,
   slidesPerView = 3,
@@ -375,7 +375,7 @@ export function Testimonials({
           margin-top: 24px;
         }
         .swiper-pagination-bullet {
-          background: #D4AF37;
+          background: #FF0000;
           opacity: 0.3;
           width: 8px;
           height: 8px;
@@ -386,7 +386,7 @@ export function Testimonials({
           opacity: 1;
           width: 24px;
           border-radius: 4px;
-          background: #D4AF37;
+          background: #FF0000;
         }
         .swiper-button-prev-custom,
         .swiper-button-next-custom {
@@ -420,7 +420,7 @@ interface CompactTestimonialsProps {
 
 export function CompactTestimonials({
   testimonials,
-  title = 'What Devotees Say',
+  title = 'What our customers say',
   className,
   maxItems = 3,
 }: CompactTestimonialsProps) {

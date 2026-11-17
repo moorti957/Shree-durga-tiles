@@ -5,7 +5,7 @@ import { body, param, query } from 'express-validator';
 import rateLimit from 'express-rate-limit';
 import { CategoryController } from '../controllers/CategoryController';
 import { validate } from '../middlewares/validate';
-import { auth, } from '../middlewares/auth';
+import { adminRouteGuard } from '../middlewares/adminRouteGuard';
 
 
 const router = Router();
@@ -234,8 +234,7 @@ router.get(
 // Create a new category
 router.post(
   '/',
-  auth,
-  // admin, // uncomment when role middleware is ready
+  adminRouteGuard,
   categoryWriteLimiter,
   createCategoryValidation,
   validate,
@@ -245,8 +244,7 @@ router.post(
 // Update a category
 router.put(
   '/:id',
-  auth,
-  // admin,
+  adminRouteGuard,
   categoryWriteLimiter,
   updateCategoryValidation,
   validate,
@@ -257,8 +255,7 @@ router.put(
 // We'll implement soft delete by setting isActive to false
 router.delete(
   '/:id',
-  auth,
-  // admin,
+  adminRouteGuard,
   categoryIdParamValidation,
   validate,
   CategoryController.delete
@@ -267,8 +264,7 @@ router.delete(
 // Toggle category featured status
 router.patch(
   '/:id/toggle-featured',
-  auth,
-  // admin,
+  adminRouteGuard,
   categoryIdParamValidation,
   validate,
   CategoryController.toggleFeatured
@@ -277,8 +273,7 @@ router.patch(
 // Reorder categories (bulk update displayOrder)
 router.put(
   '/reorder',
-  auth,
-  // admin,
+  adminRouteGuard,
   body('categories').isArray().withMessage('Categories array is required'),
   body('categories.*.id').isMongoId().withMessage('Invalid category ID'),
   body('categories.*.displayOrder').isInt({ min: 0 }),
@@ -289,8 +284,7 @@ router.put(
 // Bulk delete categories
 router.delete(
   '/bulk',
-  auth,
-  // admin,
+  adminRouteGuard,
   body('ids').isArray().withMessage('IDs array is required'),
   body('ids.*').isMongoId().withMessage('Invalid category ID'),
   validate,

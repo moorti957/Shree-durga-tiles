@@ -52,9 +52,9 @@ export default function RefundPolicyPage() {
                 Our Commitment to You
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                At Pandit Ji Marble Murti Arts, we take great pride in the quality and craftsmanship of
-                our handcrafted murtis. Each piece is created with devotion and care by our master artisans
-                in govindgarh. We want you to be completely satisfied with your purchase.
+                At Shree Durga Tiles, we take great pride in the quality and craftsmanship of
+                our marble, granite, tile and stone products. We want you to be satisfied with your purchase
+                and have set out the following return and refund information.
               </p>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed mt-3">
                 If for any reason you are not satisfied with your purchase, we offer a fair and transparent
@@ -75,13 +75,13 @@ export default function RefundPolicyPage() {
                   <strong>Timeframe:</strong> Returns must be initiated within <strong>7 days</strong> of delivery.
                 </li>
                 <li>
-                  <strong>Condition:</strong> The murti must be unused, undamaged, and in its original packaging.
+                  <strong>Condition:</strong> Products must be unused, undamaged, and in their original packaging.
                 </li>
                 <li>
                   <strong>Proof of Purchase:</strong> A valid order number or invoice is required for all returns.
                 </li>
                 <li>
-                  <strong>Custom Orders:</strong> Custom-made murtis are <strong>non-returnable</strong> unless damaged during shipping.
+                  <strong>Custom Orders:</strong> Custom-made products are <strong>non-returnable</strong> unless damaged during shipping.
                 </li>
               </ul>
             </GlassCard>
@@ -93,7 +93,7 @@ export default function RefundPolicyPage() {
                 Non-Returnable Items
               </h2>
               <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
-                <li>Custom-ordered murtis (unless damaged in transit)</li>
+                <li>Custom-ordered products (unless damaged in transit)</li>
                 <li>Items that have been used, installed, or damaged by the customer</li>
                 <li>Items returned without original packaging</li>
                 <li>Items returned after the 7-day return window</li>
@@ -114,10 +114,10 @@ export default function RefundPolicyPage() {
                 <li>
                   <strong>Contact Us:</strong> Email us at{' '}
                   <a
-                    href="mailto:info@panditjimurti.com"
+                    href="mailto:dileepsaini8726@gmail.com"
                     className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                   >
-                    info@panditjimurti.com
+                    dileepsaini8726@gmail.com
                   </a>
                   {' '}or WhatsApp us at +91 72403 64772 with your order number and reason for return.
                 </li>
@@ -170,7 +170,7 @@ export default function RefundPolicyPage() {
                 Damaged or Defective Items
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                If your murti arrives damaged or defective, we sincerely apologize. We take great care in packaging
+                If your product arrives damaged or defective, we sincerely apologize. We take care in packaging
                 our products, but occasionally damage can occur during shipping.
               </p>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed mt-3">
@@ -183,10 +183,10 @@ export default function RefundPolicyPage() {
                 <li>
                   <strong>Contact Us:</strong> Email us at{' '}
                   <a
-                    href="mailto:info@panditjimurti.com"
+                    href="mailto:dileepsaini8726@gmail.com"
                     className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                   >
-                    info@panditjimurti.com
+                    dileepsaini8726@gmail.com
                   </a>
                   {' '}within 48 hours of delivery with your photos and order number.
                 </li>
@@ -216,7 +216,7 @@ export default function RefundPolicyPage() {
                 Exchange Policy
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                If you would like to exchange your murti for a different design or size, please contact us
+                If you would like to exchange a product, please contact us
                 within 7 days of delivery. Exchanges are subject to availability and may incur additional
                 shipping costs.
               </p>
@@ -249,30 +249,30 @@ export default function RefundPolicyPage() {
                     <p>
                       <strong>Email:</strong>{' '}
                       <a
-                        href="mailto:info@panditjimurti.com"
+                        href="mailto:dileepsaini8726@gmail.com"
                         className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                       >
-                        info@panditjimurti.com
+                        dileepsaini8726@gmail.com
                       </a>
                     </p>
                     <p>
                       <strong>WhatsApp:</strong>{' '}
                       <a
-                        href="https://wa.me/917240364772"
+                        href="https://wa.me/918529388726"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                       >
-                        +91 72403 64772
+                        +91 85293 88726
                       </a>
                     </p>
                     <p>
                       <strong>Phone:</strong>{' '}
                       <a
-                        href="tel:+917240364772"
+                        href="tel:+918529388726"
                         className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                       >
-                        +91 72403 64772
+                        +91 85293 88726
                       </a>
                     </p>
                   </div>

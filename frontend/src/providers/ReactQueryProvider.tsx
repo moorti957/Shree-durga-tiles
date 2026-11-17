@@ -53,6 +53,14 @@ const isUnauthorized = (error: unknown): boolean => {
   return false;
 };
 
+const getHttpStatus = (error: unknown): number | undefined => {
+  if (typeof error === 'object' && error !== null && 'status' in error) {
+    const status = Number((error as { status?: unknown }).status);
+    return Number.isFinite(status) && status > 0 ? status : undefined;
+  }
+  return undefined;
+};
+
 // ============================================================
 // ReactQueryProvider Component
 // ============================================================
@@ -75,12 +83,15 @@ export function ReactQueryProvider({ children }: ReactQueryProviderProps) {
               if (isUnauthorized(error)) {
                 return false;
               }
+              const status = getHttpStatus(error);
+              if (status !== undefined && status < 500) {
+                return false;
+              }
               // Retry network errors up to 3 times
               if (isNetworkError(error)) {
                 return failureCount < 3;
               }
-              // For other errors, retry up to 2 times
-              return failureCount < 2;
+              return status !== undefined && status >= 500 && failureCount < 2;
             },
             // Retry delay: exponential backoff starting at 1 second
             retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),

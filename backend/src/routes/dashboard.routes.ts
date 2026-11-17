@@ -5,8 +5,7 @@ import { query } from 'express-validator';
 import rateLimit from 'express-rate-limit';
 import { DashboardController } from '../controllers/DashboardController';
 import { validate } from '../middlewares/validate';
-import { auth } from '../middlewares/auth';
-// import { admin } from '../middlewares/auth'; // uncomment when role middleware is ready
+import { adminRouteGuard } from '../middlewares/adminRouteGuard';
 
 const router = Router();
 
@@ -14,7 +13,11 @@ const router = Router();
 const dashboardLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 30,
-  message: { message: 'Too many dashboard requests, please try again later.' },
+  handler: (_req, res) => {
+    res.status(429).json({
+      error: { code: 'RATE_LIMIT', message: 'Too many dashboard requests. Try again later.' },
+    });
+  },
 });
 
 // ============================================================
@@ -39,8 +42,7 @@ const paginationValidation = [
 // Get main dashboard statistics (overview cards)
 router.get(
   '/stats',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   dateRangeValidation,
   validate,
@@ -50,8 +52,7 @@ router.get(
 // Get revenue analytics
 router.get(
   '/revenue',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   dateRangeValidation,
   validate,
@@ -61,8 +62,7 @@ router.get(
 // Get order analytics (orders by status, etc.)
 router.get(
   '/orders',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   dateRangeValidation,
   validate,
@@ -72,8 +72,7 @@ router.get(
 // Get product analytics (top products, low stock, etc.)
 router.get(
   '/products',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   query('limit').optional().isInt({ min: 1, max: 20 }),
   validate,
@@ -83,8 +82,7 @@ router.get(
 // Get customer analytics (new customers, top customers, etc.)
 router.get(
   '/customers',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   dateRangeValidation,
   paginationValidation,
@@ -95,8 +93,7 @@ router.get(
 // Get sales data over time (for charts)
 router.get(
   '/sales',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   query('interval').optional().isIn(['hourly', 'daily', 'weekly', 'monthly']).withMessage('Invalid interval'),
   dateRangeValidation,
@@ -107,8 +104,7 @@ router.get(
 // Get recent orders (for dashboard widget)
 router.get(
   '/recent-orders',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   query('limit').optional().isInt({ min: 1, max: 20 }),
   validate,
@@ -118,8 +114,7 @@ router.get(
 // Get top products (for dashboard widget)
 router.get(
   '/top-products',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   query('limit').optional().isInt({ min: 1, max: 20 }),
   query('period').optional().isIn(['today', 'week', 'month']),
@@ -130,8 +125,7 @@ router.get(
 // Get inventory alerts (low stock products)
 router.get(
   '/inventory-alerts',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   query('threshold').optional().isInt({ min: 0 }),
   query('limit').optional().isInt({ min: 1, max: 50 }),
@@ -142,8 +136,7 @@ router.get(
 // Get customer acquisition data (new vs returning)
 router.get(
   '/customer-acquisition',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   dateRangeValidation,
   validate,
@@ -153,8 +146,7 @@ router.get(
 // Get order fulfillment metrics (average fulfillment time, etc.)
 router.get(
   '/fulfillment',
-  auth,
-  // admin,
+  adminRouteGuard,
   dashboardLimiter,
   dateRangeValidation,
   validate,

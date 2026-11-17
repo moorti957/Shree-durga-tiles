@@ -40,7 +40,9 @@ interface Product {
   id: string;
   name: string;
   slug: string;
-  price: number;
+  price: number | null;
+  priceUnit?: string;
+  status: 'draft' | 'published';
   images: string[];
   category: { name: string; id: string };
   inStock: boolean;
@@ -62,6 +64,7 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterInStock, setFilterInStock] = useState<'all' | 'in-stock' | 'out-of-stock'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'draft' | 'published'>('all');
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -73,7 +76,7 @@ export default function ProductsPage() {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['admin', 'products', currentPage, limit, sortBy, sortOrder, searchQuery, filterInStock],
+    queryKey: ['admin', 'products', currentPage, limit, sortBy, sortOrder, searchQuery, filterInStock, filterStatus],
     queryFn: () =>
       adminApi.getProducts({
         page: currentPage,
@@ -82,6 +85,7 @@ export default function ProductsPage() {
         sortOrder,
         search: searchQuery || undefined,
         inStock: filterInStock === 'all' ? undefined : filterInStock === 'in-stock',
+        status: filterStatus === 'all' ? undefined : filterStatus,
       }),
   });
 
@@ -165,7 +169,7 @@ export default function ProductsPage() {
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light/50" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light" />
           <Input
             type="text"
             placeholder="Search products by name, category..."
@@ -189,6 +193,19 @@ export default function ProductsPage() {
             <option value="all">All Stock</option>
             <option value="in-stock">In Stock</option>
             <option value="out-of-stock">Out of Stock</option>
+          </select>
+          <select
+            value={filterStatus}
+            onChange={(e) => {
+              setFilterStatus(e.target.value as typeof filterStatus);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-2.5 rounded-xl border border-gold/10 bg-white dark:bg-brown-dark text-black dark:text-black text-sm focus:outline-none focus:ring-2 focus:ring-gold/20"
+            aria-label="Filter products by publication status"
+          >
+            <option value="all">All Publication</option>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
           </select>
           <button
             onClick={() => refetch()}
@@ -224,7 +241,10 @@ export default function ProductsPage() {
                   Category
                 </th>
                 <th className="text-left py-3 px-4 font-medium text-brown-light dark:text-ivory/50 text-xs uppercase tracking-wider">
-                  Status
+                  Stock Status
+                </th>
+                <th className="text-left py-3 px-4 font-medium text-brown-light dark:text-ivory/50 text-xs uppercase tracking-wider">
+                  Publication
                 </th>
                 <th
                   className="text-left py-3 px-4 font-medium text-brown-light dark:text-ivory/50 text-xs uppercase tracking-wider cursor-pointer hover:text-gold-dark transition-colors"
@@ -240,7 +260,7 @@ export default function ProductsPage() {
             <tbody>
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-brown-light dark:text-ivory/40">
+                  <td colSpan={8} className="py-12 text-center text-brown-light dark:text-ivory/40">
                     <Package className="w-12 h-12 mx-auto mb-3 opacity-20" />
                     <p>No products found</p>
                     <Link href="/products/create" className="text-gold-dark hover:text-gold text-sm mt-2 inline-block">
@@ -266,7 +286,7 @@ export default function ProductsPage() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-brown-light/30">
+                            <div className="w-full h-full flex items-center justify-center text-brown-light">
                               <ImageIcon className="w-5 h-5" />
                             </div>
                           )}
@@ -284,7 +304,7 @@ export default function ProductsPage() {
                             </span>
                           )}
                           {product.isNew && (
-                            <span className="ml-1 text-[10px] font-medium text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded">
+                            <span className="ml-1 text-[10px] font-medium text-blue-700 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded">
                               New
                             </span>
                           )}
@@ -292,7 +312,7 @@ export default function ProductsPage() {
                       </div>
                     </td>
                     <td className="py-3 px-4 font-cinzel text-gold-dark dark:text-gold">
-                      {formatPrice(product.price)}
+                      {product.price == null ? 'Quote on request' : `${formatPrice(product.price)}${product.priceUnit ? ` / ${product.priceUnit}` : ''}`}
                     </td>
                     <td className="py-3 px-4 text-black dark:text-black">
                       {product.stockQuantity ?? 0}
@@ -302,6 +322,15 @@ export default function ProductsPage() {
                     </td>
                     <td className="py-3 px-4">
                       <StatusBadge inStock={product.inStock} />
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                        product.status === 'published'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        {product.status === 'published' ? 'Published' : 'Draft'}
+                      </span>
                     </td>
                     <td className="py-3 px-4 text-xs text-black dark:text-black">
                       {formatDate(product.createdAt)}
@@ -317,7 +346,7 @@ export default function ProductsPage() {
                         </Link>
                         <button
                           onClick={() => handleDelete(product)}
-                          className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-brown-light hover:text-red-500"
+                          className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-brown-light hover:text-red-600"
                           aria-label="Delete"
                         >
                           <Trash2 className="w-4 h-4" />

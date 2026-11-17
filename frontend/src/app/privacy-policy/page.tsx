@@ -52,7 +52,7 @@ export default function PrivacyPolicyPage() {
                 Introduction
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                At Pandit Ji Marble Murti Arts (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;), we take your privacy seriously.
+                At Shree Durga Tiles (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;), we take your privacy seriously.
                 This Privacy Policy explains how we collect, use, disclose, and safeguard your information
                 when you visit our website or make a purchase from us.
               </p>
@@ -81,7 +81,7 @@ export default function PrivacyPolicyPage() {
                     <li>Place an order</li>
                     <li>Subscribe to our newsletter</li>
                     <li>Submit a contact form or inquiry</li>
-                    <li>Request a custom murti</li>
+                    <li>Send a product or project inquiry</li>
                     <li>Write a review</li>
                   </ul>
                   <p className="text-brown-light dark:text-ivory/70 text-sm mt-2">
@@ -190,10 +190,10 @@ export default function PrivacyPolicyPage() {
               <p className="text-brown-light dark:text-ivory/70 text-sm mt-3">
                 To exercise these rights, please contact us at{' '}
                 <a
-                  href="mailto:info@panditjimurti.com"
+                  href="mailto:dileepsaini8726@gmail.com"
                   className="text-gold-dark dark:text-gold hover:text-gold transition-colors"
                 >
-                  info@panditjimurti.com
+                  dileepsaini8726@gmail.com
                 </a>
               </p>
             </GlassCard>
@@ -267,8 +267,8 @@ export default function PrivacyPolicyPage() {
                     If you have any questions about this Privacy Policy, please contact us:
                   </p>
                   <div className="mt-2 space-y-1 text-sm text-brown-light dark:text-ivory/70">
-                    <p><strong>Email:</strong> <a href="mailto:info@panditjimurti.com" className="text-gold-dark dark:text-gold hover:text-gold transition-colors">info@panditjimurti.com</a></p>
-                    <p><strong>Phone:</strong> <a href="tel:+917240364772" className="text-gold-dark dark:text-gold hover:text-gold transition-colors">+91 72403 64772</a></p>
+                    <p><strong>Email:</strong> <a href="mailto:dileepsaini8726@gmail.com" className="text-gold-dark dark:text-gold hover:text-gold transition-colors">dileepsaini8726@gmail.com</a></p>
+                    <p><strong>Phone:</strong> <a href="tel:+918529388726" className="text-gold-dark dark:text-gold hover:text-gold transition-colors">+91 72403 64772</a></p>
                     <p><strong>Address:</strong> 123, Murti Marg, govindgarh, Rajasthan 302001, India</p>
                   </div>
                 </div>

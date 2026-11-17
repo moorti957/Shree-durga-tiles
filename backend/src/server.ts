@@ -6,14 +6,10 @@ import dotenv from 'dotenv';
 import { Server as SocketIOServer } from 'socket.io';
 import { setSocketServer } from './utils/socket';
 import { logger } from './utils/logger';
+import { allowedOrigins, HOST, PORT } from './config/network';
 
 // Load environment variables
 dotenv.config();
-
-const PORT = Number(process.env.PORT || 5000);
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:3000', 'http://localhost:3001'];
 
 const server = http.createServer(app);
 
@@ -45,10 +41,10 @@ io.on('connection', (socket) => {
 /**
  * Start the server
  */
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`🚀 Server listening on ${HOST}:${PORT}`);
   console.log(`📚 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log(`🔗 Health check: /api/health`);
 });
 
 /**

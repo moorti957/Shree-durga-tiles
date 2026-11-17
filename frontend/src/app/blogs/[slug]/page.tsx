@@ -35,13 +35,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = await blogApi.getBySlug(slug).catch(() => null);
   if (!post) {
     return {
-      title: 'Blog Post Not Found | Pandit Ji Marble Murti Arts',
+      title: 'Article Not Found | Shree Durga Tiles',
     };
   }
 
   return {
-    title: `${post.title} | Pandit Ji Marble Murti Arts Blog`,
-    description: post.excerpt || `Read about ${post.title} on our divine blog.`,
+    title: `${post.title} | Shree Durga Tiles Journal`,
+    description: post.excerpt || `Read ${post.title} from Shree Durga Tiles.`,
     keywords: post.tags?.join(', ') || '',
     openGraph: {
       title: post.title,

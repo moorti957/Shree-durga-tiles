@@ -11,6 +11,7 @@
     message?: string;
     data: T;
     errors?: any;
+    meta?: { page: number; limit: number; total: number; pages: number };
   }
 
   export interface PaginatedResponse<T> {
@@ -24,11 +25,54 @@
   // ============================================================
   // API Client Setup
   // ============================================================
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  const isPrivateOrLocalHostname = (hostname: string): boolean => {
+    const host = hostname.replace(/^\[|\]$/g, '').toLowerCase();
+    if (host === 'localhost' || host.endsWith('.localhost') || host.endsWith('.local')) return true;
+    if (host === '::1' || host.startsWith('fc') || host.startsWith('fd') || host.startsWith('fe80:')) return true;
+    const octets = host.split('.').map(Number);
+    if (octets.length !== 4 || !octets.every((octet) => Number.isInteger(octet) && octet >= 0 && octet <= 255)) {
+      return false;
+    }
+    const [first, second] = octets;
+    return first === 0 || first === 10 || first === 127 ||
+      (first === 169 && second === 254) ||
+      (first === 172 && second >= 16 && second <= 31) ||
+      (first === 192 && second === 168) ||
+      (first === 100 && second >= 64 && second <= 127);
+  };
+
+  const getApiBaseUrl = (): string => {
+    const configuredUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+    const baseUrl = configuredUrl || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000/api' : '');
+    if (!baseUrl) {
+      throw new Error('NEXT_PUBLIC_API_URL is required. Configure the public HTTPS backend URL for this deployment.');
+    }
+
+    let url: URL;
+    try {
+      url = new URL(baseUrl);
+    } catch {
+      throw new Error('NEXT_PUBLIC_API_URL must be an absolute HTTP(S) URL ending in /api.');
+    }
+    if (!['http:', 'https:'].includes(url.protocol) || !url.pathname.replace(/\/+$/, '').endsWith('/api')) {
+      throw new Error('NEXT_PUBLIC_API_URL must be an HTTP(S) URL ending in /api.');
+    }
+    if (url.username || url.password) {
+      throw new Error('NEXT_PUBLIC_API_URL must not contain embedded credentials.');
+    }
+    if (process.env.NODE_ENV === 'production' &&
+      (url.protocol !== 'https:' || isPrivateOrLocalHostname(url.hostname))) {
+      throw new Error('Production NEXT_PUBLIC_API_URL must use HTTPS and a public hostname.');
+    }
+    return baseUrl.replace(/\/+$/, '');
+  };
+
+  const BASE_URL = getApiBaseUrl();
   const TOKEN_KEY = 'panditji-admin-token';
+  const REFRESH_TOKEN_KEY = 'panditji-admin-refresh-token';
 
   // Create axios instance
-  const apiClient: AxiosInstance = axios.create({
+  export const apiClient: AxiosInstance = axios.create({
     baseURL: BASE_URL,
     timeout: 30000,
     headers: {
@@ -50,9 +94,20 @@
     localStorage.setItem(TOKEN_KEY, token);
   };
 
+  const getRefreshToken = (): string | null => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem(REFRESH_TOKEN_KEY);
+  };
+
+  const setRefreshToken = (token: string): void => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(REFRESH_TOKEN_KEY, token);
+  };
+
   const removeToken = (): void => {
     if (typeof window === 'undefined') return;
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
   };
 
   // ============================================================
@@ -72,21 +127,36 @@
   // ============================================================
   // Response Interceptor
   // ============================================================
+  let refreshPromise: Promise<string> | null = null;
+
   apiClient.interceptors.response.use(
     (response: AxiosResponse) => {
       // Return the data directly (API always returns { success, data, message })
       return response;
     },
     async (error) => {
-      const originalRequest = error.config;
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      const originalRequest = error.config as
+        | (InternalAxiosRequestConfig & { _retry?: boolean })
+        | undefined;
+      const authUrl = originalRequest?.url?.split('?')[0];
+      const isAuthRequest =
+        authUrl === '/admin/auth/login' || authUrl === '/admin/auth/refresh';
+      if (error.response?.status === 401 && originalRequest && !originalRequest._retry && !isAuthRequest) {
         originalRequest._retry = true;
-        // Token expired – logout and redirect to login
-        removeToken();
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
+        try {
+          if (!refreshPromise) {
+            refreshPromise = authApi.refreshToken().finally(() => {
+              refreshPromise = null;
+            });
+          }
+          const accessToken = await refreshPromise;
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          return apiClient.request(originalRequest);
+        } catch {
+          removeToken();
+          if (typeof window !== 'undefined') window.location.href = '/login';
+          return Promise.reject(error);
         }
-        return Promise.reject(error);
       }
       return Promise.reject(error);
     }
@@ -123,6 +193,7 @@
       isNew: product.isNewProduct ?? product.isNew ?? false,
       isActive: product.isActive ?? true,
       inStock: product.inStock ?? (product.stockQuantity > 0),
+      status: product.status ?? 'published',
     };
   };
 
@@ -134,77 +205,51 @@
   // ============================================================
   export const authApi = {
     login: async (
-      email: string,
+      identifier: string,
       password: string
     ): Promise<{ user: any; accessToken: string }> => {
-      console.log("========== LOGIN API ==========");
-
       const response = await apiClient.post<
-        ApiResponse<{ user: any; accessToken: string }>
-      >("/auth/login", {
-        email,
+        ApiResponse<{
+          admin: { id: string; name: string; identifier: string; role: string };
+          accessToken: string;
+          refreshToken: string;
+        }>
+      >('/admin/auth/login', {
+        identifier,
         password,
       });
-
-      console.log("Login Response:", response.data);
-
       const data = extractData(response);
-
-      console.log("Access Token:", data.accessToken);
-      console.log("User:", data.user);
-
-      if (data.accessToken) {
-        setToken(data.accessToken);
-        console.log("✅ Token saved in LocalStorage");
-      } else {
-        console.log("❌ No access token received");
-      }
-
-      console.log("===============================");
-
-      return data;
+      setToken(data.accessToken);
+      setRefreshToken(data.refreshToken);
+      return {
+        accessToken: data.accessToken,
+        user: { ...data.admin, email: data.admin.identifier },
+      };
     },
 
     logout: async (): Promise<void> => {
       try {
-        await apiClient.post("/auth/logout");
+        await apiClient.post('/admin/auth/logout');
       } finally {
         removeToken();
-        console.log("✅ Token removed");
       }
     },
 
     getMe: async (): Promise<any> => {
-      console.count("GET ME API");
-
-      const token = getToken();
-
-      console.log("========== GET ME ==========");
-      console.log("Stored Token:", token);
-
-      const response = await apiClient.get<ApiResponse<any>>("/auth/me");
-
-      console.log("GET ME Response:", response.data);
-      console.log("============================");
-
-      return extractData(response);
+      const response = await apiClient.get<ApiResponse<{ admin: any }>>('/admin/auth/me');
+      const { admin } = extractData(response);
+      return { ...admin, email: admin.identifier };
     },
 
     refreshToken: async (): Promise<string> => {
-      console.log("========== REFRESH TOKEN ==========");
-
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) throw new Error('Admin refresh token is unavailable.');
       const response = await apiClient.post<
-        ApiResponse<{ accessToken: string }>
-      >("/auth/refresh-token");
-
+        ApiResponse<{ accessToken: string; refreshToken: string }>
+      >('/admin/auth/refresh', { refreshToken });
       const data = extractData(response);
-
-      console.log("New Token:", data.accessToken);
-
       setToken(data.accessToken);
-
-      console.log("===================================");
-
+      setRefreshToken(data.refreshToken);
       return data.accessToken;
     },
   };
@@ -214,30 +259,20 @@
   // ============================================================
   export const dashboardApi = {
     getStats: async (period?: string): Promise<any> => {
-      const response = await apiClient.get<ApiResponse<any>>('/dashboard/stats', { params: { period } });
-      const payload = extractData(response);
-
-      return {
-        totalRevenue: payload?.revenue?.total ?? 0,
-        totalOrders: payload?.orders?.total ?? 0,
-        totalProducts: payload?.products?.total ?? 0,
-        totalCustomers: payload?.customers?.total ?? 0,
-        revenueChange: 0,
-        ordersChange: 0,
-        productsChange: 0,
-        customersChange: 0,
-        raw: payload,
-      };
+      void period;
+      const response = await apiClient.get<ApiResponse<any>>('/admin/dashboard');
+      return extractData(response);
     },
 
     getRevenueData: async (period?: string): Promise<any> => {
-      const response = await apiClient.get<ApiResponse<any>>('/dashboard/revenue', { params: { period } });
+      void period;
+      const response = await apiClient.get<ApiResponse<any>>('/admin/analytics/visitors');
       return extractData(response);
     },
 
     getRecentOrders: async (limit: number = 5): Promise<any[]> => {
-      const response = await apiClient.get<ApiResponse<any[]>>('/dashboard/recent-orders', { params: { limit } });
-      return extractData(response);
+      const response = await apiClient.get<ApiResponse<any[]>>('/admin/enquiries', { params: { limit } });
+      return response.data.data;
     },
   };
 
@@ -246,21 +281,24 @@
   // ============================================================
   export const productApi = {
     getProducts: async (params?: any): Promise<PaginatedResponse<any>> => {
-      const response = await apiClient.get<ApiResponse<any>>('/products', { params });
-      const payload = extractData(response);
-      const products = normalizeProductList(payload?.products || payload?.data || []);
+      const { search, sortBy, sortOrder, ...query } = params || {};
+      const response = await apiClient.get<ApiResponse<any[]>>('/admin/products', {
+        params: { ...query, q: search, sortBy, sortOrder },
+      });
+      const products = normalizeProductList(response.data.data || []);
+      const meta = response.data.meta;
 
       return {
         data: products,
-        total: payload?.total ?? products.length,
-        page: payload?.page ?? 1,
-        limit: payload?.limit ?? products.length,
-        totalPages: payload?.totalPages ?? 1,
+        total: meta?.total ?? products.length,
+        page: meta?.page ?? 1,
+        limit: meta?.limit ?? products.length,
+        totalPages: meta?.pages ?? 1,
       };
     },
 
     getProduct: async (id: string): Promise<any> => {
-      const response = await apiClient.get<ApiResponse<any>>(`/products/id/${id}`);
+      const response = await apiClient.get<ApiResponse<any>>(`/admin/products/${id}`);
       return normalizeProduct(extractData(response));
     },
 
@@ -270,24 +308,8 @@
         isNewProduct: data?.isNewProduct ?? data?.isNew ?? false,
         isNew: undefined,
       };
-
-      console.log("PAYLOAD =>", payload);
-
-      try {
-        const response = await apiClient.post<ApiResponse<any>>(
-          "/products",
-          payload
-        );
-
-        return normalizeProduct(extractData(response));
-      } catch (error: any) {
-        console.log("STATUS =>", error.response?.status);
-        console.log("ERROR DATA =>", error.response?.data);
-        console.log("ERRORS =>", error.response?.data?.errors);
-        console.log("DETAILS =>", error.response?.data?.details);
-
-        throw error;
-      }
+      const response = await apiClient.post<ApiResponse<any>>('/admin/products', payload);
+      return normalizeProduct(extractData(response));
     },
 
     updateProduct: async (id: string, data: any): Promise<any> => {
@@ -296,12 +318,12 @@
         isNewProduct: data?.isNewProduct ?? data?.isNew ?? false,
         isNew: undefined,
       };
-      const response = await apiClient.put<ApiResponse<any>>(`/products/${id}`, payload);
+      const response = await apiClient.patch<ApiResponse<any>>(`/admin/products/${id}`, payload);
       return normalizeProduct(extractData(response));
     },
 
     deleteProduct: async (id: string): Promise<void> => {
-      await apiClient.delete(`/products/${id}`);
+      await apiClient.delete(`/admin/products/${id}`);
     },
 
     bulkDeleteProducts: async (ids: string[]): Promise<void> => {
@@ -324,11 +346,16 @@
     },
 
     uploadImages: async (formData: FormData): Promise<string[]> => {
-      const response = await apiClient.post<ApiResponse<{ images: Array<{ url: string; publicId?: string }> }>>('/products/upload-images', formData, {
+      const uploadData = new FormData();
+      formData.forEach((value, key) => {
+        if (key === 'images' || key === 'files') uploadData.append('files', value);
+      });
+      uploadData.append('folder', 'products');
+      const response = await apiClient.post<ApiResponse<Array<{ url: string }>>>('/admin/uploads/multiple', uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       const payload = extractData(response);
-      return (payload.images || []).map((item: any) => item.url || item);
+      return (payload || []).map((item) => item.url);
     },
   };
 
@@ -337,59 +364,60 @@
   // ============================================================
   export const categoryApi = {
     getCategories: async (params?: any): Promise<PaginatedResponse<any>> => {
-      const response = await apiClient.get<ApiResponse<any>>('/categories', { params });
-      const payload = extractData(response);
-      const categories = payload?.categories || payload?.data || [];
+      const { search, ...query } = params || {};
+      const response = await apiClient.get<ApiResponse<any[]>>('/admin/categories', {
+        params: { ...query, limit: Math.min(Number(query.limit) || 20, 100), q: search },
+      });
+      const categories = response.data.data || [];
+      const meta = response.data.meta;
 
       return {
         data: categories,
-        total: payload?.total ?? categories.length,
-        page: payload?.page ?? 1,
-        limit: payload?.limit ?? categories.length,
-        totalPages: payload?.totalPages ?? 1,
+        total: meta?.total ?? categories.length,
+        page: meta?.page ?? 1,
+        limit: meta?.limit ?? categories.length,
+        totalPages: meta?.pages ?? 1,
       };
     },
 
     uploadImage: async (formData: FormData): Promise<string[]> => {
-      const response = await apiClient.post<
-        ApiResponse<{ images: string[] }>
-      >(
-        "/products/upload-images",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+      const uploadData = new FormData();
+      formData.forEach((value, key) => {
+        if (key === 'images' || key === 'files') uploadData.append('files', value);
+      });
+      uploadData.append('folder', 'categories');
+      const response = await apiClient.post<ApiResponse<Array<{ url: string }>>>(
+        '/admin/uploads/multiple',
+        uploadData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
       const payload = extractData(response);
 
-      return payload.images || [];
+      return (payload || []).map((item) => item.url);
     },
 
     getCategoryTree: async (): Promise<any[]> => {
-      const response = await apiClient.get<ApiResponse<any[]>>('/categories/tree');
-      return extractData(response);
+      return (await categoryApi.getCategories({ limit: 100 })).data;
     },
 
     getCategory: async (id: string): Promise<any> => {
-      const response = await apiClient.get<ApiResponse<any>>(`/categories/${id}`);
+      const response = await apiClient.get<ApiResponse<any>>(`/admin/categories/${id}`);
       return extractData(response);
     },
 
     createCategory: async (data: any): Promise<any> => {
-      const response = await apiClient.post<ApiResponse<any>>('/categories', data);
+      const response = await apiClient.post<ApiResponse<any>>('/admin/categories', data);
       return extractData(response);
     },
 
     updateCategory: async (id: string, data: any): Promise<any> => {
-      const response = await apiClient.put<ApiResponse<any>>(`/categories/${id}`, data);
+      const response = await apiClient.patch<ApiResponse<any>>(`/admin/categories/${id}`, data);
       return extractData(response);
     },
 
     deleteCategory: async (id: string): Promise<void> => {
-      await apiClient.delete(`/categories/${id}`);
+      await apiClient.delete(`/admin/categories/${id}`);
     },
 
     toggleFeatured: async (id: string): Promise<any> => {
@@ -506,37 +534,144 @@
   // ============================================================
   export const settingsApi = {
     getSettings: async (): Promise<any> => {
-      const response = await apiClient.get<ApiResponse<any>>("/settings");
-      return extractData(response);
+      const response = await apiClient.get<ApiResponse<any>>('/admin/settings');
+      const settings = extractData(response);
+      return {
+        ...settings,
+        storeName: settings.shopName || settings.storeName,
+        storeEmail: settings.email || settings.storeEmail,
+        storePhone: settings.phone || settings.storePhone,
+        storeAddress: settings.address || settings.storeAddress,
+        storeDescription: settings.aboutText || settings.storeDescription,
+        taxRate: settings.defaultGstRate ?? settings.gstPercentage ?? settings.taxRate,
+        facebook: settings.social?.facebook || settings.socialLinks?.facebook || '',
+        instagram: settings.social?.instagram || settings.socialLinks?.instagram || '',
+        youtube: settings.social?.youtube || settings.socialLinks?.youtube || '',
+        twitter: settings.social?.twitter || settings.socialLinks?.twitter || '',
+        metaTitle: settings.seo?.metaTitle || '',
+        metaDescription: settings.seo?.metaDescription || '',
+        metaKeywords: settings.seo?.metaKeywords || '',
+        googleAnalyticsId: settings.seo?.googleAnalyticsId || '',
+        contactEmail: settings.email || settings.contact?.email || '',
+        contactPhone: settings.phone || settings.contact?.phone || '',
+        contactAddress: settings.address || settings.contact?.address || '',
+        whatsappNumber: settings.whatsapp || settings.contact?.whatsapp || '',
+      };
     },
 
     updateStoreSettings: async (data: any): Promise<any> => {
-      const response = await apiClient.put<ApiResponse<any>>("/settings/store", data);
+      const response = await apiClient.patch<ApiResponse<any>>('/admin/settings', {
+        shopName: data.storeName,
+        email: data.storeEmail,
+        phone: data.storePhone,
+        address: data.storeAddress,
+        aboutText: data.storeDescription,
+      });
       return extractData(response);
     },
 
     updatePaymentSettings: async (data: any): Promise<any> => {
-      const response = await apiClient.put<ApiResponse<any>>("/settings/payment", data);
+      const response = await apiClient.patch<ApiResponse<any>>('/admin/settings', {
+        defaultGstRate: data.taxRate,
+        gstin: data.gstin,
+        upiId: data.upiId,
+        invoicePrefix: data.invoicePrefix,
+        invoiceTerms: data.invoiceTerms,
+        invoiceFooterNote: data.invoiceFooterNote,
+        qrMode: data.qrMode,
+      });
       return extractData(response);
     },
 
     updateShippingSettings: async (data: any): Promise<any> => {
-      const response = await apiClient.put<ApiResponse<any>>("/settings/shipping", data);
+      const response = await apiClient.patch<ApiResponse<any>>('/admin/settings', data);
       return extractData(response);
     },
 
     updateSocialSettings: async (data: any): Promise<any> => {
-      const response = await apiClient.put<ApiResponse<any>>("/settings/social", data);
+      const response = await apiClient.patch<ApiResponse<any>>('/admin/settings', { social: data });
       return extractData(response);
     },
 
     updateSEOSettings: async (data: any): Promise<any> => {
-      const response = await apiClient.put<ApiResponse<any>>("/settings/seo", data);
+      const response = await apiClient.patch<ApiResponse<any>>('/admin/settings', {
+        seo: {
+          metaTitle: data.metaTitle,
+          metaDescription: data.metaDescription,
+          metaKeywords: data.metaKeywords,
+          googleAnalyticsId: data.googleAnalyticsId,
+        },
+      });
       return extractData(response);
     },
 
     updateContactSettings: async (data: any): Promise<any> => {
-      const response = await apiClient.put<ApiResponse<any>>("/settings/contact", data);
+      const response = await apiClient.patch<ApiResponse<any>>('/admin/settings', {
+        email: data.contactEmail,
+        phone: data.contactPhone,
+        address: data.contactAddress,
+        whatsapp: data.whatsappNumber,
+      });
+      return extractData(response);
+    },
+  };
+
+  export const enquiryApi = {
+    getEnquiries: async (params?: any): Promise<PaginatedResponse<any>> => {
+      const { search, ...query } = params || {};
+      const response = await apiClient.get<ApiResponse<any[]>>('/admin/enquiries', {
+        params: { ...query, q: search },
+      });
+      const items = response.data.data || [];
+      const meta = response.data.meta;
+      return {
+        data: items,
+        total: meta?.total ?? items.length,
+        page: meta?.page ?? 1,
+        limit: meta?.limit ?? items.length,
+        totalPages: meta?.pages ?? 1,
+      };
+    },
+    updateEnquiry: async (id: string, data: { status?: string; adminNote?: string }): Promise<any> => {
+      const response = await apiClient.patch<ApiResponse<any>>(`/admin/enquiries/${id}`, data);
+      return extractData(response);
+    },
+  };
+
+  export const visitorApi = {
+    getVisitors: async (params?: any): Promise<PaginatedResponse<any>> => {
+      const response = await apiClient.get<ApiResponse<any[]>>('/admin/visitors', { params });
+      const items = response.data.data || [];
+      const meta = response.data.meta;
+      return {
+        data: items,
+        total: meta?.total ?? items.length,
+        page: meta?.page ?? 1,
+        limit: meta?.limit ?? items.length,
+        totalPages: meta?.pages ?? 1,
+      };
+    },
+    getAnalytics: async (params?: any): Promise<any> => {
+      const response = await apiClient.get<ApiResponse<any>>('/admin/analytics/visitors', { params });
+      return extractData(response);
+    },
+  };
+
+  export const billApi = {
+    getBills: async (params?: any): Promise<PaginatedResponse<any>> => {
+      const response = await apiClient.get<ApiResponse<any[]>>('/admin/bills', { params });
+      const items = response.data.data || [];
+      const meta = response.data.meta;
+      return {
+        data: items,
+        total: meta?.total ?? items.length,
+        page: meta?.page ?? 1,
+        limit: meta?.limit ?? items.length,
+        totalPages: meta?.pages ?? 1,
+      };
+    },
+    getBill: async (id: string): Promise<any> => {
+      const response = await apiClient.get<ApiResponse<any>>(`/admin/bills/${id}`);
       return extractData(response);
     },
   };
@@ -837,6 +972,9 @@
     orders: orderApi,
     users: userApi,
     settings: settingsApi,
+    enquiries: enquiryApi,
+    visitors: visitorApi,
+    bills: billApi,
     gallery: galleryApi,
     banners: bannerApi,
     testimonials: testimonialApi,
@@ -905,6 +1043,12 @@
   (adminApi as any).getDashboardStats = (period?: string) => (adminApi as any).dashboard.getStats(period);
   (adminApi as any).getRecentOrders = (limit?: number) => (adminApi as any).dashboard.getRecentOrders(limit);
   (adminApi as any).getRevenueData = (period?: string) => (adminApi as any).dashboard.getRevenueData(period);
+  (adminApi as any).getEnquiries = (params?: any) => (adminApi as any).enquiries.getEnquiries(params);
+  (adminApi as any).updateEnquiry = (id: string, data: any) => (adminApi as any).enquiries.updateEnquiry(id, data);
+  (adminApi as any).getVisitors = (params?: any) => (adminApi as any).visitors.getVisitors(params);
+  (adminApi as any).getVisitorAnalytics = (params?: any) => (adminApi as any).visitors.getAnalytics(params);
+  (adminApi as any).getBills = (params?: any) => (adminApi as any).bills.getBills(params);
+  (adminApi as any).getBill = (id: string) => (adminApi as any).bills.getBill(id);
 
   // ============================================================
   // Default export

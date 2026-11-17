@@ -2,7 +2,6 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, A11y } from 'swiper/modules';
@@ -40,8 +39,8 @@ interface FeaturedCategoriesProps {
 // ============================================================
 export function FeaturedCategories({
   categories,
-  title = 'Browse by Deity',
-  subtitle = 'Choose from our collection of divine forms, each crafted with precision and love.',
+  title = 'Shop by Stone',
+  subtitle = 'Explore materials and finishes for every room and project.',
   viewAllLink = '/categories',
   viewAllLabel = 'View All Categories',
   displayMode = 'grid',
@@ -50,12 +49,6 @@ export function FeaturedCategories({
   className,
   loading = false,
 }: FeaturedCategoriesProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   // Responsive breakpoints for Swiper
   const breakpoints = {
     320: { slidesPerView: 1.2, spaceBetween: 12 },
@@ -143,7 +136,7 @@ export function FeaturedCategories({
             <div className="lg:col-span-2">
               <div className="grid grid-cols-2 gap-4 md:gap-6">
                 {rest.map((category) => (
-                  <div key={category.id}>
+                  <div key={category.id || category.slug}>
                     <CategoryCard category={category} variant="default" />
                   </div>
                 ))}
@@ -211,7 +204,7 @@ export function FeaturedCategories({
               className="!overflow-visible"
             >
               {categories.map((category) => (
-                <SwiperSlide key={category.id}>
+                <SwiperSlide key={category.id || category.slug}>
                   <div className="h-full">
                     <CategoryCard category={category} variant="default" />
                   </div>
@@ -220,7 +213,7 @@ export function FeaturedCategories({
             </Swiper>
 
             {/* Custom Navigation Buttons */}
-            {isMounted && categories.length > (slidesPerView || 4) && (
+            {categories.length > (slidesPerView || 4) && (
               <>
                 <button
                   className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-1/2 md:-translate-x-4 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-brown-dark shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-brown dark:text-ivory hover:text-gold-dark dark:hover:text-gold border border-gold/10"
@@ -246,7 +239,7 @@ export function FeaturedCategories({
             margin-top: 24px;
           }
           .swiper-pagination-bullet {
-            background: #D4AF37;
+            background: #FF0000;
             opacity: 0.3;
             width: 8px;
             height: 8px;
@@ -257,7 +250,7 @@ export function FeaturedCategories({
             opacity: 1;
             width: 24px;
             border-radius: 4px;
-            background: #D4AF37;
+            background: #FF0000;
           }
           .swiper-button-prev-custom,
           .swiper-button-next-custom {
@@ -312,7 +305,7 @@ export function FeaturedCategories({
         {/* Grid */}
         <div className={cn('grid gap-4 md:gap-6', columnClasses[columns])}>
           {categories.map((category) => (
-            <div key={category.id}>
+            <div key={category.id || category.slug}>
               <CategoryCard category={category} variant="default" />
             </div>
           ))}
@@ -347,7 +340,7 @@ export function CompactFeaturedCategories({
       </h3>
       <div className="space-y-1">
         {displayCategories.map((category) => (
-          <CategoryCard key={category.id} category={category} variant="compact" />
+          <CategoryCard key={category.id || category.slug} category={category} variant="compact" />
         ))}
         {categories.length > maxItems && (
           <Link

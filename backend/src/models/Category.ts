@@ -24,6 +24,10 @@ export interface ICategory extends Document {
   displayOrder: number;
   isActive: boolean;
   isFeatured: boolean;
+  sortOrder: number;
+  isVisible: boolean;
+  showInHeroStrip: boolean;
+  deletedAt?: Date;
   seo?: ICategorySEO;
   createdAt: Date;
   updatedAt: Date;
@@ -97,9 +101,25 @@ const CategorySchema = new Schema<ICategory>(
       type: Number,
       default: 0,
     },
+    sortOrder: {
+      type: Number,
+      default: 0,
+    },
     isActive: {
       type: Boolean,
       default: true,
+    },
+    isVisible: {
+      type: Boolean,
+      default: true,
+    },
+    showInHeroStrip: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
     },
     isFeatured: {
       type: Boolean,
@@ -123,6 +143,8 @@ CategorySchema.index({ parentId: 1 });
 CategorySchema.index({ isActive: 1 });
 CategorySchema.index({ isFeatured: 1 });
 CategorySchema.index({ displayOrder: 1, name: 1 });
+CategorySchema.index({ isVisible: 1, sortOrder: 1 });
+CategorySchema.index({ deletedAt: 1 });
 CategorySchema.index({ ancestors: 1 });
 CategorySchema.index({ name: 'text' });
 

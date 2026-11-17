@@ -294,7 +294,7 @@ export default function CategoriesPage() {
 
       {/* Search */}
       <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light/50" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light" />
         <Input
           type="text"
           placeholder="Search categories..."
@@ -390,7 +390,7 @@ export default function CategoriesPage() {
           {category.isFeatured ? (
             <Check className="w-4 h-4 text-gold mx-auto" />
           ) : (
-            <span className="text-gray-400">—</span>
+            <span className="text-gray-500">—</span>
           )}
         </td>
 
@@ -422,7 +422,7 @@ export default function CategoriesPage() {
 
             <button
               onClick={() => handleDelete(category)}
-              className="p-1.5 rounded-lg hover:bg-red-50 transition-colors text-black dark:text-black hover:text-red-500"
+              className="p-1.5 rounded-lg hover:bg-red-50 transition-colors text-black dark:text-black hover:text-red-600"
               aria-label="Delete"
             >
               <Trash2 className="w-4 h-4" />
@@ -484,7 +484,7 @@ export default function CategoriesPage() {
               placeholder="Category name"
               className={errors.name ? 'border-red-400' : ''}
             />
-            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+            {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name.message}</p>}
           </div>
 
           <div>
@@ -529,7 +529,7 @@ export default function CategoriesPage() {
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="text-sm text-red-500 hover:text-red-600"
+                      className="text-sm text-red-600 hover:text-red-600"
                     >
                       Remove image
                     </button>

@@ -10,10 +10,13 @@ export interface IBanner extends Document {
   title: string;
   subtitle?: string;
   image: string;
+  alt?: string;
+  kind: 'hero_arch' | 'granite_overlay' | 'banner';
   link?: string;
   buttonText?: string;
   displayOrder: number;
   isActive: boolean;
+  isVisible: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,6 +43,12 @@ const BannerSchema = new Schema<IBanner>(
       required: true,
       trim: true,
     },
+    alt: { type: String, trim: true, maxlength: 200 },
+    kind: {
+      type: String,
+      enum: ['hero_arch', 'granite_overlay', 'banner'],
+      default: 'banner',
+    },
     link: {
       type: String,
       trim: true,
@@ -57,6 +66,7 @@ const BannerSchema = new Schema<IBanner>(
       type: Boolean,
       default: true,
     },
+    isVisible: { type: Boolean, default: true },
   },
   {
     timestamps: true,

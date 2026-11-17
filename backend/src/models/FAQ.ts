@@ -10,7 +10,9 @@ export interface IFAQ extends Document {
   question: string;
   answer: string;
   displayOrder: number;
+  sortOrder: number;
   isActive: boolean;
+  isVisible: boolean;
   category?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -37,10 +39,12 @@ const FAQSchema = new Schema<IFAQ>(
       type: Number,
       default: 0,
     },
+    sortOrder: { type: Number, default: 0 },
     isActive: {
       type: Boolean,
       default: true,
     },
+    isVisible: { type: Boolean, default: true },
     category: {
       type: String,
       trim: true,
@@ -58,6 +62,7 @@ const FAQSchema = new Schema<IFAQ>(
 // ============================================================
 
 FAQSchema.index({ isActive: 1, displayOrder: 1 });
+FAQSchema.index({ isVisible: 1, sortOrder: 1 });
 FAQSchema.index({ category: 1, isActive: 1 });
 
 // ============================================================

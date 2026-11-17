@@ -148,7 +148,7 @@ export function CategoryForm({
           className={errors.name ? 'border-red-400' : ''}
         />
         {errors.name && (
-          <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+          <p className="text-xs text-red-600 mt-1">{errors.name.message}</p>
         )}
       </div>
 
@@ -158,7 +158,7 @@ export function CategoryForm({
           Slug
         </label>
         <Input {...register('slug')} placeholder="auto-generated if empty" />
-        <p className="text-xs text-brown-light/60 mt-1">
+        <p className="text-xs text-brown-light mt-1">
           Leave blank to auto-generate from name
         </p>
       </div>
@@ -212,7 +212,7 @@ export function CategoryForm({
           type="number"
           placeholder="0"
         />
-        <p className="text-xs text-brown-light/60 mt-1">
+        <p className="text-xs text-brown-light mt-1">
           Lower numbers appear first
         </p>
       </div>

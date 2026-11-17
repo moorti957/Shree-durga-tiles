@@ -21,13 +21,6 @@ interface StatsSectionProps {
   loading?: boolean;
 }
 
-const defaultStats: StatItem[] = [
-  { id: 'years', icon: '', value: 35, label: 'Years of Craftsmanship', suffix: '+' },
-  { id: 'murtis', icon: '', value: 15000, label: 'Murtis Created', suffix: '+' },
-  { id: 'temples', icon: '', value: 350, label: 'Temple Projects', suffix: '+' },
-  { id: 'devotees', icon: '', value: 12000, label: 'Happy Devotees', suffix: '+' },
-];
-
 function AnimatedCounter({
   value,
   suffix = '',
@@ -67,9 +60,9 @@ function AnimatedCounter({
 }
 
 export default function StatsSection({
-  stats = defaultStats,
-  title = 'Our Legacy in Numbers',
-  subtitle = 'Decades of devotion, thousands of divine creations.',
+  stats = [],
+  title = 'Our work in numbers',
+  subtitle = 'A snapshot of our latest store activity.',
   className,
   loading = false,
 }: StatsSectionProps) {

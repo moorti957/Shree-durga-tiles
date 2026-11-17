@@ -51,6 +51,7 @@ export interface ISetting extends Document {
     metaDescription: string;
     metaKeywords: string;
     googleAnalyticsId: string;
+    ogImage: string;
   };
 
   // Contact
@@ -64,6 +65,36 @@ export interface ISetting extends Document {
   giftWrapCharge: number;
   advancePaymentPercent: number;
   advancePaymentPercentage: number;
+  shopName: string;
+  tagline: string;
+  phone: string;
+  whatsapp: string;
+  email: string;
+  address: string;
+  mapLink?: string;
+  timings: string;
+  topBarText: string;
+  gstin: string;
+  upiId: string;
+  invoicePrefix: string;
+  nextBillNumber: number;
+  defaultGstRate: number;
+  invoiceTerms: string;
+  invoiceFooterNote: string;
+  logo: string;
+  stats: {
+    yearsExperience: number;
+    happyCustomers: number;
+    projectsSupplied: number;
+  };
+  heroHeadline: string;
+  heroSubtext: string;
+  featuredProductId?: mongoose.Types.ObjectId;
+  aboutText: string;
+  aboutImage: string;
+  social: Map<string, string>;
+  qrMode: 'upi' | 'verification';
+  analyticsNotice: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -71,28 +102,28 @@ export interface ISetting extends Document {
 const SettingSchema = new Schema<ISetting>(
   {
     // Store
-    storeName: { type: String, default: 'Pandit Ji Marble' },
-    storeEmail: { type: String, default: 'support@panditjimarble.com' },
-    storePhone: { type: String, default: '+91-9876543210' },
-    storeAddress: { type: String, default: 'govindgarh, Rajasthan, India' },
+    storeName: { type: String, default: 'Shree Durga Tiles' },
+    storeEmail: { type: String, default: '' },
+    storePhone: { type: String, default: '' },
+    storeAddress: { type: String, default: 'Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.' },
     storeDescription: { type: String, default: '' },
     currency: { type: String, default: 'INR' },
 
     // Payment
     taxRate: { type: Number, default: 18 },
     gstPercentage: { type: Number, default: 18 },
-    codEnabled: { type: Boolean, default: true },
+    codEnabled: { type: Boolean, default: false },
     codFee: { type: Number, default: 0 },
-    upiEnabled: { type: Boolean, default: true },
-    cardEnabled: { type: Boolean, default: true },
-    walletEnabled: { type: Boolean, default: true },
-    netBankingEnabled: { type: Boolean, default: true },
+    upiEnabled: { type: Boolean, default: false },
+    cardEnabled: { type: Boolean, default: false },
+    walletEnabled: { type: Boolean, default: false },
+    netBankingEnabled: { type: Boolean, default: false },
     paymentMethods: {
-      cod: { type: Boolean, default: true },
-      upi: { type: Boolean, default: true },
-      card: { type: Boolean, default: true },
-      wallet: { type: Boolean, default: true },
-      netBanking: { type: Boolean, default: true },
+      cod: { type: Boolean, default: false },
+      upi: { type: Boolean, default: false },
+      card: { type: Boolean, default: false },
+      wallet: { type: Boolean, default: false },
+      netBanking: { type: Boolean, default: false },
     },
 
     // Shipping
@@ -120,6 +151,7 @@ const SettingSchema = new Schema<ISetting>(
       metaDescription: { type: String, default: '' },
       metaKeywords: { type: String, default: '' },
       googleAnalyticsId: { type: String, default: '' },
+      ogImage: { type: String, default: '' },
     },
 
     // Contact
@@ -133,6 +165,40 @@ const SettingSchema = new Schema<ISetting>(
     giftWrapCharge: { type: Number, default: 99 },
     advancePaymentPercent: { type: Number, default: 25 },
     advancePaymentPercentage: { type: Number, default: 25 },
+    shopName: { type: String, default: 'Shree Durga Tiles', trim: true },
+    tagline: { type: String, default: '', trim: true },
+    phone: { type: String, default: '', trim: true },
+    whatsapp: { type: String, default: '', trim: true },
+    email: { type: String, default: '', trim: true, lowercase: true },
+    address: { type: String, default: 'Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.', trim: true },
+    mapLink: { type: String, default: '', trim: true },
+    timings: { type: String, default: '', trim: true },
+    topBarText: { type: String, default: '॥ जय माता दी ॥', trim: true },
+    gstin: { type: String, default: '', trim: true, uppercase: true },
+    upiId: { type: String, default: '', trim: true },
+    invoicePrefix: { type: String, default: 'SDT-', trim: true },
+    nextBillNumber: { type: Number, default: 1, min: 1 },
+    defaultGstRate: { type: Number, default: 18, min: 0, max: 100 },
+    invoiceTerms: { type: String, default: '' },
+    invoiceFooterNote: { type: String, default: '' },
+    logo: { type: String, default: '' },
+    stats: {
+      yearsExperience: { type: Number, default: 0, min: 0 },
+      happyCustomers: { type: Number, default: 0, min: 0 },
+      projectsSupplied: { type: Number, default: 0, min: 0 },
+    },
+    heroHeadline: { type: String, default: '' },
+    heroSubtext: { type: String, default: '' },
+    featuredProductId: { type: Schema.Types.ObjectId, ref: 'Product' },
+    aboutText: { type: String, default: '' },
+    aboutImage: { type: String, default: '' },
+    social: {
+      type: Map,
+      of: String,
+      default: {},
+    },
+    qrMode: { type: String, enum: ['upi', 'verification'], default: 'upi' },
+    analyticsNotice: { type: String, default: '' },
   },
   { timestamps: true }
 );
@@ -141,5 +207,3 @@ const SettingSchema = new Schema<ISetting>(
 SettingSchema.index({ updatedAt: -1 });
 
 export const Setting: Model<ISetting> = mongoose.model<ISetting>('Setting', SettingSchema);
-
-

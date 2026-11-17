@@ -1,37 +1,20 @@
 // frontend/src/app/layout.tsx
 
 import type { Metadata, Viewport } from 'next';
-import { Inter, Cinzel } from 'next/font/google';
 import './globals.css';
 
 // Providers
 import { ReactQueryProvider } from '../providers/ReactQueryProvider';
-import { ThemeProvider } from '../providers/ThemeProvider';
 
 // Layout components
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import CartDrawer from '../components/modals/CartDrawer';
 import ScrollReset from '../components/layout/ScrollReset';
+import PageViewTracker from '../components/analytics/PageViewTracker';
 
 // Toast notifications
 import { Toaster } from 'react-hot-toast';
 import { Sparkles } from 'lucide-react';
-
-// ------------------------------------------------------------------
-// Font configuration
-// ------------------------------------------------------------------
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-const cinzel = Cinzel({
-  subsets: ['latin'],
-  variable: '--font-cinzel',
-  display: 'swap',
-});
 
 // ------------------------------------------------------------------
 // Metadata & Viewport (SEO + PWA ready)
@@ -39,32 +22,31 @@ const cinzel = Cinzel({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.panditjimarblemurtiarts.in"),
   title: {
-    default: 'Pandit Ji Marble Murti Arts – Handcrafted Divine Sculptures',
-    template: '%s | Pandit Ji Marble Murti Arts',
+    default: 'Shree Durga Tiles | Marble, Granite & Designer Tiles',
+    template: '%s | Shree Durga Tiles',
   },
   description:
-    'Handcrafted marble, brass, and wood murtis by master artisans in govindgarh. Bring divine energy into your home with our luxury sculptures.',
+    'Explore premium marble, granite, designer tiles, quartz and stone for homes and projects. Visit Shree Durga Tiles in Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.',
   keywords:
-    'murti, marble murti, brass murti, Ganesh murti, Radha Krishna, Shiva statue, Hanuman idol, religious sculptures, govindgarh handicrafts',
-  authors: [{ name: 'Pandit Ji Marble Murti Arts' }],
-  creator: 'Pandit Ji Marble Murti Arts',
-  publisher: 'Pandit Ji Marble Murti Arts',
+    'marble, granite, designer tiles, quartz, kitchen tops, outdoor flooring, stone showroom, Govindgarh, Alwar',
+  authors: [{ name: 'Shree Durga Tiles' }],
+  creator: 'Shree Durga Tiles',
+  publisher: 'Shree Durga Tiles',
   robots: 'index, follow',
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: 'Pandit Ji Marble Murti Arts – Handcrafted Divine Sculptures',
-    description:
-      'Handcrafted marble, brass, and wood murtis by master artisans in Govindgarh.',
+    title: 'Shree Durga Tiles | Marble, Granite & Designer Tiles',
+    description: 'Premium marble, granite, tiles and stone in Govindgarh, Alwar.',
     url: 'https://www.panditjimarblemurtiarts.in',
-    siteName: 'Pandit Ji Marble Murti Arts',
+    siteName: 'Shree Durga Tiles',
     images: [
       {
         url: 'https://images.unsplash.com/photo-1584925906119-eaf7bbd206c3?w=1200&q=80',
         width: 1200,
         height: 630,
-        alt: 'Pandit Ji Marble Murti Arts',
+        alt: 'Premium stone and tile showroom',
       },
     ],
     locale: 'en_IN',
@@ -72,9 +54,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pandit Ji Marble Murti Arts - Handcrafted Divine Sculptures',
-    description:
-      'Handcrafted marble, brass, and wood murtis by master artisans in govindgarh.',
+    title: 'Shree Durga Tiles | Marble, Granite & Designer Tiles',
+    description: 'Premium marble, granite, tiles and stone in Govindgarh, Alwar.',
     images: ['https://images.unsplash.com/photo-1584925906119-eaf7bbd206c3?w=1200&q=80'],
   },
   icons: {
@@ -85,7 +66,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#D4AF37',
+  themeColor: '#000000',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -103,13 +84,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${cinzel.variable}`}
       suppressHydrationWarning
     >
       <body className="bg-ivory text-brown antialiased">
         <ReactQueryProvider>
           <>
             <ScrollReset />
+            <PageViewTracker />
 
             {/* Fixed header */}
             <Navbar />
@@ -119,9 +100,6 @@ export default function RootLayout({
 
             {/* Footer */}
             <Footer />
-
-            {/* Global drawer */}
-            <CartDrawer />
 
             {/* Toast notifications */}
             <Toaster

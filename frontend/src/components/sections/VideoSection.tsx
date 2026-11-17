@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
@@ -65,11 +65,6 @@ export default function VideoSection({
 }: VideoSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Column classes for grid mode
   const columnClasses = {
@@ -251,7 +246,7 @@ export default function VideoSection({
               )}
             </div>
             <a
-              href="https://youtube.com/@panditjimurti"
+              href="https://www.youtube.com/@panditjimurtiart/featured"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-medium text-gold-dark dark:text-gold hover:text-gold transition-colors group"
@@ -301,7 +296,7 @@ export default function VideoSection({
             )}
           </div>
           <a
-            href="https://youtube.com/@panditjimurti"
+            href="https://www.youtube.com/@panditjimurtiart/featured"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-gold-dark dark:text-gold hover:text-gold transition-colors group"
@@ -344,7 +339,7 @@ export default function VideoSection({
           </Swiper>
 
           {/* Custom Navigation Buttons */}
-          {isMounted && videos.length > (slidesPerView || 3) && (
+          {videos.length > (slidesPerView || 3) && (
             <>
               <button
                 className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-1/2 md:-translate-x-4 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-brown-dark shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-brown dark:text-ivory hover:text-gold-dark dark:hover:text-gold border border-gold/10"
@@ -370,7 +365,7 @@ export default function VideoSection({
           margin-top: 24px;
         }
         .swiper-pagination-bullet {
-          background: #D4AF37;
+          background: #FF0000;
           opacity: 0.3;
           width: 8px;
           height: 8px;
@@ -381,7 +376,7 @@ export default function VideoSection({
           opacity: 1;
           width: 24px;
           border-radius: 4px;
-          background: #D4AF37;
+          background: #FF0000;
         }
         .swiper-button-prev-custom,
         .swiper-button-next-custom {

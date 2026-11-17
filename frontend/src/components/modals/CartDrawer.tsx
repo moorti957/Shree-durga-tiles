@@ -198,7 +198,7 @@ export default function CartDrawer() {
                     Your cart is empty
                   </h3>
                   <p className="text-sm text-brown-light dark:text-ivory/50 mt-2">
-                    Start adding some divine murtis!
+                    Explore our stone and tile collections.
                   </p>
                   <button
                     onClick={() => setIsOpen(false)}

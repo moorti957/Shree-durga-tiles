@@ -7,7 +7,12 @@ import mongoose, { Schema, Document } from 'mongoose';
 // ============================================================
 
 export interface ITestimonial extends Document {
-  user: mongoose.Types.ObjectId;
+  user?: mongoose.Types.ObjectId;
+  name?: string;
+  role?: string;
+  city?: string;
+  avatar?: string;
+  text?: string;
   rating: number;
   title?: string;
   comment: string;
@@ -16,6 +21,7 @@ export interface ITestimonial extends Document {
   helpfulCount: number;
   images: string[];
   isActive: boolean;
+  isApproved: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,9 +35,12 @@ const TestimonialSchema = new Schema<ITestimonial>(
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
-      index: true,
     },
+    name: { type: String, trim: true, maxlength: 100 },
+    role: { type: String, trim: true, maxlength: 100 },
+    city: { type: String, trim: true, maxlength: 100 },
+    avatar: { type: String, trim: true },
+    text: { type: String, trim: true, maxlength: 1000 },
     rating: {
       type: Number,
       required: true,
@@ -71,6 +80,7 @@ const TestimonialSchema = new Schema<ITestimonial>(
       type: Boolean,
       default: true,
     },
+    isApproved: { type: Boolean, default: false },
   },
   {
     timestamps: true,
@@ -83,6 +93,7 @@ const TestimonialSchema = new Schema<ITestimonial>(
 
 // For efficient listing of active testimonials
 TestimonialSchema.index({ isActive: 1, createdAt: -1 });
+TestimonialSchema.index({ isApproved: 1, isActive: 1, createdAt: -1 });
 TestimonialSchema.index({ user: 1, createdAt: -1 });
 
 // ============================================================

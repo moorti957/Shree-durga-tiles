@@ -119,7 +119,7 @@ export function QuickViewModal({
   // Handlers
   const handleAddToCart = () => {
     addItem(product, quantity);
-    toast.success('Added to Cart', 'Your selected murti has been added successfully.');
+    toast.success('Added to Cart', 'Your selected product has been added successfully.');
     onClose();
   };
 
@@ -141,7 +141,7 @@ export function QuickViewModal({
       try {
         await navigator.share({
           title: product.name,
-          text: `Check out this beautiful ${product.name} from Pandit Ji Marble Murti Art Arts!`,
+          text: `Take a look at ${product.name} from Shree Durga Tiles.`,
           url: url,
         });
       } catch (err) {

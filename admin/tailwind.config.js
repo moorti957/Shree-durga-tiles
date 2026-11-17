@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: [
     "./src/**/*.{js,jsx,ts,tsx,mdx}",
     "./src/app/**/*.{js,jsx,ts,tsx,mdx}",
@@ -10,38 +11,36 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "admin-primary": "#D4AF37",
-        "admin-secondary": "#8B5E3C",
-        "admin-bg": "#F8F8F8",
+        "admin-primary": "#1D4ED8",
+        "admin-secondary": "#1E40AF",
+        "admin-bg": "#F4F5F7",
         "admin-card": "#FFFFFF",
-        "admin-text": "#111827",
-        "admin-secondary-text": "#374151",
+        "admin-sidebar": "#151922",
+        "admin-sidebar-muted": "#CBD5E1",
+        "admin-text": "#1F2937",
+        "admin-secondary-text": "#475569",
         "admin-label": "#1F2937",
-        "admin-description": "#4B5563",
-        "admin-muted": "#6B7280",
-        "admin-border": "#D1D5DB",
-        "admin-hover": "#F3F4F6",
+        "admin-description": "#475569",
+        "admin-muted": "#64748B",
+        "admin-border": "#E2E8F0",
+        "admin-hover": "#F1F5F9",
         "admin-success": "#16A34A",
         "admin-danger": "#DC2626",
-        "admin-warning": "#F59E0B",
-        "admin-info": "#3B82F6",
-        ivory: "#F8F8F8",
-        sand: "#F3F4F6",
-
-        brown: "#111827",
-        "brown-light": "#4B5563",
-        "brown-dark": "#FFFFFF",
-
-        gold: "#D4AF37",
-        "gold-light": "#E8D5A3",
-        "gold-dark": "#B8962E",
-
-        maroon: "#7B1E1E",
-        "deep-maroon": "#7B1E1E",
-        "maroon-dark": "#5C1616",
-        "maroon-light": "#A04040",
-
-        "premium-black": "#1A1814",
+        "admin-warning": "#B45309",
+        "admin-info": "#2563EB",
+        ivory: "#F8FAFC",
+        sand: "#F1F5F9",
+        brown: "#1F2937",
+        "brown-light": "#64748B",
+        "brown-dark": "#111827",
+        gold: "#1D4ED8",
+        "gold-light": "#DBEAFE",
+        "gold-dark": "#1E40AF",
+        maroon: "#334155",
+        "deep-maroon": "#334155",
+        "maroon-dark": "#1E293B",
+        "maroon-light": "#475569",
+        "premium-black": "#151922",
       },
 
       fontFamily: {
@@ -50,7 +49,7 @@ module.exports = {
       },
 
       boxShadow: {
-        gold: "0 12px 40px rgba(201,168,76,.25)",
+        gold: "0 8px 24px rgba(29, 78, 216, 0.18)",
       },
     },
   },

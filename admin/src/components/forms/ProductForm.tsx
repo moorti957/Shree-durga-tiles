@@ -274,7 +274,7 @@ export function ProductForm({
               className={errors.name ? 'border-red-400' : ''}
             />
             {errors.name && (
-              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.name.message}</p>
             )}
           </div>
 
@@ -283,7 +283,7 @@ export function ProductForm({
               Slug
             </label>
             <Input {...register('slug')} placeholder="e.g., ganesh-murti-brass" />
-            <p className="text-xs text-brown-light/60 mt-1">
+            <p className="text-xs text-brown-light mt-1">
               Leave blank to auto-generate from name
             </p>
           </div>
@@ -299,7 +299,7 @@ export function ProductForm({
               className={errors.description ? 'border-red-400' : ''}
             />
             {errors.description && (
-              <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.description.message}</p>
             )}
           </div>
         </div>
@@ -323,7 +323,7 @@ export function ProductForm({
               className={errors.price ? 'border-red-400' : ''}
             />
             {errors.price && (
-              <p className="text-xs text-red-500 mt-1">{errors.price.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.price.message}</p>
             )}
           </div>
           <div>
@@ -374,7 +374,7 @@ export function ProductForm({
               className={errors.category ? 'border-red-400' : ''}
             />
             {errors.category && (
-              <p className="text-xs text-red-500 mt-1">{errors.category.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.category.message}</p>
             )}
           </div>
 
@@ -513,7 +513,7 @@ export function ProductForm({
               <button
                 type="button"
                 onClick={() => remove(index)}
-                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -584,7 +584,7 @@ export function ProductForm({
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                    className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>

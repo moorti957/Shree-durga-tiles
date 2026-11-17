@@ -1,13 +1,53 @@
 import { Request, Response } from 'express';
 import { Banner } from '../models/Banner';
-import { Category } from '../models/Category';
+import { Category, ICategory } from '../models/Category';
 import { Product } from '../models/Product';
 import { Testimonial } from '../models/Testimonial';
 import { FAQ } from '../models/FAQ';
+import { Order } from '../models/Order';
+import { Setting } from '../models/Setting';
 import { asyncHandler } from '../middlewares/errorHandler';
+
+const getVisibleCategoryIds = async (): Promise<ICategory['_id'][]> => {
+  const categories = await Category.find({
+    isActive: { $ne: false },
+    isVisible: { $ne: false },
+    deletedAt: null,
+  }).select('_id');
+  return categories.map((category) => category._id);
+};
+
+const getPublicProductFilter = (categoryIds: ICategory['_id'][]) => ({
+  $and: [
+    { isActive: { $ne: false }, deletedAt: null },
+    { $or: [{ status: 'published' }, { status: { $exists: false } }] },
+    {
+      $or: [
+        { categoryId: { $in: categoryIds } },
+        { category: { $in: categoryIds } },
+      ],
+    },
+  ],
+});
+
+const getPublicStats = async (categoryIds: ICategory['_id'][]) => {
+  const [settings, totalProducts, totalOrders] = await Promise.all([
+    Setting.findOne({}),
+    Product.countDocuments(getPublicProductFilter(categoryIds)),
+    Order.countDocuments(),
+  ]);
+  return {
+    totalCustomers: settings?.stats?.happyCustomers || 0,
+    totalProducts,
+    totalOrders,
+    yearsOfExperience: settings?.stats?.yearsExperience || 0,
+  };
+};
 
 export default class HomeController {
   static getAllHomeData = asyncHandler(async (_req: Request, res: Response) => {
+    const categoryIds = await getVisibleCategoryIds();
+    const publicProductFilter = getPublicProductFilter(categoryIds);
     const [
       banners,
       categories,
@@ -16,50 +56,50 @@ export default class HomeController {
       testimonials,
       faqs,
     ] = await Promise.all([
-      Banner.find({ isActive: true })
+      Banner.find({ isActive: { $ne: false }, isVisible: { $ne: false } })
         .sort({ displayOrder: 1 })
         .lean(),
 
-      Category.find({ isFeatured: true, isActive: true })
+      Category.find({
+        _id: { $in: categoryIds },
+        isFeatured: true,
+      })
         .sort({ displayOrder: 1 })
         .lean(),
 
-      Product.find({ isFeatured: true, isActive: true })
+      Product.find({ $and: [publicProductFilter, { isFeatured: true }] })
         .limit(8)
         .sort({ createdAt: -1 })
         .lean(),
 
-      Product.find({ isActive: true })
+      Product.find(publicProductFilter)
         .limit(8)
         .sort({ viewCount: -1 })
         .lean(),
 
-      Testimonial.find({ isActive: true })
+      Testimonial.find({ isActive: true, isApproved: true, name: { $exists: true, $ne: '' } })
         .limit(6)
         .sort({ createdAt: -1 })
         .lean(),
 
-      FAQ.find({ isActive: true })
+      FAQ.find({ isActive: { $ne: false }, isVisible: { $ne: false } })
         .sort({ displayOrder: 1 })
         .lean(),
     ]);
 
     const categoriesWithCounts = await Promise.all(
-      categories.map(async (cat: any) => ({
+      categories.map(async (cat) => ({
         ...cat,
         productCount: await Product.countDocuments({
-          category: cat._id,
-          isActive: true,
+          $and: [
+            publicProductFilter,
+            { $or: [{ categoryId: cat._id }, { category: cat._id }] },
+          ],
         }),
       }))
     );
 
-    const stats = {
-      totalCustomers: 12000,
-      totalProducts: await Product.countDocuments({ isActive: true }),
-      totalOrders: 3500,
-      yearsOfExperience: 35,
-    };
+    const stats = await getPublicStats(categoryIds);
 
     res.status(200).json({
       banners,
@@ -75,7 +115,10 @@ export default class HomeController {
   });
 
   static getBanners = asyncHandler(async (_req: Request, res: Response) => {
-    const banners = await Banner.find({ isActive: true })
+    const banners = await Banner.find({
+      isActive: { $ne: false },
+      isVisible: { $ne: false },
+    })
       .sort({ displayOrder: 1 })
       .lean();
 
@@ -83,19 +126,18 @@ export default class HomeController {
   });
 
   static getCategories = asyncHandler(async (_req: Request, res: Response) => {
+    const categoryIds = await getVisibleCategoryIds();
     const categories = await Category.find({
+      _id: { $in: categoryIds },
       isFeatured: true,
-      isActive: true,
     }).lean();
 
     res.json(categories);
   });
 
   static getFeaturedProducts = asyncHandler(async (_req: Request, res: Response) => {
-    const products = await Product.find({
-      isFeatured: true,
-      isActive: true,
-    })
+    const publicProductFilter = getPublicProductFilter(await getVisibleCategoryIds());
+    const products = await Product.find({ $and: [publicProductFilter, { isFeatured: true }] })
       .limit(8)
       .lean();
 
@@ -105,6 +147,8 @@ export default class HomeController {
   static getTestimonials = asyncHandler(async (_req: Request, res: Response) => {
     const testimonials = await Testimonial.find({
       isActive: true,
+      isApproved: true,
+      name: { $exists: true, $ne: '' },
     })
       .limit(6)
       .lean();
@@ -114,7 +158,8 @@ export default class HomeController {
 
   static getFAQs = asyncHandler(async (_req: Request, res:Response) => {
     const faqs = await FAQ.find({
-      isActive: true,
+      isActive: { $ne: false },
+      isVisible: { $ne: false },
     })
       .sort({ displayOrder: 1 })
       .lean();
@@ -123,12 +168,7 @@ export default class HomeController {
   });
 
   static getStats = asyncHandler(async (_req: Request, res: Response) => {
-    res.json({
-      totalCustomers: 12000,
-      totalProducts: await Product.countDocuments({ isActive: true }),
-      totalOrders: 3500,
-      yearsOfExperience: 35,
-    });
+    res.json(await getPublicStats(await getVisibleCategoryIds()));
   });
 
   static getInstagramPosts = asyncHandler(async (_req: Request, res: Response) => {

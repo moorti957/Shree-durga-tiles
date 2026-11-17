@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
@@ -13,8 +13,6 @@ import { ProductCard } from '../../components/cards/ProductCard';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
-import { Checkbox } from '../../components/ui/Checkbox';
-import { Slider } from '../../components/ui/Slider';
 import { Skeleton } from '../../components/ui/Skeleton';
 
 // Icons
@@ -23,9 +21,6 @@ import {
   X, 
   Grid3x3, 
   LayoutList,
-  ChevronDown,
-  ChevronUp,
-  SlidersHorizontal,
   Search,
 } from 'lucide-react';
 
@@ -33,8 +28,6 @@ import {
 import { useProducts } from '../../features/products/hooks/useProducts';
 import { useCategories } from '../../features/categories/hooks/useCategories';
 import { useDebounce } from '../../hooks/useDebounce';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { logSearch } from '@/features/activity/api/activityApi';
 
 // Types
 import { ProductFilters } from '../../types';
@@ -42,21 +35,16 @@ import { ProductFilters } from '../../types';
 export default function ProductsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isMobile = useMediaQuery('(max-width: 768px)');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   // Filters state
-  const inStockParam = searchParams.get('inStock');
-
   const [filters, setFilters] = useState<ProductFilters>({
     category: searchParams.get('category') || '',
     search: searchParams.get('search') || '',
-    minPrice: Number(searchParams.get('minPrice')) || 0,
-    maxPrice: Number(searchParams.get('maxPrice')) || 100000,
-    sort: (searchParams.get('sort') as ProductFilters['sort']) || 'newest',
-    inStock: inStockParam ? inStockParam === 'true' : undefined,
-    material: searchParams.get('material') || '',
+    sort: (['newest', 'price-asc', 'price-desc', 'name-asc'].includes(searchParams.get('sort') || '')
+      ? searchParams.get('sort')
+      : 'newest') as ProductFilters['sort'],
   });
 
   // Debounce search to avoid excessive API calls
@@ -69,7 +57,6 @@ export default function ProductsPage() {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-    refetch,
   } = useProducts({
     filters: {
       ...filters,
@@ -93,23 +80,12 @@ export default function ProductsPage() {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // Log search activity when search query produces results
-  useEffect(() => {
-    if (debouncedSearch && !isLoading) {
-      logSearch(debouncedSearch, allProducts.length);
-    }
-  }, [debouncedSearch, isLoading, allProducts.length]);
-
   // Update URL when filters change (for shareability)
   useEffect(() => {
     const params = new URLSearchParams();
     if (filters.category) params.set('category', filters.category);
     if (filters.search) params.set('search', filters.search);
-    if ((filters.minPrice ?? 0) > 0) params.set('minPrice', String(filters.minPrice));
-    if ((filters.maxPrice ?? 100000) < 100000) params.set('maxPrice', String(filters.maxPrice));
     if (filters.sort) params.set('sort', filters.sort);
-    if (filters.inStock) params.set('inStock', 'true');
-    if (filters.material) params.set('material', filters.material);
     
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     router.replace(newUrl, { scroll: false });
@@ -128,36 +104,22 @@ export default function ProductsPage() {
     setFilters({
       category: '',
       search: '',
-      minPrice: 0,
-      maxPrice: 100000,
       sort: 'newest',
-      inStock: undefined,
-      material: '',
     });
   };
 
-  // Count active filters
-  const activeFilterCount = Object.values(filters).filter(
-    (v) => v && v !== '' && v !== 0 && v !== false
-  ).length;
+  const activeFilterCount = Number(Boolean(filters.category)) + Number(Boolean(filters.search));
 
   // Sort options
   const sortOptions = [
     { value: 'newest', label: 'Newest First' },
     { value: 'price-asc', label: 'Price: Low to High' },
     { value: 'price-desc', label: 'Price: High to Low' },
-    { value: 'popular', label: 'Most Popular' },
-    { value: 'rating', label: 'Highest Rated' },
+    { value: 'name-asc', label: 'Name: A to Z' },
   ];
 
-  // Material options (hardcoded or from API)
-  const materialOptions = ['Marble',  'Stone'];
-
-  // Price range (can be dynamic from API)
-  const priceRange = { min: 0, max: 100000 };
-
   // Filter sidebar content
-  const FilterSidebar = () => (
+  const filterSidebar = (
     <div className="space-y-6">
       {/* Category filter */}
       <div>
@@ -168,12 +130,12 @@ export default function ProductsPage() {
               <input
                 type="radio"
                 name="category"
-                value={cat.id}
-                checked={filters.category === cat.id}
-                onChange={() => updateFilter('category', cat.id)}
+                value={cat.slug}
+                checked={filters.category === cat.slug}
+                onChange={() => updateFilter('category', cat.slug)}
                 className="accent-gold"
               />
-              <span className={filters.category === cat.id ? 'text-gold-dark font-medium' : ''}>
+              <span className={filters.category === cat.slug ? 'text-gold-dark font-medium' : ''}>
                 {cat.name}
               </span>
             </label>
@@ -187,71 +149,6 @@ export default function ProductsPage() {
             </button>
           )}
         </div>
-      </div>
-
-      {/* Price range */}
-      <div>
-        <h4 className="font-cinzel text-sm font-semibold mb-3">Price Range</h4>
-        <div className="px-1">
-          <Slider
-            min={priceRange.min}
-            max={priceRange.max}
-            step={100}
-            value={[filters.minPrice ?? priceRange.min, filters.maxPrice ?? priceRange.max]}
-            onValueChange={([min, max]) => {
-              updateFilter('minPrice', min);
-              updateFilter('maxPrice', max);
-            }}
-            className="mb-2"
-          />
-          <div className="flex justify-between text-xs text-brown-light">
-            <span>{filters.minPrice}</span>
-            <span>{filters.maxPrice}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Material */}
-      <div>
-        <h4 className="font-cinzel text-sm font-semibold mb-3">Material</h4>
-        <div className="space-y-2">
-          {materialOptions.map((mat) => (
-            <label key={mat} className="flex items-center gap-2 text-sm cursor-pointer">
-              <input
-                type="radio"
-                name="material"
-                value={mat}
-                checked={filters.material === mat}
-                onChange={() => updateFilter('material', mat)}
-                className="accent-gold"
-              />
-              <span className={filters.material === mat ? 'text-gold-dark font-medium' : ''}>
-                {mat}
-              </span>
-            </label>
-          ))}
-          {filters.material && (
-            <button
-              onClick={() => updateFilter('material', '')}
-              className="text-xs text-brown-light hover:text-maroon transition-colors"
-            >
-              Clear material
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* In stock */}
-      <div>
-        <label className="flex items-center gap-2 text-sm cursor-pointer">
-          <input
-            type="checkbox"
-            checked={filters.inStock}
-            onChange={(e) => updateFilter('inStock', e.target.checked)}
-            className="accent-gold"
-          />
-          <span>In stock only</span>
-        </label>
       </div>
 
       {/* Reset button */}
@@ -273,10 +170,10 @@ export default function ProductsPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="font-cinzel text-3xl md:text-4xl font-bold text-brown">
-              Divine Collection
+              Stone &amp; Tile Collection
             </h1>
             <p className="text-brown-light text-sm mt-1">
-              {allProducts.length} handcrafted murtis to choose from
+              {allProducts.length} products available
             </p>
           </div>
 
@@ -286,7 +183,7 @@ export default function ProductsPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light" />
               <Input
                 type="text"
-                placeholder="Search murtis..."
+                placeholder="Search marble, granite, tiles..."
                 value={filters.search}
                 onChange={(e) => updateFilter('search', e.target.value)}
                 className="pl-9 pr-4 py-2 bg-white border-gold/10 rounded-full focus:border-gold"
@@ -354,7 +251,7 @@ export default function ProductsPage() {
                   </button>
                 )}
               </div>
-              <FilterSidebar />
+              {filterSidebar}
             </div>
           </aside>
 
@@ -417,7 +314,7 @@ export default function ProductsPage() {
 
                 {!hasNextPage && allProducts.length > 6 && (
                   <p className="text-center text-brown-light text-sm py-6">
-                    You've reached the end of our collection 🙏
+                    You&apos;ve reached the end of our collection 🙏
                   </p>
                 )}
               </>
@@ -426,7 +323,7 @@ export default function ProductsPage() {
             {/* No products */}
             {!isLoading && allProducts.length === 0 && (
               <div className="text-center py-16">
-                <p className="text-brown-light text-lg">No murtis found matching your criteria.</p>
+                <p className="text-brown-light text-lg">No products match these filters.</p>
                 <button
                   onClick={resetFilters}
                   className="btn-gold mt-4 inline-block"
@@ -466,7 +363,7 @@ export default function ProductsPage() {
                   <X size={24} />
                 </button>
               </div>
-              <FilterSidebar />
+              {filterSidebar}
               <div className="mt-6 flex gap-3">
                 <Button
                   onClick={() => setIsFilterOpen(false)}

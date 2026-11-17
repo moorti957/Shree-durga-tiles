@@ -11,23 +11,31 @@
    CUSTOM PROPERTIES (CSS Variables)
    ============================================================ */
 :root {
-  /* Brand Colors */
-  --gold: #D4AF37;
-  --gold-light: #E8D5A3;
-  --gold-dark: #B8962E;
+  --bg-primary: #000000;
+  --color-red: #FF0000;
+  --color-yellow: #FFFF00;
+  --text-primary: #FFFFFF;
+  --bg-card: #111111;
+  --border-color: #333333;
+  --red-glow: 0 0 25px #FF0000;
+  --yellow-glow: 0 0 25px #FFFF00;
+
+  --gold: var(--color-red);
+  --gold-light: var(--color-yellow);
+  --gold-dark: var(--color-red);
   --marble-white: #FFFFFF;
-  --temple-ivory: #FFFCF7;
-  --deep-maroon: #7B1E1E;
-  --maroon-dark: #5C1616;
-  --maroon-light: #A04040;
-  --light-sand: #F5EDDF;
-  --royal-brown: #6D4C41;
-  --brown-light: #8D6E63;
-  --brown-dark: #4A3428;
-  --premium-black: #1A1814;
-  --ivory: #FFFCF7;
-  --sand: #F5EDDF;
-  --brown: #6D4C41;
+  --temple-ivory: var(--bg-primary);
+  --deep-maroon: var(--color-red);
+  --maroon-dark: var(--color-red);
+  --maroon-light: var(--color-red);
+  --light-sand: var(--bg-card);
+  --royal-brown: var(--text-primary);
+  --brown-light: var(--text-primary);
+  --brown-dark: var(--bg-card);
+  --premium-black: var(--bg-primary);
+  --ivory: var(--bg-primary);
+  --sand: var(--bg-card);
+  --brown: var(--text-primary);
 
   /* Typography */
   --font-cinzel: 'Cinzel', serif;
@@ -41,8 +49,8 @@
   --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.12);
-  --shadow-gold: 0 12px 40px rgba(201, 168, 76, 0.30);
-  --shadow-maroon: 0 12px 40px rgba(123, 30, 30, 0.25);
+  --shadow-gold: var(--red-glow);
+  --shadow-maroon: var(--red-glow);
 
   /* Transitions */
   --transition-smooth: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -63,19 +71,19 @@
    DARK MODE OVERRIDES
    ============================================================ */
 .dark {
-  --ivory: #1A1814;
-  --sand: #2D2A24;
-  --brown: #F5EDDF;
-  --brown-light: #C4B5A5;
-  --brown-dark: #F5EDDF;
-  --marble-white: #1A1814;
-  --temple-ivory: #1A1814;
-  --light-sand: #2D2A24;
+  --ivory: var(--bg-primary);
+  --sand: var(--bg-card);
+  --brown: var(--text-primary);
+  --brown-light: var(--text-primary);
+  --brown-dark: var(--bg-card);
+  --marble-white: #FFFFFF;
+  --temple-ivory: var(--bg-primary);
+  --light-sand: var(--bg-card);
   --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.6);
-  --shadow-gold: 0 12px 40px rgba(201, 168, 76, 0.20);
+  --shadow-gold: var(--red-glow);
 }
 
 /* ============================================================
@@ -85,7 +93,7 @@
   *,
   *::before,
   *::after {
-    border-color: var(--brown-light);
+    border-color: var(--border-color);
     box-sizing: border-box;
   }
 
@@ -199,14 +207,16 @@
     @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-medium text-white
            bg-gradient-to-r from-gold to-gold-dark shadow-gold
            transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95
-           focus:outline-none focus:ring-2 focus:ring-gold/50 disabled:opacity-60 disabled:cursor-not-allowed;
+           focus:outline-none focus:ring-2 focus:ring-gold/50 disabled:opacity-60 disabled:cursor-not-allowed
+           hover:from-yellow-500 hover:to-yellow-500 hover:text-black;
   }
 
   .btn-maroon {
     @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-medium text-white
            bg-gradient-to-r from-deep-maroon to-maroon-dark shadow-maroon
            transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-95
-           focus:outline-none focus:ring-2 focus:ring-deep-maroon/50 disabled:opacity-60 disabled:cursor-not-allowed;
+           focus:outline-none focus:ring-2 focus:ring-deep-maroon/50 disabled:opacity-60 disabled:cursor-not-allowed
+           hover:from-yellow-500 hover:to-yellow-500 hover:text-black;
   }
 
   .btn-outline-gold {
@@ -225,7 +235,7 @@
 
   /* Glassmorphism */
   .glass {
-    @apply bg-white/70 dark:bg-brown-dark/70 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-lg;
+    @apply bg-brown-dark/70 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-lg;
   }
 
   .glass-dark {
@@ -234,7 +244,7 @@
 
   /* Cards */
   .card-premium {
-    @apply bg-white dark:bg-brown-dark rounded-2xl border border-gold/5 dark:border-gold/10 shadow-sm
+    @apply bg-brown-dark rounded-2xl border border-gold/5 dark:border-gold/10 shadow-sm
            transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
   }
 
@@ -286,18 +296,34 @@
 
   /* Glassmorphism glow */
   .glow-gold {
-    box-shadow: 0 0 60px rgba(212, 175, 55, 0.15);
+    box-shadow: var(--red-glow);
   }
   .glow-maroon {
-    box-shadow: 0 0 60px rgba(123, 30, 30, 0.12);
+    box-shadow: var(--red-glow);
   }
 
   /* Borders */
   .border-gold-light {
-    border-color: rgba(212, 175, 55, 0.3);
+    border-color: rgba(255, 0, 0, 0.3);
   }
   .border-maroon-light {
-    border-color: rgba(123, 30, 30, 0.3);
+    border-color: rgba(255, 0, 0, 0.3);
+  }
+
+  .bg-white {
+    background-color: var(--bg-card);
+  }
+
+  .text-brown,
+  .dark .dark\:text-brown {
+    color: var(--text-primary);
+  }
+
+  .border-white,
+  .border-white\/10,
+  .border-white\/20,
+  .border-white\/30 {
+    border-color: var(--border-color);
   }
 }
 
@@ -433,7 +459,7 @@
 
   .swiper-button-prev,
   .swiper-button-next {
-    @apply text-gold bg-white/80 dark:bg-brown-dark/80 backdrop-blur rounded-full w-12 h-12 shadow-lg
+    @apply text-gold bg-brown-dark/80 backdrop-blur rounded-full w-12 h-12 shadow-lg
            transition-all hover:bg-gold hover:text-white !important;
   }
 }

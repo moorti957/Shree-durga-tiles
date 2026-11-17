@@ -13,7 +13,6 @@ import {
   Loader2,
   Store,
   CreditCard,
-  Truck,
   Share2,
   Globe,
   Mail,
@@ -40,10 +39,12 @@ type StoreFormData = z.input<typeof storeSchema>;
 
 const paymentSchema = z.object({
   taxRate: z.number().min(0).max(100).default(18),
-  codEnabled: z.boolean().default(true),
-  codFee: z.number().min(0).default(0),
-  upiEnabled: z.boolean().default(true),
-  cardEnabled: z.boolean().default(true),
+  gstin: z.string().max(15).optional(),
+  upiId: z.string().max(100).optional(),
+  invoicePrefix: z.string().min(1).max(20).default('SDT-'),
+  invoiceTerms: z.string().max(5000).optional(),
+  invoiceFooterNote: z.string().max(1000).optional(),
+  qrMode: z.enum(['upi', 'verification']).default('upi'),
 });
 type PaymentFormData = z.input<typeof paymentSchema>;
 
@@ -91,7 +92,6 @@ export default function SettingsPage() {
   const [pendingByTab, setPendingByTab] = useState<Record<string, boolean>>({
     store: false,
     payment: false,
-    shipping: false,
     social: false,
     seo: false,
     contact: false,
@@ -107,7 +107,7 @@ export default function SettingsPage() {
     queryFn: () => adminApi.getSettings(),
   });
 
-  const settings = data?.data;
+  const settings = data;
 
   const setTabPending = (tab: string, pending: boolean) => {
     setPendingByTab((prev) =>
@@ -117,8 +117,7 @@ export default function SettingsPage() {
 
   const tabs = [
     { id: 'store', label: 'Store', icon: Store },
-    { id: 'payment', label: 'Payment', icon: CreditCard },
-    { id: 'shipping', label: 'Shipping', icon: Truck },
+    { id: 'payment', label: 'GST & Billing', icon: CreditCard },
     { id: 'social', label: 'Social', icon: Share2 },
     { id: 'seo', label: 'SEO', icon: Globe },
     { id: 'contact', label: 'Contact', icon: Mail },
@@ -138,9 +137,7 @@ export default function SettingsPage() {
           <h1 className="font-cinzel text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-900">
             Settings
           </h1>
-          <p className="text-black dark:text-black text-sm">
-            Manage your store settings
-          </p>
+          <p className="text-black dark:text-black text-sm">Manage public site and invoice settings</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -194,9 +191,6 @@ export default function SettingsPage() {
       )}
       {activeTab === 'payment' && (
         <PaymentSettings settings={settings} onPendingChange={(p) => setTabPending('payment', p)} />
-      )}
-      {activeTab === 'shipping' && (
-        <ShippingSettings settings={settings} onPendingChange={(p) => setTabPending('shipping', p)} />
       )}
       {activeTab === 'social' && (
         <SocialSettings settings={settings} onPendingChange={(p) => setTabPending('social', p)} />
@@ -283,11 +277,11 @@ function StoreSettings({
             </label>
             <Input
               {...register('storeName')}
-              placeholder="Pandit Ji Marble Murti Arts"
+              placeholder="Shree Durga Tiles"
               className={errors.storeName ? 'border-red-400' : ''}
             />
             {errors.storeName && (
-              <p className="text-xs text-red-500 mt-1">{errors.storeName.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.storeName.message}</p>
             )}
           </div>
           <div>
@@ -297,11 +291,11 @@ function StoreSettings({
             <Input
               {...register('storeEmail')}
               type="email"
-              placeholder="info@panditjimurti.com"
+              placeholder="info@shreedurgatiles.com"
               className={errors.storeEmail ? 'border-red-400' : ''}
             />
             {errors.storeEmail && (
-              <p className="text-xs text-red-500 mt-1">{errors.storeEmail.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.storeEmail.message}</p>
             )}
           </div>
           <div>
@@ -310,11 +304,11 @@ function StoreSettings({
             </label>
             <Input
               {...register('storePhone')}
-              placeholder="+91 72403 64772"
+              placeholder="+91 00000 00000"
               className={errors.storePhone ? 'border-red-400' : ''}
             />
             {errors.storePhone && (
-              <p className="text-xs text-red-500 mt-1">{errors.storePhone.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.storePhone.message}</p>
             )}
           </div>
           <div>
@@ -331,7 +325,7 @@ function StoreSettings({
           <Textarea
             {...register('storeAddress')}
             rows={3}
-            placeholder="123, Murti Marg, govindgarh, Rajasthan 302001, India"
+            placeholder="Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India."
           />
         </div>
         <div className="mt-4">
@@ -341,7 +335,7 @@ function StoreSettings({
           <Textarea
             {...register('storeDescription')}
             rows={3}
-            placeholder="Luxury marble and brass murtis handcrafted by master artisans in govindgarh."
+            placeholder="Marble, granite and tile showroom serving local and project customers."
           />
         </div>
       </GlassCard>
@@ -369,21 +363,25 @@ function PaymentSettings({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       taxRate: 18,
-      codEnabled: true,
-      codFee: 0,
-      upiEnabled: true,
-      cardEnabled: true,
+      gstin: '',
+      upiId: '',
+      invoicePrefix: 'SDT-',
+      invoiceTerms: '',
+      invoiceFooterNote: '',
+      qrMode: 'upi',
     },
   });
 
   useEffect(() => {
     if (settings) {
       reset({
-        taxRate: settings.taxRate || 18,
-        codEnabled: settings.codEnabled !== undefined ? settings.codEnabled : true,
-        codFee: settings.codFee || 0,
-        upiEnabled: settings.upiEnabled !== undefined ? settings.upiEnabled : true,
-        cardEnabled: settings.cardEnabled !== undefined ? settings.cardEnabled : true,
+        taxRate: settings.taxRate ?? 18,
+        gstin: settings.gstin || '',
+        upiId: settings.upiId || '',
+        invoicePrefix: settings.invoicePrefix || 'SDT-',
+        invoiceTerms: settings.invoiceTerms || '',
+        invoiceFooterNote: settings.invoiceFooterNote || '',
+        qrMode: settings.qrMode || 'upi',
       });
     }
   }, [settings, reset]);
@@ -410,12 +408,12 @@ function PaymentSettings({
     <form id="payment-settings-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <GlassCard>
         <h3 className="font-cinzel text-lg font-semibold text-brown dark:text-ivory mb-4">
-          Payment Configuration
+          GST Invoice Configuration
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-black dark:text-black mb-1">
-              Tax Rate (GST %)
+              Default GST Rate (%)
             </label>
             <Input
               {...register('taxRate', { valueAsNumber: true })}
@@ -424,46 +422,51 @@ function PaymentSettings({
               className={errors.taxRate ? 'border-red-400' : ''}
             />
             {errors.taxRate && (
-              <p className="text-xs text-red-500 mt-1">{errors.taxRate.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.taxRate.message}</p>
             )}
           </div>
           <div>
             <label className="block text-sm font-medium text-black dark:text-black mb-1">
-              COD Fee (₹)
+              Shop GSTIN
             </label>
-            <Input
-              {...register('codFee', { valueAsNumber: true })}
-              type="number"
-              placeholder="0"
-            />
+            <Input {...register('gstin')} placeholder="15-character GSTIN" maxLength={15} />
           </div>
-        </div>
-
-        <div className="mt-4 space-y-2">
-          <label className="flex items-center gap-2 text-sm text-black dark:text-black cursor-pointer">
-            <input
-              type="checkbox"
-              {...register('codEnabled')}
-              className="accent-gold w-4 h-4"
-            />
-            Cash on Delivery
-          </label>
-          <label className="flex items-center gap-2 text-sm text-black dark:text-black cursor-pointer">
-            <input
-              type="checkbox"
-              {...register('upiEnabled')}
-              className="accent-gold w-4 h-4"
-            />
-            UPI Payments
-          </label>
-          <label className="flex items-center gap-2 text-sm text-black dark:text-black cursor-pointer">
-            <input
-              type="checkbox"
-              {...register('cardEnabled')}
-              className="accent-gold w-4 h-4"
-            />
-            Credit/Debit Cards
-          </label>
+          <div>
+            <label className="block text-sm font-medium text-black dark:text-black mb-1">
+              UPI ID
+            </label>
+            <Input {...register('upiId')} placeholder="shop@upi" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-black dark:text-black mb-1">
+              Invoice Prefix
+            </label>
+            <Input {...register('invoicePrefix')} placeholder="SDT-" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-black dark:text-black mb-1">
+              QR Code Purpose
+            </label>
+            <select
+              {...register('qrMode')}
+              className="w-full rounded-xl border border-gold/20 bg-white px-3 py-2.5 text-sm text-brown"
+            >
+              <option value="upi">UPI payment</option>
+              <option value="verification">Bill verification</option>
+            </select>
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-black dark:text-black mb-1">
+              Invoice Terms
+            </label>
+            <Textarea {...register('invoiceTerms')} rows={3} />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-black dark:text-black mb-1">
+              Invoice Footer Note
+            </label>
+            <Textarea {...register('invoiceFooterNote')} rows={2} />
+          </div>
         </div>
       </GlassCard>
     </form>
@@ -505,8 +508,8 @@ function ShippingSettings({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-sand/30 rounded-xl p-4">
             <p className="text-xs font-medium text-black dark:text-black mb-1 uppercase tracking-wide">Shipping Origin</p>
-            <p className="text-sm font-semibold text-brown">Pandit Ji Marble Murti Arts</p>
-            <p className="text-xs text-brown-light">Govindgarh, Alwar, Rajasthan, India</p>
+            <p className="text-sm font-semibold text-brown">Shree Durga Tiles</p>
+            <p className="text-xs text-brown-light">Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.</p>
           </div>
           <div className="bg-sand/30 rounded-xl p-4">
             <p className="text-xs font-medium text-black dark:text-black mb-1 uppercase tracking-wide">Express Surcharge</p>
@@ -804,7 +807,7 @@ function ContactSettings({
               className={errors.contactEmail ? 'border-red-400' : ''}
             />
             {errors.contactEmail && (
-              <p className="text-xs text-red-500 mt-1">{errors.contactEmail.message}</p>
+              <p className="text-xs text-red-600 mt-1">{errors.contactEmail.message}</p>
             )}
           </div>
           <div>

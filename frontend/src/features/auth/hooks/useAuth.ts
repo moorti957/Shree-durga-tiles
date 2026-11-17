@@ -214,7 +214,7 @@ export function useAuth(options: UseAuthOptions = {}): UseAuthReturn {
       setUser(authData.user);
       setTokens(authData.accessToken, authData.refreshToken);
       invalidateAuthQueries(queryClient);
-      toast.success('Your account has been created successfully.', 'Welcome to Pandit Ji Marble Murti Art.');
+      toast.success('Your account has been created successfully.', 'Welcome to Saraswati Murti Kala Kendra.');
       if (redirectOnSuccess) {
         router.push(redirectAfterLogin);
       }
