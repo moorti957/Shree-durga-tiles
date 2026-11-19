@@ -16,7 +16,7 @@ import { Toggle } from '@/components/ui/Switch';
 import { ScreenHeader } from '@/components/layout/ScreenHeader';
 import { Screen } from '@/components/layout/Screen';
 import { productSchema, type ProductFormInput, type ProductFormValues } from '@/features/products/schema';
-import { colors, typography } from '@/theme';
+import { colors, radii, typography } from '@/theme';
 
 export default function NewProductScreen() {
   const queryClient = useQueryClient();
@@ -72,13 +72,13 @@ export default function NewProductScreen() {
     <Screen>
       <ScreenHeader title="New product" subtitle="Will appear on your website when published" back />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, paddingBottom: 36, gap: 17 }}>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 12 }}>
           <Text style={[typography.eyebrow, { color: colors.brassDark }]}>PHOTOS</Text>
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <Button label="Take photo" variant="brass" icon={Camera} compact style={{ flex: 1 }} onPress={() => void pickPhotos(true)} />
             <Button label="From gallery" variant="outline" icon={ImagePlus} compact style={{ flex: 1 }} onPress={() => void pickPhotos(false)} />
           </View>
-          {photos.length ? <ScrollView horizontal contentContainerStyle={{ gap: 9 }}>{photos.map((uri, index) => <View key={uri}><Image source={{ uri }} style={{ width: 78, height: 78, borderRadius: 14 }} /><Pressable onPress={() => setPhotos((current) => current.filter((_, position) => position !== index))} style={{ position: 'absolute', top: -4, right: -4, backgroundColor: colors.card, borderRadius: 12, padding: 4 }}><Text style={{ color: colors.danger }}>×</Text></Pressable>{index === 0 ? <Text style={[typography.badge, { position: 'absolute', bottom: 4, left: 4, color: colors.card, backgroundColor: colors.ink, padding: 3, borderRadius: 4 }]}>COVER</Text> : null}</View>)}</ScrollView> : null}
+          {photos.length ? <ScrollView horizontal contentContainerStyle={{ gap: 8 }}>{photos.map((uri, index) => <View key={uri}><Image source={{ uri }} style={{ width: 68, height: 68, borderRadius: 8 }} /><Pressable onPress={() => setPhotos((current) => current.filter((_, position) => position !== index))} style={{ position: 'absolute', top: -4, right: -4, backgroundColor: colors.card, borderRadius: 8, padding: 4 }}><Text style={{ color: colors.danger }}>×</Text></Pressable>{index === 0 ? <Text style={[typography.badge, { position: 'absolute', bottom: 4, left: 4, color: colors.card, backgroundColor: colors.ink, padding: 3, borderRadius: 4 }]}>COVER</Text> : null}</View>)}</ScrollView> : null}
 
           <Controller control={control} name="name" render={({ field }) => <TextField label="Product name" placeholder="e.g. Makrana White" value={field.value} onChangeText={field.onChange} error={errors.name?.message} />} />
           <View style={{ gap: 8 }}>
@@ -121,7 +121,7 @@ export default function NewProductScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
       <Modal visible={customSizeOpen} transparent animationType="fade" onRequestClose={() => setCustomSizeOpen(false)}>
-        <View style={{ flex: 1, justifyContent: 'center', padding: 22, backgroundColor: colors.dim }}>
+        <View style={{ flex: 1, justifyContent: 'center', padding: 18, backgroundColor: colors.dim }}>
           <Card style={{ gap: 14 }}>
             <Text style={[typography.sectionTitle, { color: colors.ink }]}>Custom size</Text>
             <TextInput
@@ -130,7 +130,7 @@ export default function NewProductScreen() {
               placeholder="e.g. 900 x 1800 mm"
               value={customSize}
               onChangeText={setCustomSize}
-              style={[typography.body, { minHeight: 50, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: 14, paddingHorizontal: 14, color: colors.ink }]}
+              style={[typography.body, { minHeight: 46, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: radii.control, paddingHorizontal: 12, color: colors.ink }]}
             />
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <Button label="Cancel" variant="outline" style={{ flex: 1 }} onPress={() => setCustomSizeOpen(false)} />

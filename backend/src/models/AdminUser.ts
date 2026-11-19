@@ -5,6 +5,8 @@ export interface IAdminUser extends Document {
   identifier: string;
   passwordHash: string;
   role: 'owner';
+  mobile?: string;
+  profileImage?: string;
   lastLoginAt?: Date;
   failedAttempts: number;
   lockedUntil?: Date;
@@ -19,6 +21,8 @@ const AdminUserSchema = new Schema<IAdminUser>(
     identifier: { type: String, required: true, unique: true, trim: true, lowercase: true },
     passwordHash: { type: String, required: true, select: false },
     role: { type: String, enum: ['owner'], default: 'owner', required: true },
+    mobile: { type: String, default: '', trim: true },
+    profileImage: { type: String, default: '' },
     lastLoginAt: { type: Date },
     failedAttempts: { type: Number, default: 0, min: 0 },
     lockedUntil: { type: Date },

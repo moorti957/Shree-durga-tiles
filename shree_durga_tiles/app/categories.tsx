@@ -12,7 +12,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/TextField';
 import { Toggle } from '@/components/ui/Switch';
-import { colors, typography } from '@/theme';
+import { colors, radii, typography } from '@/theme';
 
 export default function CategoriesScreen() {
   const queryClient = useQueryClient();
@@ -104,12 +104,12 @@ export default function CategoriesScreen() {
   return (
     <Screen>
       <ScreenHeader title="Categories" subtitle="These show on your website menu" back />
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 34, gap: 16 }} keyboardShouldPersistTaps="handled">
-        <Card style={{ gap: 13 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 12 }} keyboardShouldPersistTaps="handled">
+        <Card style={{ gap: 10 }}>
           <Text style={[typography.eyebrow, { color: colors.brassDark }]}>ADD NEW CATEGORY</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <Pressable onPress={() => void choosePhoto()} accessibilityLabel="Choose category photo" style={{ width: 62, height: 62, borderWidth: 1, borderStyle: 'dashed', borderColor: colors.brassDark, borderRadius: 16, backgroundColor: colors.brassWash, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-              {photo ? <Image source={{ uri: photo }} style={{ width: 62, height: 62 }} /> : <Camera color={colors.brassDark} />}
+            <Pressable onPress={() => void choosePhoto()} accessibilityLabel="Choose category photo" style={{ width: 54, height: 54, borderWidth: 1, borderStyle: 'dashed', borderColor: colors.brassDark, borderRadius: 8, backgroundColor: colors.brassWash, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              {photo ? <Image source={{ uri: photo }} style={{ width: 54, height: 54 }} /> : <Camera size={19} color={colors.brassDark} />}
             </Pressable>
             <View style={{ flex: 1 }}><TextField label="Category name" placeholder="e.g. Marble" value={name} onChangeText={setName} /></View>
           </View>
@@ -120,10 +120,10 @@ export default function CategoriesScreen() {
           <Text style={[typography.small, { color: colors.muted }]}>Use arrows to reorder</Text>
         </View>
         {(categories.data?.data ?? []).map((category, index) => (
-          <Card key={category._id} style={{ padding: 12, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <Card key={category._id} style={{ padding: 10, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <GripVertical size={18} color={colors.muted} />
-            <View style={{ width: 50, height: 50, borderRadius: 14, overflow: 'hidden', backgroundColor: colors.stone100, alignItems: 'center', justifyContent: 'center' }}>
-              {category.image ? <Image source={{ uri: category.image }} style={{ width: 50, height: 50 }} /> : <Camera size={19} color={colors.brassDark} />}
+            <View style={{ width: 42, height: 42, borderRadius: 8, overflow: 'hidden', backgroundColor: colors.stone100, alignItems: 'center', justifyContent: 'center' }}>
+              {category.image ? <Image source={{ uri: category.image }} style={{ width: 42, height: 42 }} /> : <Camera size={17} color={colors.brassDark} />}
             </View>
             <View style={{ flex: 1, gap: 3 }}>
               <Text style={[typography.label, { color: colors.ink }]}>{category.name}</Text>
@@ -142,10 +142,10 @@ export default function CategoriesScreen() {
 
       <Modal visible={Boolean(editing)} transparent animationType="slide" onRequestClose={() => setEditing(null)}>
         <View style={{ flex: 1, backgroundColor: colors.dim, justifyContent: 'flex-end' }}>
-          <View style={{ backgroundColor: colors.stone, borderTopLeftRadius: 30, borderTopRightRadius: 30, padding: 22, paddingBottom: 36, gap: 16 }}>
+          <View style={{ backgroundColor: colors.stone, borderTopLeftRadius: radii.sheet, borderTopRightRadius: radii.sheet, padding: 16, paddingBottom: 24, gap: 12 }}>
             <Text style={[typography.sectionTitle, { color: colors.ink }]}>Edit category</Text>
-            <Pressable onPress={() => void choosePhoto(true)} style={{ width: 72, height: 72, borderRadius: 18, backgroundColor: colors.stone100, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' }}>
-              {editPhoto ? <Image source={{ uri: editPhoto }} style={{ width: 72, height: 72 }} /> : <Camera color={colors.brassDark} />}
+            <Pressable onPress={() => void choosePhoto(true)} style={{ width: 60, height: 60, borderRadius: 8, backgroundColor: colors.stone100, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' }}>
+              {editPhoto ? <Image source={{ uri: editPhoto }} style={{ width: 60, height: 60 }} /> : <Camera color={colors.brassDark} />}
             </Pressable>
             <TextField label="Category name" value={editName} onChangeText={setEditName} />
             <Button label="Save changes" loading={edit.isPending} onPress={() => edit.mutate()} />

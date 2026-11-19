@@ -23,14 +23,35 @@ export const setBiometricEnabled = (enabled: boolean) =>
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   initialized: false,
-  setSession: async (user, accessToken, refreshToken) => {
-    await Promise.all([
-      SecureStore.setItemAsync(ACCESS_KEY, accessToken),
-      SecureStore.setItemAsync(REFRESH_KEY, refreshToken),
-      SecureStore.setItemAsync('shree-durga-admin.session-user', JSON.stringify(user)),
-    ]);
-    set({ user, initialized: true });
-  },
+ 
+setSession: async (user, accessToken, refreshToken) => {
+  console.log('[AUTH] Access token received:', !!accessToken);
+  console.log('[AUTH] Refresh token received:', !!refreshToken);
+
+  if (!accessToken || !refreshToken) {
+    throw new Error('Login response did not contain valid tokens.');
+  }
+
+  await Promise.all([
+    SecureStore.setItemAsync(ACCESS_KEY, accessToken),
+    SecureStore.setItemAsync(REFRESH_KEY, refreshToken),
+    SecureStore.setItemAsync(
+      'shree-durga-admin.session-user',
+      JSON.stringify(user)
+    ),
+  ]);
+
+  const savedToken = await SecureStore.getItemAsync(ACCESS_KEY);
+
+  console.log('[AUTH] Token saved:', !!savedToken);
+
+  if (!savedToken) {
+    throw new Error('Failed to save access token.');
+  }
+
+  set({ user, initialized: true });
+},
+
   clearSession: async () => {
     await Promise.all([
       SecureStore.deleteItemAsync(ACCESS_KEY),

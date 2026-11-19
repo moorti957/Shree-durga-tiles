@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { Fingerprint, Lock } from 'lucide-react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Svg, { Circle, Path } from 'react-native-svg';
@@ -15,7 +16,7 @@ import { colors, typography } from '@/theme';
 
 function Mandala() {
   return (
-    <Svg width={390} height={390} viewBox="0 0 390 390" style={{ position: 'absolute', top: 72, alignSelf: 'center' }}>
+    <Svg width={310} height={310} viewBox="0 0 390 390" style={{ position: 'absolute', top: 22, alignSelf: 'center' }}>
       <Circle cx="195" cy="195" r="187" stroke={colors.brassLight} strokeOpacity={0.12} strokeWidth="1" />
       <Circle cx="195" cy="195" r="145" stroke={colors.brassLight} strokeOpacity={0.13} strokeWidth="1" />
       <Circle cx="195" cy="195" r="112" stroke={colors.brassLight} strokeOpacity={0.12} strokeWidth="1" strokeDasharray="3 7" />
@@ -75,25 +76,26 @@ export default function LoginScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.charcoal }}>
+      <StatusBar style="light" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.stone }} keyboardShouldPersistTaps="handled">
-          <View style={{ height: 390, overflow: 'hidden', backgroundColor: colors.charcoal, alignItems: 'center', paddingTop: 16 }}>
+          <View style={{ height: 310, overflow: 'hidden', backgroundColor: colors.charcoal, alignItems: 'center', paddingTop: 12 }}>
             <View style={{ position: 'absolute', top: 0, left: -12, right: -12, flexDirection: 'row', justifyContent: 'space-around' }}>
               {Array.from({ length: 17 }, (_, index) => (
                 <View key={index} style={{ width: 30, height: 15, backgroundColor: colors.sindoor, borderBottomLeftRadius: 18, borderBottomRightRadius: 18 }} />
               ))}
             </View>
-            <Mandala />
-            <View style={{ marginTop: 74, height: 88, width: 88, borderRadius: 44, borderWidth: 1, borderColor: colors.brassLight, alignItems: 'center', justifyContent: 'center' }}>
-              <TrishulIcon size={50} />
+              <Mandala />
+              <View style={{ marginTop: 53, height: 68, width: 68, borderRadius: 14, borderWidth: 1, borderColor: colors.brassLight, alignItems: 'center', justifyContent: 'center' }}>
+                <TrishulIcon size={38} />
             </View>
-            <Text style={[typography.loginBrand, { color: colors.stone, marginTop: 12 }]}>Shree Durga Tiles</Text>
-            <Text style={[typography.eyebrow, { color: colors.brassLight, letterSpacing: 3, marginTop: 5 }]}>ADMIN APP</Text>
-            <Text style={[typography.devanagari, { color: colors.brassLight, marginTop: 12 }]}>॥ जय माता दी ॥</Text>
+              <Text style={[typography.loginBrand, { color: colors.stone, marginTop: 8 }]}>Shree Durga Tiles</Text>
+              <Text style={[typography.eyebrow, { color: colors.brassLight, letterSpacing: 2, marginTop: 2 }]}>ADMIN APP</Text>
+              <Text style={[typography.devanagari, { color: colors.brassLight, marginTop: 6 }]}>॥ जय माता दी ॥</Text>
           </View>
-          <View style={{ marginTop: -32, backgroundColor: colors.stone, borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 28, gap: 16 }}>
+            <View style={{ marginTop: -16, backgroundColor: colors.stone, borderTopLeftRadius: 14, borderTopRightRadius: 14, paddingHorizontal: 20, paddingTop: 20, paddingBottom: 24, gap: 12 }}>
             <View style={{ gap: 2, marginBottom: 2 }}>
-              <Text style={[typography.sectionTitle, { color: colors.ink, fontSize: 34 }]}>Welcome back</Text>
+                <Text style={[typography.sectionTitle, { color: colors.ink }]}>Welcome back</Text>
               <Text style={[typography.small, { color: colors.muted }]}>Sign in to manage your shop and website.</Text>
             </View>
             <TextField label="Mobile number or email" placeholder="Enter your login ID" value={identifier} onChangeText={setIdentifier} autoCapitalize="none" keyboardType="email-address" returnKeyType="next" />

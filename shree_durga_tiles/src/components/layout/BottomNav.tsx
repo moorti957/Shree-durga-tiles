@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { usePathname, router } from 'expo-router';
 import { Home, Layers, Plus, Receipt, Users } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, typography } from '@/theme';
 
 const items = [
@@ -13,8 +14,9 @@ const items = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const insets = useSafeAreaInsets();
   return (
-    <View style={{ height: 78, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', backgroundColor: colors.card, borderTopColor: colors.line, borderTopWidth: 1, paddingHorizontal: 4 }}>
+    <View style={{ minHeight: 58 + insets.bottom, paddingBottom: insets.bottom, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', backgroundColor: colors.card, borderTopColor: colors.line, borderTopWidth: 1, paddingHorizontal: 4 }}>
       {items.map(({ route, label, Icon, fab }) => {
         const active = pathname.includes(route.split('/').pop() ?? '');
         return (
@@ -23,15 +25,18 @@ export function BottomNav() {
             accessibilityRole="button"
             accessibilityLabel={label}
             onPress={() => router.push(route as never)}
-            style={{ flex: 1, minHeight: 58, alignItems: 'center', justifyContent: 'center', gap: fab ? 0 : 4 }}
+            style={{ flex: 1, minHeight: 54, alignItems: 'center', justifyContent: 'center', gap: 3 }}
           >
             {fab ? (
-              <View style={{ width: 58, height: 58, marginTop: -32, borderRadius: 29, borderWidth: 4, borderColor: colors.stone, backgroundColor: colors.brassLight, alignItems: 'center', justifyContent: 'center', shadowColor: colors.ink, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.25, shadowRadius: 9, elevation: 8 }}>
-                <Icon size={24} strokeWidth={2.2} color={colors.ink} />
-              </View>
+              <>
+                <View style={{ width: 30, height: 28, borderRadius: 8, backgroundColor: colors.brassLight, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon size={18} strokeWidth={2} color={colors.ink} />
+                </View>
+                <Text style={[typography.navLabel, { color: colors.brassDark }]}>{label}</Text>
+              </>
             ) : (
               <>
-                <Icon size={22} strokeWidth={1.8} color={active ? colors.brassDark : colors.tabInactive} />
+                <Icon size={19} strokeWidth={1.8} color={active ? colors.brassDark : colors.tabInactive} />
                 <Text style={[typography.navLabel, { color: active ? colors.brassDark : colors.tabInactive, fontWeight: active ? '800' : '600' }]}>{label}</Text>
               </>
             )}

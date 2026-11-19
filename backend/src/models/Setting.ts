@@ -82,6 +82,14 @@ export interface ISetting extends Document {
   invoiceTerms: string;
   invoiceFooterNote: string;
   logo: string;
+  ownerSignature: string;
+  ownerName: string;
+  invoiceTitle: string;
+  returnPolicy: string;
+  defaultInvoiceNotes: string;
+  showLogo: boolean;
+  showSignature: boolean;
+  showGstin: boolean;
   stats: {
     yearsExperience: number;
     happyCustomers: number;
@@ -182,6 +190,14 @@ const SettingSchema = new Schema<ISetting>(
     invoiceTerms: { type: String, default: '' },
     invoiceFooterNote: { type: String, default: '' },
     logo: { type: String, default: '' },
+    ownerSignature: { type: String, default: '' },
+    ownerName: { type: String, default: '', trim: true },
+    invoiceTitle: { type: String, enum: ['TAX INVOICE', 'INVOICE'], default: 'TAX INVOICE' },
+    returnPolicy: { type: String, default: '' },
+    defaultInvoiceNotes: { type: String, default: '' },
+    showLogo: { type: Boolean, default: true },
+    showSignature: { type: Boolean, default: true },
+    showGstin: { type: Boolean, default: true },
     stats: {
       yearsExperience: { type: Number, default: 0, min: 0 },
       happyCustomers: { type: Number, default: 0, min: 0 },

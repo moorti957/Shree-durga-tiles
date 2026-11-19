@@ -88,8 +88,8 @@ export default function NewBillScreen() {
     <Screen>
       <ScreenHeader title="Create bill" subtitle="A new GST invoice for your customer" back />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, paddingBottom: 32, gap: 16 }}>
-          <Card style={{ gap: 13 }}>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 12 }}>
+          <Card style={{ gap: 10 }}>
             <Text style={[typography.eyebrow, { color: colors.brassDark }]}>CUSTOMER DETAILS</Text>
             <Controller control={control} name="customerName" render={({ field }) => <TextField label="Customer name" placeholder="Enter customer name" value={field.value} onChangeText={field.onChange} error={errors.customerName?.message} />} />
             <Controller control={control} name="customerPhone" render={({ field }) => <TextField label="Mobile number" placeholder="10-digit number" keyboardType="phone-pad" value={field.value ?? ''} onChangeText={field.onChange} />} />
@@ -100,7 +100,7 @@ export default function NewBillScreen() {
           <View style={{ gap: 10 }}>
             <Text style={[typography.sectionTitle, { color: colors.ink }]}>Bill items</Text>
             {items.map((item, index) => (
-              <Card key={index} style={{ gap: 12 }}>
+              <Card key={index} style={{ gap: 10 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Text style={[typography.label, { color: colors.ink, flex: 1 }]}>ITEM {index + 1}</Text>
                   {items.length > 1 ? <Button label="Remove" variant="outline" compact icon={Trash2} onPress={() => removeItem(index)} /> : null}
@@ -117,7 +117,7 @@ export default function NewBillScreen() {
             <Button label="Add another item" variant="outline" icon={Plus} onPress={addItem} />
           </View>
 
-          <Card style={{ gap: 12 }}>
+          <Card style={{ gap: 10 }}>
             <Text style={[typography.eyebrow, { color: colors.brassDark }]}>GST & PAYMENT</Text>
             <View style={{ flexDirection: 'row', gap: 8 }}><Chip label="GST bill" selected={gst} onPress={() => setGst(true)} /><Chip label="Non-GST" selected={!gst} onPress={() => setGst(false)} /><Text style={[typography.small, { color: colors.muted, alignSelf: 'center' }]}>{gstRate}%</Text></View>
             <TextField label="Discount (₹)" keyboardType="decimal-pad" value={discount} onChangeText={setDiscount} />

@@ -42,11 +42,22 @@ type PdfBillItem = {
 
 type PdfSettings = {
   shopName?: string;
+  tagline?: string;
   phone?: string;
+  email?: string;
   address?: string;
   gstin?: string;
   invoiceTerms?: string;
   invoiceFooterNote?: string;
+  logo?: string;
+  ownerSignature?: string;
+  ownerName?: string;
+  invoiceTitle?: string;
+  returnPolicy?: string;
+  defaultInvoiceNotes?: string;
+  showLogo?: boolean;
+  showSignature?: boolean;
+  showGstin?: boolean;
 };
 
 const money = (value: { toString(): string }): string =>
@@ -65,6 +76,17 @@ export const renderBillPdf = async (
   const qr = bill.verificationUrl
     ? await QRCode.toBuffer(bill.verificationUrl, { type: 'png', width: 144, margin: 1 })
     : undefined;
+  const loadImage = async (url?: string): Promise<Buffer | undefined> => {
+    if (!url?.trim()) return undefined;
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(8_000) });
+      if (!response.ok) return undefined;
+      return Buffer.from(await response.arrayBuffer());
+    } catch {
+      return undefined;
+    }
+  };
+  const [logo, signature] = await Promise.all([loadImage(settings?.showLogo !== false ? settings?.logo : undefined), loadImage(settings?.showSignature !== false ? settings?.ownerSignature : undefined)]);
 
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ size: 'A4', margin: 44, bufferPages: true });
@@ -78,14 +100,20 @@ export const renderBillPdf = async (
     const width = right - left;
     const shopName = settings?.shopName?.trim() || 'Shree Durga Tiles';
 
-    doc.font('Helvetica-Bold').fontSize(18).text(shopName, left, 42, { width: 350 });
+    if (logo) {
+      doc.image(logo, left, 38, { fit: [52, 52] });
+      doc.font('Helvetica-Bold').fontSize(18).text(shopName, left + 62, 42, { width: 288 });
+    } else {
+      doc.font('Helvetica-Bold').fontSize(18).text(shopName, left, 42, { width: 350 });
+    }
+    if (settings?.tagline) doc.font('Helvetica').fontSize(8).fillColor('#86652F').text(settings.tagline, left + (logo ? 62 : 0), 64, { width: 288 });
     doc.font('Helvetica').fontSize(9).fillColor('#444');
-    if (settings?.address) doc.text(settings.address, left, 67, { width: 340 });
-    const contact = [settings?.phone, settings?.gstin ? `GSTIN: ${settings.gstin}` : '']
+    if (settings?.address) doc.text(settings.address, left, logo ? 78 : 67, { width: 340 });
+    const contact = [settings?.phone, settings?.email, settings?.showGstin !== false && settings?.gstin ? `GSTIN: ${settings.gstin}` : '']
       .filter(Boolean)
       .join('  |  ');
     if (contact) doc.text(contact, left, doc.y + 2, { width: 340 });
-    doc.fillColor('#111').font('Helvetica-Bold').fontSize(16).text('TAX INVOICE', left, 108);
+    doc.fillColor('#111').font('Helvetica-Bold').fontSize(16).text(settings?.invoiceTitle || 'TAX INVOICE', left, 108);
     doc.font('Helvetica').fontSize(10).text(`Invoice: ${bill.billNo || 'Draft'}`, left, 132);
     doc.text(`Date: ${date(bill.billDate)}`, 330, 132, { width: 150, align: 'right' });
 
@@ -178,6 +206,16 @@ export const renderBillPdf = async (
       doc.text(bill.verificationUrl || '', left + 92, y + 26, { width: 300 });
       y += 94;
     }
+    if (settings?.showSignature !== false) {
+      const signatureY = Math.max(y, 690);
+      if (signatureY > 760) doc.addPage();
+      if (signature) doc.image(signature, 420, signatureY - 36, { fit: [118, 42] });
+      doc.moveTo(420, signatureY).lineTo(right, signatureY).strokeColor('#b0a99c').stroke();
+      doc.font('Helvetica-Bold').fontSize(8).text(settings?.ownerName || 'Authorized Signatory', 420, signatureY + 6, { width: 131, align: 'right' });
+      doc.font('Helvetica').text('Authorized Signatory', 420, signatureY + 18, { width: 131, align: 'right' });
+    }
+    if (settings?.defaultInvoiceNotes) doc.fontSize(8).text(settings.defaultInvoiceNotes, left, y, { width });
+    if (settings?.returnPolicy) doc.fontSize(8).text(`Return / refund: ${settings.returnPolicy}`, left, doc.y + 6, { width });
     if (settings?.invoiceTerms) doc.fontSize(8).text(settings.invoiceTerms, left, y, { width });
     if (settings?.invoiceFooterNote) {
       doc.fontSize(8).text(settings.invoiceFooterNote, left, doc.y + 8, { width, align: 'center' });

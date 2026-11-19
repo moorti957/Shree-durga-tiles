@@ -53,6 +53,8 @@ const adminSummary = (admin: IAdminUser) => ({
   name: admin.name,
   identifier: admin.identifier,
   role: admin.role,
+  mobile: admin.mobile || '',
+  profileImage: admin.profileImage || '',
 });
 
 const invalidCredentials = (): AppError =>

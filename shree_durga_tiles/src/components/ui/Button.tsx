@@ -1,6 +1,6 @@
 import { ActivityIndicator, Pressable, Text, View, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 import type { LucideIcon } from 'lucide-react-native';
-import { colors, typography } from '@/theme';
+import { colors, componentSize, radii, typography } from '@/theme';
 
 type Props = PressableProps & {
   label: string;
@@ -27,9 +27,9 @@ export function Button({ label, variant = 'brass', icon: Icon, loading, compact,
       disabled={disabled || loading}
       style={({ pressed }) => [
         {
-          minHeight: compact ? 44 : 56,
-          paddingHorizontal: compact ? 16 : 22,
-          borderRadius: 999,
+          minHeight: compact ? componentSize.buttonCompact : componentSize.button,
+          paddingHorizontal: compact ? 12 : 16,
+          borderRadius: radii.control,
           borderWidth: 1,
           borderColor: palette.borderColor,
           backgroundColor: palette.backgroundColor,
@@ -37,7 +37,7 @@ export function Button({ label, variant = 'brass', icon: Icon, loading, compact,
           justifyContent: 'center',
           alignItems: 'center',
           gap: 9,
-          opacity: disabled ? 0.48 : pressed ? 0.82 : 1,
+          opacity: disabled || loading ? 0.55 : pressed ? 0.82 : 1,
         },
         style,
       ]}
@@ -47,7 +47,7 @@ export function Button({ label, variant = 'brass', icon: Icon, loading, compact,
         <ActivityIndicator color={palette.color} />
       ) : (
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9 }}>
-          {Icon ? <Icon size={20} color={palette.color} strokeWidth={1.8} /> : null}
+          {Icon ? <Icon size={18} color={palette.color} strokeWidth={1.8} /> : null}
           <Text allowFontScaling maxFontSizeMultiplier={1.3} style={[typography.button, { color: palette.color }]}>
             {label}
           </Text>

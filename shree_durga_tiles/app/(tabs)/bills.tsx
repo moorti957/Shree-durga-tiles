@@ -7,7 +7,7 @@ import { ScreenHeader } from '@/components/layout/ScreenHeader';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Chip } from '@/components/ui/Chip';
-import { colors, typography } from '@/theme';
+import { colors, radii, typography } from '@/theme';
 import { formatRupees } from '@/lib/format';
 import { Screen } from '@/components/layout/Screen';
 
@@ -15,13 +15,13 @@ export default function BillsScreen() {
   const bills = useQuery({ queryKey: ['bills'], queryFn: () => billsApi.list({ page: 1, limit: 50 }) });
   return (
     <Screen scroll={false}>
-      <ScreenHeader title="Bills" subtitle="GST invoices and payments" right={<Pressable onPress={() => router.push('/bill/new')} style={{ minHeight: 44, paddingHorizontal: 14, borderRadius: 999, backgroundColor: colors.brassLight, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 5 }}><Plus size={17} color={colors.ink} /><Text style={[typography.small, { color: colors.ink }]}>New bill</Text></Pressable>}>
+      <ScreenHeader title="Bills" subtitle="GST invoices and payments" right={<Pressable onPress={() => router.push('/bill/new')} style={{ minHeight: 38, paddingHorizontal: 10, borderRadius: radii.control, backgroundColor: colors.brassLight, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 5 }}><Plus size={16} color={colors.ink} /><Text style={[typography.small, { color: colors.ink, fontSize: 11 }]}>New bill</Text></Pressable>}>
         <View style={{ flexDirection: 'row', gap: 8 }}><Chip label="All bills" selected /><Chip label="Draft" /><Chip label="Due" /><Chip label="Paid" /></View>
       </ScreenHeader>
       <FlatList
         data={bills.data?.data ?? []}
         keyExtractor={(item) => item._id}
-        contentContainerStyle={{ padding: 20, paddingBottom: 24, gap: 11 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 20, gap: 9 }}
         refreshControl={<RefreshControl refreshing={bills.isRefetching} onRefresh={() => void bills.refetch()} tintColor={colors.brassDark} />}
         renderItem={({ item }) => {
           const due = Number(item.balanceDue);

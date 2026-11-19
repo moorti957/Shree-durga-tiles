@@ -38,7 +38,7 @@ export default function EnquiryDetailScreen() {
   return (
     <Screen>
       <ScreenHeader title="Enquiry" subtitle={`Received ${new Date(item.createdAt).toLocaleDateString()}`} back />
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 15 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
         <Card style={{ gap: 8 }}>
           <Text style={[typography.cardTitle, { color: colors.ink }]}>{item.name}</Text>
           <Text style={[typography.body, { color: colors.body }]}>{item.need}</Text>

@@ -23,12 +23,12 @@ function ProductTile({ product, onEdit, onPrice, onPublish }: {
   onPublish: (value: boolean) => void;
 }) {
   return (
-    <Card style={{ padding: 13, gap: 12 }}>
-      <Pressable onPress={onEdit} style={{ flexDirection: 'row', gap: 12 }}>
-        <View style={{ width: 78, height: 78, borderRadius: 15, backgroundColor: colors.stone100, alignItems: 'center', justifyContent: 'center' }}>
-          {product.images?.[0] ? <Image source={{ uri: product.images[0] }} contentFit="cover" style={{ width: 78, height: 78, borderRadius: 15 }} /> : <IndianRupee size={24} color={colors.brassDark} strokeWidth={1.4} />}
+    <Card style={{ padding: 10, gap: 9 }}>
+      <Pressable onPress={onEdit} style={{ flexDirection: 'row', gap: 10 }}>
+        <View style={{ width: 62, height: 62, borderRadius: 8, backgroundColor: colors.stone100, alignItems: 'center', justifyContent: 'center' }}>
+          {product.images?.[0] ? <Image source={{ uri: product.images[0] }} contentFit="cover" style={{ width: 62, height: 62, borderRadius: 8 }} /> : <IndianRupee size={21} color={colors.brassDark} strokeWidth={1.4} />}
         </View>
-        <View style={{ flex: 1, gap: 4 }}>
+        <View style={{ flex: 1, minWidth: 0, gap: 3 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Text style={[typography.eyebrow, { color: colors.brassDark, fontSize: 10 }]} numberOfLines={1}>
               {typeof product.category === 'string' ? 'PRODUCT' : product.category?.name ?? 'PRODUCT'}
@@ -39,7 +39,7 @@ function ProductTile({ product, onEdit, onPrice, onPublish }: {
           <Text style={[typography.small, { color: colors.muted }]} numberOfLines={1}>{[product.size, product.finish, product.quality].filter(Boolean).join(' · ')}</Text>
         </View>
       </Pressable>
-      <View style={{ borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 10, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      <View style={{ borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 8, flexDirection: 'row', alignItems: 'center', gap: 5 }}>
         <View style={{ flex: 1 }}>
           <Text style={[typography.label, { color: colors.ink, fontSize: 13 }]}>{formatRupees(product.price)}{product.price !== null ? ` / ${formatUnit(product.priceUnit)}` : ''}</Text>
         </View>
@@ -90,9 +90,9 @@ export default function ProductsScreen() {
     <View style={{ flex: 1, backgroundColor: colors.stone }}>
       <ScreenHeader
         title="Products"
-        right={<Pressable onPress={() => router.push('/categories')} style={{ minHeight: 44, paddingHorizontal: 13, borderRadius: 999, backgroundColor: colors.brassLight, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 6 }}><LayoutGrid size={17} color={colors.ink} /><Text style={[typography.small, { color: colors.ink }]}>Categories</Text></Pressable>}
+        right={<Pressable onPress={() => router.push('/categories')} style={{ minHeight: 38, paddingHorizontal: 10, borderRadius: 8, backgroundColor: colors.brassLight, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 5 }}><LayoutGrid size={16} color={colors.ink} /><Text style={[typography.small, { color: colors.ink, fontSize: 11 }]}>Categories</Text></Pressable>}
       >
-        <View style={{ height: 48, borderRadius: 16, backgroundColor: colors.stone, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 9 }}>
+        <View style={{ height: 40, borderRadius: 8, backgroundColor: colors.stone, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, gap: 8 }}>
           <Search size={19} color={colors.muted} />
           <TextInput value={search} onChangeText={setSearch} placeholder="Search by name or size" placeholderTextColor={colors.muted} style={[typography.small, { flex: 1, color: colors.ink }]} />
           {search ? <Pressable onPress={() => setSearch('')} accessibilityLabel="Clear search"><X size={18} color={colors.muted} /></Pressable> : null}
@@ -102,10 +102,10 @@ export default function ProductsScreen() {
       <FlatList
         data={visibleProducts}
         keyExtractor={(item) => item._id}
-        contentContainerStyle={{ padding: 20, paddingBottom: 24, gap: 12 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 20, gap: 10 }}
         refreshControl={<RefreshControl refreshing={products.isRefetching} onRefresh={() => void products.refetch()} tintColor={colors.brassDark} />}
         ListHeaderComponent={
-          <View style={{ gap: 12, marginBottom: 4 }}>
+          <View style={{ gap: 10, marginBottom: 2 }}>
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -114,9 +114,9 @@ export default function ProductsScreen() {
               keyExtractor={(item) => item._id || 'all'}
               renderItem={({ item }) => <Chip label={item.name} selected={category === item._id} onPress={() => setCategory(item._id)} />}
             />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ gap: 7 }}>
               <Text style={[typography.small, { color: colors.muted }]}>{products.data?.meta.total ?? 0} products · {products.data?.data.filter((item) => item.status === 'published').length ?? 0} live</Text>
-              <View style={{ flexDirection: 'row', gap: 6 }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
                 {([
                   ['newest', 'Newest'],
                   ['name-asc', 'Name'],
@@ -144,25 +144,25 @@ export default function ProductsScreen() {
 
       <Modal visible={Boolean(selected)} transparent animationType="slide" onRequestClose={() => setSelected(null)}>
         <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: colors.dim }}>
-          <View style={{ backgroundColor: colors.stone, borderTopLeftRadius: 32, borderTopRightRadius: 32, padding: 22, paddingBottom: 34, gap: 18 }}>
+          <View style={{ backgroundColor: colors.stone, borderTopLeftRadius: 18, borderTopRightRadius: 18, padding: 16, paddingBottom: 24, gap: 12 }}>
             <View style={{ alignSelf: 'center', width: 44, height: 5, borderRadius: 4, backgroundColor: colors.inputBorder }} />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-              <View style={{ width: 58, height: 58, borderRadius: 14, backgroundColor: colors.stone100, alignItems: 'center', justifyContent: 'center' }}><IndianRupee color={colors.brassDark} /></View>
+              <View style={{ width: 44, height: 44, borderRadius: 8, backgroundColor: colors.stone100, alignItems: 'center', justifyContent: 'center' }}><IndianRupee size={19} color={colors.brassDark} /></View>
               <View style={{ flex: 1 }}>
                 <Text style={[typography.eyebrow, { color: colors.brassDark }]}>UPDATE PRICE</Text>
                 <Text style={[typography.cardTitle, { color: colors.ink }]}>{selected?.name}</Text>
                 <Text style={[typography.small, { color: colors.muted }]}>{selected?.size} · {selected?.finish}</Text>
               </View>
-              <Pressable onPress={() => setSelected(null)} accessibilityLabel="Close price editor" style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}><X color={colors.ink} /></Pressable>
+              <Pressable onPress={() => setSelected(null)} accessibilityLabel="Close price editor" style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}><X size={18} color={colors.ink} /></Pressable>
             </View>
             <Text style={[typography.small, { color: colors.muted }]}>Current price {formatRupees(selected?.price)} / {formatUnit(selected?.priceUnit ?? 'sq_ft')}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-              <Pressable onPress={() => setPrice(String(Math.max(0, Number(price || selected?.price || 0) - 1)))} accessibilityLabel="Decrease price by one" style={{ width: 48, height: 48, borderRadius: 24, borderWidth: 1, borderColor: colors.inputBorder, alignItems: 'center', justifyContent: 'center' }}><Minus color={colors.ink} /></Pressable>
+              <Pressable onPress={() => setPrice(String(Math.max(0, Number(price || selected?.price || 0) - 1)))} accessibilityLabel="Decrease price by one" style={{ width: 42, height: 42, borderRadius: 8, borderWidth: 1, borderColor: colors.inputBorder, alignItems: 'center', justifyContent: 'center' }}><Minus size={18} color={colors.ink} /></Pressable>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={[typography.priceBig, { color: colors.ink, fontSize: 48 }]}>₹</Text>
-                <TextInput keyboardType="numeric" value={price} onChangeText={setPrice} style={[typography.priceBig, { minWidth: 120, color: colors.ink, textAlign: 'center', fontSize: 48 }]} />
+                <Text style={[typography.priceBig, { color: colors.ink, fontSize: 38 }]}>₹</Text>
+                <TextInput keyboardType="numeric" value={price} onChangeText={setPrice} style={[typography.priceBig, { minWidth: 100, color: colors.ink, textAlign: 'center', fontSize: 38 }]} />
               </View>
-              <Pressable onPress={() => setPrice(String(Number(price || selected?.price || 0) + 1))} accessibilityLabel="Increase price by one" style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' }}><Plus color={colors.brassLight} /></Pressable>
+              <Pressable onPress={() => setPrice(String(Number(price || selected?.price || 0) + 1))} accessibilityLabel="Increase price by one" style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' }}><Plus size={18} color={colors.brassLight} /></Pressable>
             </View>
             <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'center' }}>
               {[-10, -5, 5, 10].map((value) => <Chip key={value} label={`${value > 0 ? '+' : ''}${value}%`} onPress={() => setPrice(String(applyPricePercent(Number(price || selected?.price || 0), value)))} />)}

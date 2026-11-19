@@ -385,7 +385,7 @@ export const MobileBillController = {
     if (!bill) throw new NotFoundError('Finalized bill not found.');
     const [items, settings] = await Promise.all([
       BillItem.find({ billId: bill._id }).sort({ createdAt: 1 }).lean(),
-      Setting.findOne({}).select('shopName phone address gstin invoiceTerms invoiceFooterNote').lean(),
+      Setting.findOne({}).select('shopName tagline phone email address gstin invoiceTerms invoiceFooterNote logo ownerSignature ownerName invoiceTitle returnPolicy defaultInvoiceNotes showLogo showSignature showGstin').lean(),
     ]);
     const pdf = await renderBillPdf(bill, items, settings);
     const filename = `${(bill.billNo || 'bill').replace(/[^a-zA-Z0-9._-]/g, '_')}.pdf`;

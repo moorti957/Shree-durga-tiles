@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import { colors, typography } from '@/theme';
+import { colors, radii, typography } from '@/theme';
 
 const palette = {
   live: { backgroundColor: colors.successBg, color: colors.success },
@@ -14,7 +14,7 @@ const palette = {
 export function Badge({ label, variant = 'neutral', dot = false }: { label: string; variant?: keyof typeof palette; dot?: boolean }) {
   const style = palette[variant];
   return (
-    <View style={{ borderRadius: 999, paddingHorizontal: 10, paddingVertical: 6, backgroundColor: style.backgroundColor, flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start' }}>
+    <View style={{ borderRadius: radii.control, paddingHorizontal: 8, paddingVertical: 4, backgroundColor: style.backgroundColor, flexDirection: 'row', alignItems: 'center', gap: 5, alignSelf: 'flex-start' }}>
       {dot ? <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: style.color }} /> : null}
       <Text style={[typography.badge, { color: style.color }]}>{label}</Text>
     </View>

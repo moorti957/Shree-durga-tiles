@@ -2,7 +2,7 @@ import { Pressable, Text, View } from 'react-native';
 import type { ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react-native';
 import { router } from 'expo-router';
-import { colors, typography } from '@/theme';
+import { colors, radii, spacing, typography } from '@/theme';
 
 export function ScreenHeader({
   title,
@@ -18,15 +18,15 @@ export function ScreenHeader({
   children?: ReactNode;
 }) {
   return (
-    <View style={{ backgroundColor: colors.charcoal, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 22, gap: 16 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+    <View style={{ backgroundColor: colors.charcoal, borderBottomLeftRadius: radii.container, borderBottomRightRadius: radii.container, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md, gap: spacing.sm }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
         {back ? (
-          <Pressable onPress={() => router.back()} accessibilityLabel="Go back" accessibilityRole="button" style={{ width: 44, height: 44, borderRadius: 22, borderColor: 'rgba(237,234,228,0.3)', borderWidth: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <ArrowLeft size={20} color={colors.stone} strokeWidth={1.8} />
+          <Pressable onPress={() => router.back()} accessibilityLabel="Go back" accessibilityRole="button" style={{ width: 38, height: 38, borderRadius: radii.control, borderColor: 'rgba(237,234,228,0.3)', borderWidth: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ArrowLeft size={18} color={colors.stone} strokeWidth={1.8} />
           </Pressable>
         ) : null}
-        <View style={{ flex: 1, gap: 2 }}>
-          <Text style={[typography.screenTitleSmall, { color: colors.stone }]}>{title}</Text>
+        <View style={{ flex: 1, gap: 1, minWidth: 0 }}>
+          <Text numberOfLines={1} style={[typography.screenTitleSmall, { color: colors.stone }]}>{title}</Text>
           {subtitle ? <Text style={[typography.small, { color: colors.mutedOnDark }]}>{subtitle}</Text> : null}
         </View>
         {right}

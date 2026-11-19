@@ -159,4 +159,6 @@ export const billsApi = {
       headers: { 'Idempotency-Key': `${Date.now()}-${Math.random().toString(36).slice(2)}` },
     })),
   settings: () => apiRequest<ShopSettings>({ method: 'get', url: '/admin/settings' }),
+  updateSettings: (settings: Partial<ShopSettings>) =>
+    apiRequest<ShopSettings>({ method: 'patch', url: '/admin/settings', data: settings }),
 };

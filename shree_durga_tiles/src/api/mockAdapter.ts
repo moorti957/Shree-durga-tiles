@@ -126,17 +126,32 @@ export const mockAdapter: AxiosAdapter = async (config) => {
   }
   if (path.endsWith('/admin/visitors/live')) return response(config, { count: 0, visitors: [] });
   if (path.endsWith('/admin/settings')) {
-    return response(config, {
+    const mockSettings = {
       shopName: 'Shree Durga Tiles',
+      tagline: '',
       phone: '',
       whatsapp: '',
+      email: '',
       address: 'Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.',
       gstin: '',
       upiId: '',
       invoicePrefix: 'SDT-',
       defaultGstRate: 18,
+      invoiceTerms: '',
+      invoiceFooterNote: 'Thank you for choosing Shree Durga Tiles.',
+      logo: '',
+      ownerSignature: '',
+      ownerName: '',
+      invoiceTitle: 'TAX INVOICE',
+      returnPolicy: '',
+      defaultInvoiceNotes: '',
+      showLogo: true,
+      showSignature: true,
+      showGstin: true,
       qrMode: 'verification',
-    });
+    };
+    if (method === 'patch') return response(config, { ...mockSettings, ...body });
+    return response(config, mockSettings);
   }
   if (path.endsWith('/admin/products') && method === 'get') {
     const q = url.searchParams.get('q')?.toLowerCase();

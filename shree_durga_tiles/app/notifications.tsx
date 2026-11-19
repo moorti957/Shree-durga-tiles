@@ -51,7 +51,7 @@ export default function NotificationsScreen() {
   return (
     <Screen>
       <ScreenHeader title="Notifications" subtitle="New enquiries and payment reminders" back />
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 11 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 9 }}>
         <Button
           label="Enable push notifications"
           icon={Bell}

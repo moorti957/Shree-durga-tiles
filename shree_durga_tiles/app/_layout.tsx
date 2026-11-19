@@ -43,7 +43,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         {!fontsLoaded || !initialized ? (
           <View style={{ flex: 1, backgroundColor: colors.stone, alignItems: 'center', justifyContent: 'center' }}>
             <ActivityIndicator color={colors.brassLight} />
@@ -59,6 +59,7 @@ export default function RootLayout() {
             <Stack.Screen name="bill/new" />
             <Stack.Screen name="bill/[id]" />
             <Stack.Screen name="enquiry/[id]" />
+            <Stack.Screen name="settings" />
           </Stack>
         )}
       </QueryClientProvider>

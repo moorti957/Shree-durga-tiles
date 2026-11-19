@@ -9,20 +9,20 @@ export function Toggle({ value, onValueChange, label }: { value: boolean; onValu
       accessibilityState={{ checked: value }}
       onPress={() => onValueChange(!value)}
       hitSlop={5}
-      style={{ minWidth: 52, minHeight: 44, justifyContent: 'center', alignItems: 'center' }}
+      style={{ minWidth: 44, minHeight: 44, justifyContent: 'center', alignItems: 'center' }}
     >
       <View
         style={{
-          width: 48,
-          height: 28,
-          borderRadius: 16,
+          width: 42,
+          height: 24,
+          borderRadius: 12,
           backgroundColor: value ? colors.success : colors.switchOff,
           justifyContent: 'center',
           padding: 3,
           alignItems: value ? 'flex-end' : 'flex-start',
         }}
       >
-        <View style={{ height: 22, width: 22, borderRadius: 11, backgroundColor: colors.card }} />
+        <View style={{ height: 18, width: 18, borderRadius: 9, backgroundColor: colors.card }} />
       </View>
     </Pressable>
   );

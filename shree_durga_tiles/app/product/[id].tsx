@@ -62,7 +62,7 @@ export default function EditProductScreen() {
   return (
     <Screen>
       <ScreenHeader title="Edit product" subtitle="Will appear on your website when published" back />
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 32, gap: 16 }} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 12 }} keyboardShouldPersistTaps="handled">
         <Controller control={control} name="name" render={({ field }) => <TextField label="Product name" value={field.value} onChangeText={field.onChange} error={errors.name?.message} />} />
         <View style={{ gap: 8 }}>
           <Text style={[typography.label, { color: colors.ink }]}>Category</Text>

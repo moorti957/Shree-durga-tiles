@@ -35,13 +35,13 @@ export default function VisitorsScreen() {
         <FlatList
           data={visitors.data?.data ?? []}
           keyExtractor={(item) => item._id}
-          contentContainerStyle={{ padding: 20, paddingBottom: 24, gap: 11 }}
+          contentContainerStyle={{ padding: 16, paddingBottom: 20, gap: 9 }}
           refreshControl={<RefreshControl refreshing={visitors.isRefetching} onRefresh={() => void visitors.refetch()} tintColor={colors.brassDark} />}
           renderItem={({ item }) => {
             const live = Date.now() - new Date(item.lastSeenAt).getTime() < 5 * 60_000;
             return (
               <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <View style={{ width: 42, height: 42, borderRadius: 21, backgroundColor: colors.stone100, alignItems: 'center', justifyContent: 'center' }}><Users size={19} color={colors.brassDark} /></View>
+                <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: colors.stone100, alignItems: 'center', justifyContent: 'center' }}><Users size={17} color={colors.brassDark} /></View>
                 <View style={{ flex: 1, gap: 4 }}>
                   <Text style={[typography.label, { color: colors.ink }]}>{item.city ? `Visitor from ${item.city}` : `${item.device} visitor`}</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}><Clock size={12} color={colors.muted} /><Text style={[typography.small, { color: colors.muted }]}>Last seen {new Date(item.lastSeenAt).toLocaleTimeString()}</Text></View>
@@ -57,7 +57,7 @@ export default function VisitorsScreen() {
         <FlatList
           data={enquiries.data?.data ?? []}
           keyExtractor={(item) => item._id}
-          contentContainerStyle={{ padding: 20, paddingBottom: 24, gap: 11 }}
+          contentContainerStyle={{ padding: 16, paddingBottom: 20, gap: 9 }}
           refreshControl={<RefreshControl refreshing={enquiries.isRefetching} onRefresh={() => void enquiries.refetch()} tintColor={colors.brassDark} />}
           renderItem={({ item }) => (
             <Card style={{ gap: 11 }}>

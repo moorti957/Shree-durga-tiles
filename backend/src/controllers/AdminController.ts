@@ -325,7 +325,8 @@ export const AdminController = {
     const data = pickFields(req.body, [
       'shopName', 'tagline', 'phone', 'whatsapp', 'email', 'address', 'mapLink', 'timings',
       'topBarText', 'gstin', 'upiId', 'invoicePrefix', 'defaultGstRate', 'invoiceTerms',
-      'invoiceFooterNote', 'logo', 'stats', 'heroHeadline', 'heroSubtext', 'featuredProductId',
+      'invoiceFooterNote', 'logo', 'ownerSignature', 'ownerName', 'invoiceTitle', 'returnPolicy',
+      'defaultInvoiceNotes', 'showLogo', 'showSignature', 'showGstin', 'stats', 'heroHeadline', 'heroSubtext', 'featuredProductId',
       'aboutText', 'aboutImage', 'social', 'seo', 'qrMode', 'analyticsNotice',
     ]);
     const settings = await Setting.findOneAndUpdate({}, { $set: data }, {

@@ -1,4 +1,4 @@
-export type AdminUser = { id: string; name: string; identifier: string; role: string };
+export type AdminUser = { id: string; name: string; identifier: string; role: string; mobile?: string; profileImage?: string };
 export type Paginated<T> = {
   data: T[];
   meta: { page: number; limit: number; total: number; pages: number };
@@ -93,8 +93,10 @@ export type BillItem = {
 export type Payment = { amount: number; mode: 'upi' | 'cash' | 'bank' | 'cheque'; paidAt?: string };
 export type ShopSettings = {
   shopName: string;
+  tagline?: string;
   phone?: string;
   whatsapp?: string;
+  email?: string;
   address?: string;
   gstin?: string;
   upiId?: string;
@@ -102,5 +104,14 @@ export type ShopSettings = {
   defaultGstRate?: number;
   invoiceTerms?: string;
   invoiceFooterNote?: string;
+  logo?: string;
+  ownerSignature?: string;
+  ownerName?: string;
+  invoiceTitle?: 'TAX INVOICE' | 'INVOICE';
+  returnPolicy?: string;
+  defaultInvoiceNotes?: string;
+  showLogo?: boolean;
+  showSignature?: boolean;
+  showGstin?: boolean;
   qrMode?: 'upi' | 'verification';
 };
