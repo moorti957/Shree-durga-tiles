@@ -8,6 +8,10 @@ import { ArrowDown, ArrowRight, MapPin, MessageCircle, Phone, Truck, Gem, Layers
 import Image from 'next/image';
 import shreeDurgaLogo from '../../assets/shree-durga-mandala-transparent.png';
 import { Container } from '@/components/ui/Container';
+import marble from '../../assets/marble.jpg';
+import granite from '../../assets/granite.jpg';
+import designerTiles from '../../assets/designer-tiles.jpg';
+import naturalStone from '../../assets/pure-white-marble.png';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -18,47 +22,33 @@ const WHATSAPP_NUMBER = '918529388726';
 const CALL_NUMBER = '+918058285886';
 
 /* Material swatches — असली फोटो आने तक CSS से बने हुए पत्थर के टेक्सचर */
+
+
+
 const materials = [
   {
     key: 'Marble',
     label: 'Marble',
-    style: {
-      backgroundColor: '#EFEBE3',
-      backgroundImage:
-        'linear-gradient(115deg, transparent 42%, rgba(120,110,95,.35) 43%, transparent 44.5%), linear-gradient(62deg, transparent 58%, rgba(150,140,125,.28) 59%, transparent 60.5%), radial-gradient(circle at 30% 20%, #fbf9f4, #dcd6c9)',
-    },
+    image: marble,
   },
   {
     key: 'Granite',
     label: 'Granite',
-    style: {
-      backgroundColor: '#25262A',
-      backgroundImage:
-        'radial-gradient(rgba(255,255,255,.22) 1px, transparent 1.4px), radial-gradient(rgba(201,162,92,.35) 1px, transparent 1.6px)',
-      backgroundSize: '9px 9px, 14px 14px',
-      backgroundPosition: '0 0, 4px 6px',
-    },
+    image: granite,
   },
   {
     key: 'Designer Tiles',
     label: 'Designer Tiles',
-    style: {
-      backgroundColor: '#1B2A3A',
-      backgroundImage:
-        'conic-gradient(from 45deg at 50% 50%, #C9A25C 0 25%, #1B2A3A 0 50%, #C9A25C 0 75%, #1B2A3A 0)',
-      backgroundSize: '26px 26px',
-    },
+    image: designerTiles,
   },
   {
     key: 'Natural Stone',
     label: 'Natural Stone',
-    style: {
-      backgroundColor: '#B79B76',
-      backgroundImage:
-        'linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.22)), repeating-linear-gradient(0deg, rgba(0,0,0,.12) 0 2px, transparent 2px 22px)',
-    },
+    image: naturalStone,
   },
 ];
+
+
 
 const highlights = [
   { icon: Gem, title: 'Marble & Granite', text: 'Premium natural stone' },
@@ -191,9 +181,15 @@ export default function Hero() {
             <p className="mt-2 text-sm text-white/55">Pick a material — we reply on WhatsApp.</p>
 
             {/* Material swatches */}
-            <div className="mt-6 grid grid-cols-4 gap-2.5" role="radiogroup" aria-label="Material">
+
+            <div
+              className="mt-6 grid grid-cols-4 gap-3"
+              role="radiogroup"
+              aria-label="Material"
+            >
               {materials.map((m) => {
                 const active = material === m.key;
+
                 return (
                   <button
                     key={m.key}
@@ -201,20 +197,29 @@ export default function Hero() {
                     role="radio"
                     aria-checked={active}
                     onClick={() => setMaterial(m.key)}
-                    className="group text-center"
+                    className="group min-w-0 text-center"
                   >
                     <span
-                      className={`block aspect-square rounded-xl border transition-all ${
-                        active
-                          ? 'border-gold-light ring-2 ring-gold-light/60 ring-offset-2 ring-offset-[#14151A]'
+                      className={`relative block aspect-square overflow-hidden rounded-lg border-2 transition-all duration-200 ${active
+                          ? 'border-gold-light ring-2 ring-gold-light/40'
                           : 'border-white/15 group-hover:border-white/50'
-                      }`}
-                      style={m.style}
-                    />
+                        }`}
+                    >
+                      <Image
+                        src={m.image}
+                        alt={m.label}
+                        fill
+                        sizes="100px"
+                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                      {active && (
+                        <span className="absolute inset-0 bg-black/15" />
+                      )}
+                    </span>
+
                     <span
-                      className={`mt-2 block text-[10px] font-semibold leading-tight tracking-wide ${
-                        active ? 'text-gold-light' : 'text-white/55'
-                      }`}
+                      className={`mt-2 block text-[10px] font-semibold ${active ? 'text-gold-light' : 'text-white/60'
+                        }`}
                     >
                       {m.label}
                     </span>
@@ -222,6 +227,7 @@ export default function Hero() {
                 );
               })}
             </div>
+
 
             {/* Inputs */}
             <div className="mt-6 space-y-3">
