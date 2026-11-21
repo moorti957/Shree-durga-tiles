@@ -4,138 +4,284 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowDown, ArrowRight, Play } from 'lucide-react';
-import Image from "next/image";
-import shreeDurgaLogo from "../../assets/shree-durga-mandala-transparent.png";
+import { ArrowDown, ArrowRight, MapPin, MessageCircle, Phone, Truck, Gem, Layers } from 'lucide-react';
+import Image from 'next/image';
+import shreeDurgaLogo from '../../assets/shree-durga-mandala-transparent.png';
 import { Container } from '@/components/ui/Container';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const petalRotations = Array.from({ length: 12 }, (_, index) => index * 30);
+/* ====== यहाँ अपना नंबर डालें (country code के साथ, बिना + के) ====== */
+const WHATSAPP_NUMBER = '918529388726';
+const CALL_NUMBER = '+918058285886';
+
+/* Material swatches — असली फोटो आने तक CSS से बने हुए पत्थर के टेक्सचर */
+const materials = [
+  {
+    key: 'Marble',
+    label: 'Marble',
+    style: {
+      backgroundColor: '#EFEBE3',
+      backgroundImage:
+        'linear-gradient(115deg, transparent 42%, rgba(120,110,95,.35) 43%, transparent 44.5%), linear-gradient(62deg, transparent 58%, rgba(150,140,125,.28) 59%, transparent 60.5%), radial-gradient(circle at 30% 20%, #fbf9f4, #dcd6c9)',
+    },
+  },
+  {
+    key: 'Granite',
+    label: 'Granite',
+    style: {
+      backgroundColor: '#25262A',
+      backgroundImage:
+        'radial-gradient(rgba(255,255,255,.22) 1px, transparent 1.4px), radial-gradient(rgba(201,162,92,.35) 1px, transparent 1.6px)',
+      backgroundSize: '9px 9px, 14px 14px',
+      backgroundPosition: '0 0, 4px 6px',
+    },
+  },
+  {
+    key: 'Designer Tiles',
+    label: 'Designer Tiles',
+    style: {
+      backgroundColor: '#1B2A3A',
+      backgroundImage:
+        'conic-gradient(from 45deg at 50% 50%, #C9A25C 0 25%, #1B2A3A 0 50%, #C9A25C 0 75%, #1B2A3A 0)',
+      backgroundSize: '26px 26px',
+    },
+  },
+  {
+    key: 'Natural Stone',
+    label: 'Natural Stone',
+    style: {
+      backgroundColor: '#B79B76',
+      backgroundImage:
+        'linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.22)), repeating-linear-gradient(0deg, rgba(0,0,0,.12) 0 2px, transparent 2px 22px)',
+    },
+  },
+];
+
+const highlights = [
+  { icon: Gem, title: 'Marble & Granite', text: 'Premium natural stone' },
+  { icon: Layers, title: 'Designer Tiles', text: 'Floor, wall & elevation' },
+  { icon: Truck, title: 'Pan India Delivery', text: 'Safe packing, on time' },
+  { icon: MapPin, title: 'Govindgarh Showroom', text: 'Visit & choose in person' },
+];
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const [playVideo, setPlayVideo] = useState(false);
+  const [material, setMaterial] = useState(materials[0].key);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
 
   useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const context = gsap.context(() => {
       gsap.fromTo(
-        [titleRef.current, imageRef.current],
-        { opacity: 0, y: 28 },
-        { opacity: 1, y: 0, duration: 1, stagger: 0.18, ease: 'power3.out' },
+        '.hero-reveal',
+        { opacity: 0, y: reduce ? 0 : 30 },
+        { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out' },
       );
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.to(imageRef.current, {
-          y: 22,
+      if (!reduce) {
+        gsap.to('.hero-mandala', {
+          y: 60,
           ease: 'none',
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 1,
-          },
+          scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: 1 },
         });
       }
     }, heroRef);
-
     return () => context.revert();
   }, []);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const msg =
+      `Namaste Shree Durga Tiles,%0A` +
+      `Mera naam ${encodeURIComponent(name || '-')} hai.%0A` +
+      `Mujhe *${encodeURIComponent(material)}* ke baare mein quote chahiye.%0A` +
+      `Phone: ${encodeURIComponent(phone || '-')}`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank', 'noopener,noreferrer');
+  };
+
   return (
-    <section ref={heroRef} className="hero-section relative isolate min-h-[720px] overflow-hidden bg-[#0E0F12] text-white">
-      <div className="hero-glow pointer-events-none absolute inset-0" aria-hidden="true" />
-      
-<Image
-   src={shreeDurgaLogo}
-  alt=""
-  aria-hidden="true"
-  width={980}
-  height={980}
-  className="
-    mandala-watermark
-    mandala-spin
-    pointer-events-none
-    absolute
-    -right-36
-    top-8
-    h-[880px]
-    w-[880px]
-    object-contain
-    opacity-30
-  "
-/>
+    <section
+      ref={heroRef}
+      className="relative isolate overflow-hidden bg-[#0B0C0F] text-white"
+    >
+      {/* Background layers */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(900px 500px at 85% 10%, rgba(201,162,92,.18), transparent 60%), radial-gradient(700px 500px at 0% 100%, rgba(201,162,92,.08), transparent 60%), linear-gradient(180deg,#0B0C0F 0%,#111216 100%)',
+        }}
+      />
+      {/* faint marble veins */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.07]"
+        style={{
+          backgroundImage:
+            'linear-gradient(115deg, transparent 40%, #fff 40.2%, transparent 40.6%), linear-gradient(70deg, transparent 62%, #fff 62.15%, transparent 62.5%), linear-gradient(140deg, transparent 20%, #fff 20.1%, transparent 20.4%)',
+        }}
+      />
+      <Image
+        src={shreeDurgaLogo}
+        alt=""
+        aria-hidden="true"
+        width={980}
+        height={980}
+        className="hero-mandala mandala-watermark mandala-spin pointer-events-none absolute -left-52 -top-24 h-[760px] w-[760px] object-contain opacity-[0.08]"
+      />
 
-
-      <Container className="relative z-10 grid min-h-[720px] items-center gap-12 pb-16 pt-28 lg:grid-cols-[1fr_0.82fr] lg:pb-20 lg:pt-36">
+      <Container className="relative z-10 grid items-center gap-12 pb-10 pt-28 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16 lg:pb-14 lg:pt-36">
+        {/* ---------- LEFT: message ---------- */}
         <div className="max-w-2xl">
-          <p className="mb-6 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-gold-light">
-            <span className="h-px w-8 bg-gold-light" /> Shree Durga Tiles · Govindgarh
+          <p className="hero-reveal mb-6 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-gold-light">
+            <span className="h-px w-10 bg-gold-light" />
+            Shree Durga Tiles · Nogawa
           </p>
-          <h1 ref={titleRef} className="font-cinzel text-[clamp(46px,6.4vw,92px)] font-medium leading-[0.98] tracking-[-0.02em] text-white">
-            Stone that shapes <em className="text-gold-light">your space.</em>
+
+          <h1 className="hero-reveal font-cinzel text-[clamp(44px,6vw,88px)] font-medium leading-[1] tracking-[-0.02em] text-white">
+            Stone that shapes <em className="not-italic text-gold-light">your space.</em>
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
+
+          <p className="hero-reveal mt-6 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
             Discover marble, granite, designer tiles and natural stone for every corner of your home and project.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+
+          <div className="hero-reveal mt-9 flex flex-wrap gap-3">
             <Link href="/products" className="btn-gold min-h-14 px-7">
               Explore materials <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href="/contact" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-white/40 px-7 font-semibold text-white transition-colors hover:border-gold-light hover:text-gold-light">
+            <Link
+              href="/contact"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-white/30 px-7 font-semibold text-white transition-colors hover:border-gold-light hover:text-gold-light"
+            >
               Visit our showroom
             </Link>
           </div>
-          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-white/60">
-            <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-gold-light" />Marble &amp; granite</span>
-            <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-gold-light" />Designer tiles</span>
-            <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-gold-light" />Pan India delivery</span>
-          </div>
-          <a href="#shop-by-stone" className="mt-10 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-white/50 hover:text-gold-light">
-            Discover our materials <ArrowDown className="h-4 w-4" />
+
+          <a
+            href={`tel:${CALL_NUMBER}`}
+            className="hero-reveal mt-8 inline-flex items-center gap-3 text-sm text-white/60 transition-colors hover:text-gold-light"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20">
+              <Phone className="h-4 w-4" />
+            </span>
+            <span>
+              Call us directly
+              <span className="block text-base font-semibold tracking-wide text-white">{CALL_NUMBER}</span>
+            </span>
           </a>
         </div>
 
-        <div ref={imageRef} className="relative mx-auto w-full max-w-[470px]">
-          <div className="absolute -inset-3 rounded-t-[999px] rounded-b-[34px] border border-gold-light/50" />
-          <div className="hero-stone tx-marble relative flex aspect-[0.78] items-end justify-center overflow-hidden rounded-t-[999px] rounded-b-[28px] border border-white/20 p-7">
-            {playVideo ? (
-              <iframe
-                className="absolute inset-0 h-full w-full"
-                src="https://www.youtube.com/embed/UsCcS0JMZCg?autoplay=1&mute=1&rel=0&playsinline=1"
-                title="Shree Durga Tiles showroom video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
+        {/* ---------- RIGHT: quote card ---------- */}
+        <div className="hero-reveal relative mx-auto w-full max-w-[480px]">
+          {/* gold glow frame */}
+          <div className="absolute -inset-px rounded-[28px] bg-gradient-to-br from-gold-light/60 via-white/5 to-gold-light/20" />
+          <form
+            onSubmit={handleSubmit}
+            className="relative rounded-[27px] bg-[#14151A]/95 p-6 shadow-2xl backdrop-blur sm:p-8"
+          >
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold-light">Free quote</p>
+            <h2 className="mt-2 font-cinzel text-2xl leading-tight text-white sm:text-[28px]">
+              Tell us what you need
+            </h2>
+            <p className="mt-2 text-sm text-white/55">Pick a material — we reply on WhatsApp.</p>
+
+            {/* Material swatches */}
+            <div className="mt-6 grid grid-cols-4 gap-2.5" role="radiogroup" aria-label="Material">
+              {materials.map((m) => {
+                const active = material === m.key;
+                return (
+                  <button
+                    key={m.key}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => setMaterial(m.key)}
+                    className="group text-center"
+                  >
+                    <span
+                      className={`block aspect-square rounded-xl border transition-all ${
+                        active
+                          ? 'border-gold-light ring-2 ring-gold-light/60 ring-offset-2 ring-offset-[#14151A]'
+                          : 'border-white/15 group-hover:border-white/50'
+                      }`}
+                      style={m.style}
+                    />
+                    <span
+                      className={`mt-2 block text-[10px] font-semibold leading-tight tracking-wide ${
+                        active ? 'text-gold-light' : 'text-white/55'
+                      }`}
+                    >
+                      {m.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Inputs */}
+            <div className="mt-6 space-y-3">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                autoComplete="name"
+                className="h-12 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 text-sm text-white placeholder:text-white/35 focus:border-gold-light focus:outline-none"
               />
-            ) : (
-              <>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-white/10" />
-                <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-black/25 text-white backdrop-blur-sm">
-                  <Play className="ml-1 h-6 w-6 fill-current" />
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setPlayVideo(true)}
-                  aria-label="Play showroom video"
-                  className="absolute inset-0 z-10 rounded-t-[999px] rounded-b-[28px]"
-                />
-                <div className="relative z-0 max-w-[260px] rounded-full border border-dashed border-white/80 bg-black/35 px-5 py-3 text-center text-xs font-bold tracking-[0.12em] text-white">
-                  SHOWROOM PHOTOGRAPHY COMING SOON
-                </div>
-              </>
-            )}
-          </div>
-          <div className="absolute -bottom-5 -left-4 flex items-center gap-3 rounded-2xl border border-white/15 bg-[#151619] px-4 py-3 shadow-xl">
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone number"
+                autoComplete="tel"
+                inputMode="tel"
+                className="h-12 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 text-sm text-white placeholder:text-white/35 focus:border-gold-light focus:outline-none"
+              />
+            </div>
+
+            <button type="submit" className="btn-gold mt-5 min-h-14 w-full justify-center">
+              <MessageCircle className="h-5 w-5" />
+              Get quote on WhatsApp
+            </button>
+            <p className="mt-3 text-center text-[11px] text-white/40">No spam. Only your tile & stone enquiry.</p>
+          </form>
+
+          {/* floating blessing badge */}
+          <div className="absolute -bottom-5 -right-3 hidden items-center gap-3 rounded-2xl border border-white/15 bg-[#151619] px-4 py-3 shadow-xl sm:flex">
             <span className="font-devanagari text-2xl text-gold-light">ॐ</span>
             <div>
-              <p className="font-cinzel text-lg leading-tight text-white">॥ जय माता दी ॥</p>
+              <p className="font-cinzel text-base leading-tight text-white">॥ जय माता दी ॥</p>
               <p className="mt-1 text-[9px] font-semibold tracking-[0.18em] text-gold-light">TILES · GRANITE · MARBLE</p>
             </div>
           </div>
         </div>
+      </Container>
+
+      {/* ---------- Bottom highlight bar ---------- */}
+      <Container className="relative z-10 pb-10">
+        <div className="hero-reveal grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 lg:grid-cols-4">
+          {highlights.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="flex items-center gap-3 bg-[#0E0F13] px-4 py-5 sm:px-6">
+              <Icon className="h-6 w-6 shrink-0 text-gold-light" />
+              <div>
+                <p className="text-sm font-semibold text-white">{title}</p>
+                <p className="mt-0.5 text-xs text-white/50">{text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <a
+          href="#shop-by-stone"
+          className="mt-8 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-white/45 transition-colors hover:text-gold-light"
+        >
+          Discover our materials <ArrowDown className="h-4 w-4" />
+        </a>
       </Container>
     </section>
   );

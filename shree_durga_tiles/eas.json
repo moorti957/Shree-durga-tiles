@@ -16,19 +16,20 @@
         "EXPO_PUBLIC_USE_MOCK_API": "false"
       }
     },
-    "preview": {
-      "distribution": "internal",
-      "channel": "preview",
-      "environment": "preview",
-      "env": {
-        "EXPO_PUBLIC_NETWORK_PROFILE": "preview",
-        "EXPO_PUBLIC_ALLOW_HTTP": "false",
-        "EXPO_PUBLIC_USE_MOCK_API": "false"
-      },
-      "android": {
-        "buildType": "apk"
-      }
-    },
+   "preview": {
+  "distribution": "internal",
+  "channel": "preview",
+  "environment": "preview",
+  "env": {
+    "EXPO_PUBLIC_NETWORK_PROFILE": "preview",
+    "EXPO_PUBLIC_ALLOW_HTTP": "false",
+    "EXPO_PUBLIC_USE_MOCK_API": "false",
+    "EXPO_PUBLIC_API_BASE_URL": "https://shree-durga-tiles.onrender.com/api"
+  },
+  "android": {
+    "buildType": "apk"
+  }
+},
     "production": {
       "channel": "production",
       "environment": "production",
