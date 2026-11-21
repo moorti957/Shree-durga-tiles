@@ -21,7 +21,7 @@ export default function ContactPage() {
     {
       icon: <MapPin className="w-5 h-5 text-gold-dark" />,
       label: 'Address',
-      value: settings?.address || 'Bhagat Singh Circle Near Kunda Mandir, Govindgarh (Alwar) Raj 301604',
+      value: settings?.address || 'Bhagat Singh Circle Near Kunda Mandir, Naugaon (Alwar) Raj 301604',
     },
     {
       icon: <Phone className="w-5 h-5 text-gold-dark" />,
@@ -63,7 +63,7 @@ export default function ContactPage() {
               Let&apos;s find the right <span className="text-gold">stone for your space.</span>
             </h1>
             <p className="text-white/80 text-lg max-w-2xl mx-auto mt-4">
-              Tell us about your project or visit our showroom in Govindgarh, Alwar. We&apos;ll help you compare materials and finishes.
+              Tell us about your project or visit our showroom in Naugaon, Alwar. We&apos;ll help you compare materials and finishes.
             </p>
           </motion.div>
         </Container>

@@ -54,7 +54,7 @@ const highlights = [
   { icon: Gem, title: 'Marble & Granite', text: 'Premium natural stone' },
   { icon: Layers, title: 'Designer Tiles', text: 'Floor, wall & elevation' },
   { icon: Truck, title: 'Pan India Delivery', text: 'Safe packing, on time' },
-  { icon: MapPin, title: 'Govindgarh Showroom', text: 'Visit & choose in person' },
+  { icon: MapPin, title: 'Naugaon Showroom', text: 'Visit & choose in person' },
 ];
 
 export default function Hero() {

@@ -87,7 +87,7 @@ const showroomFaqs: HomeFAQ[] = [
   {
     id: 'visit',
     question: 'Can I see the stone before I order?',
-    answer: 'Please visit our showroom in Govindgarh, Alwar, or call us. Our team can help you compare options and finishes in person.',
+    answer: 'Please visit our showroom in Naugaon, Alwar, or call us. Our team can help you compare options and finishes in person.',
   },
   {
     id: 'bulk',
@@ -432,7 +432,7 @@ function HomepageSections({
             <h2 className="section-title">A trusted name in <em className="text-gold-dark">stone &amp; tile</em></h2>
             <p className="mt-5 leading-relaxed text-brown-light">Find marble, granite, tiles, quartz and natural stone for homes, commercial spaces and projects. Our team can help you compare finishes and choose materials suited to your space.</p>
             <ul className="mt-6 grid gap-3 text-sm">
-              {['Wide material selection', 'Guidance for homes and projects', 'Showroom in Govindgarh, Alwar'].map((item) => <li key={item} className="flex items-center gap-3"><Check className="h-4 w-4 text-gold-dark" />{item}</li>)}
+              {['Wide material selection', 'Guidance for homes and projects', 'Showroom in Naugaon, Alwar'].map((item) => <li key={item} className="flex items-center gap-3"><Check className="h-4 w-4 text-gold-dark" />{item}</li>)}
             </ul>
             {stats && (
               <div className="mt-8 grid grid-cols-2 gap-4 border-t border-stone-line pt-6 sm:grid-cols-4">

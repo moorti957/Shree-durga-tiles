@@ -17,7 +17,7 @@ const faqItems = [
     id: 'visit',
     category: 'Showroom',
     question: 'Can I see the stone before I order?',
-    answer: 'Please visit our showroom in Govindgarh, Alwar, or call us. Our team can help you compare options and finishes in person.',
+    answer: 'Please visit our showroom in Naugaon, Alwar, or call us. Our team can help you compare options and finishes in person.',
   },
   {
     id: 'bulk',

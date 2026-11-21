@@ -96,7 +96,7 @@ export class ShippingService {
     const destination = `${address.city}, ${address.state} - ${address.pincode}, ${address.country || 'India'}`;
 
     return {
-      origin: `${ORIGIN_BUSINESS_NAME}, Govindgarh, Alwar`,
+      origin: `${ORIGIN_BUSINESS_NAME}, Naugaon, Alwar`,
       destination,
       distanceKm,
       totalWeightKg,

@@ -104,7 +104,7 @@ export default function NotFound() {
 
           {/* Footer note */}
           <p className="mt-12 text-xs text-brown-light/30">
-            © Shree Durga Tiles · Govindgarh, Alwar
+            © Shree Durga Tiles · Naugaon, Alwar
           </p>
         </motion.div>
       </div>

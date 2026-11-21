@@ -112,7 +112,7 @@ export default function Footer() {
 </Link>
 
               <p className="max-w-sm text-sm leading-relaxed text-white/65">
-               Premium marble, granite, tiles and natural stone for kitchens, living spaces, projects and pooja rooms. Visit our showroom in Govindgarh, Alwar.
+               Premium marble, granite, tiles and natural stone for kitchens, living spaces, projects and pooja rooms. Visit our showroom in Naugaon, Alwar.
               </p>
               <div className="flex items-center gap-3 pt-2">
                 <div className="flex items-center gap-1.5 text-xs text-white/50">

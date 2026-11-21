@@ -826,7 +826,7 @@ function ContactSettings({
             <Textarea
               {...register('contactAddress')}
               rows={3}
-              placeholder="123, Murti Marg, govindgarh, Rajasthan 302001, India"
+              placeholder="123, Murti Marg, Naugaon, Rajasthan 302001, India"
             />
           </div>
           <div>

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   description:
     'Explore premium marble, granite, designer tiles, quartz and stone for homes and projects. Visit Shree Durga Tiles in Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.',
   keywords:
-    'marble, granite, designer tiles, quartz, kitchen tops, outdoor flooring, stone showroom, Govindgarh, Alwar',
+    'marble, granite, designer tiles, quartz, kitchen tops, outdoor flooring, stone showroom, Naugaon, Alwar',
   authors: [{ name: 'Shree Durga Tiles' }],
   creator: 'Shree Durga Tiles',
   publisher: 'Shree Durga Tiles',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Shree Durga Tiles | Marble, Granite & Designer Tiles',
-    description: 'Premium marble, granite, tiles and stone in Govindgarh, Alwar.',
+    description: 'Premium marble, granite, tiles and stone in Naugaon, Alwar.',
     url: 'https://www.panditjimarblemurtiarts.in',
     siteName: 'Shree Durga Tiles',
     images: [
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Shree Durga Tiles | Marble, Granite & Designer Tiles',
-    description: 'Premium marble, granite, tiles and stone in Govindgarh, Alwar.',
+    description: 'Premium marble, granite, tiles and stone in Naugaon, Alwar.',
     images: ['https://images.unsplash.com/photo-1584925906119-eaf7bbd206c3?w=1200&q=80'],
   },
   icons: {

@@ -32,7 +32,7 @@ export default function AboutPage() {
         <Container className="relative">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gold-light">About Shree Durga Tiles</p>
           <h1 className="max-w-3xl font-cinzel text-5xl font-medium leading-tight text-white sm:text-6xl">Stone for the spaces <em className="text-gold-light">you call home.</em></h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/70">A showroom for marble, granite, tiles and natural stone in Govindgarh, Alwar.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/70">A showroom for marble, granite, tiles and natural stone in Naugaon, Alwar.</p>
         </Container>
       </section>
 
@@ -63,7 +63,7 @@ export default function AboutPage() {
             <h2 className="section-title">A trusted name in <em className="text-gold-dark">stone &amp; tile</em></h2>
             <div className="mt-5 space-y-4 leading-relaxed text-brown-light">
               <p>Shree Durga Tiles brings together a broad selection of marble, granite, tiles, quartz and natural stone for residential, commercial and industrial projects.</p>
-              <p>Visit us in Govindgarh to compare designs, textures and finishes. Our team can help you think through material choices for flooring, kitchens, walls, outdoor areas and mandir spaces.</p>
+              <p>Visit us in Naugaon to compare designs, textures and finishes. Our team can help you think through material choices for flooring, kitchens, walls, outdoor areas and mandir spaces.</p>
             </div>
             <div className="mt-6 grid gap-3 text-sm text-brown">
               {['Flooring and wall finishes', 'Kitchen tops and counters', 'Outdoor paving and wall cladding', 'Sanitaryware and bath fittings'].map((item) => (
