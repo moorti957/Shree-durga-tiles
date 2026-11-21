@@ -237,7 +237,7 @@ export default function Hero() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
                 autoComplete="name"
-                className="h-12 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 text-sm text-white placeholder:text-white/35 focus:border-gold-light focus:outline-none"
+                className="h-12 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 text-sm text-black placeholder:text-black/35 focus:border-gold-light focus:outline-none"
               />
               <input
                 type="tel"
@@ -246,7 +246,7 @@ export default function Hero() {
                 placeholder="Phone number"
                 autoComplete="tel"
                 inputMode="tel"
-                className="h-12 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 text-sm text-white placeholder:text-white/35 focus:border-gold-light focus:outline-none"
+                className="h-12 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 text-sm text-black placeholder:text-black/35 focus:border-gold-light focus:outline-none"
               />
             </div>
 
