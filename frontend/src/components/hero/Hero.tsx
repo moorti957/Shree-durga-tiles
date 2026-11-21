@@ -27,23 +27,23 @@ const CALL_NUMBER = '+918058285886';
 
 const materials = [
   {
-    key: 'Marble',
-    label: 'Marble',
+    key: 'Ceramic Tiles',
+    label: 'Ceramic Tiles',
     image: marble,
   },
   {
-    key: 'Granite',
-    label: 'Granite',
+    key: 'Gold Metallic Tiles',
+    label: 'Gold Metallic Tiles',
     image: granite,
   },
   {
-    key: 'Designer Tiles',
-    label: 'Designer Tiles',
+    key: 'PGVT Marble Tiles',
+    label: 'PGVT Marble Tiles',
     image: designerTiles,
   },
   {
-    key: 'Natural Stone',
-    label: 'Natural Stone',
+    key: 'Natural Tiles',
+    label: 'Natural Tiles',
     image: naturalStone,
   },
 ];
