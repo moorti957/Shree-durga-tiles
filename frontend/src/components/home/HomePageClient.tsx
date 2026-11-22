@@ -31,6 +31,7 @@ import designerTiles from "../../assets/designer-tiles.jpg";
 
 import Hero from '../hero/Hero';
 import FeaturedCategories from '../sections/FeaturedCategories';
+import Testimonials from '../sections/Testimonials';
 import Newsletter from '../sections/Newsletter';
 import FAQAccordion from '../sections/FAQAccordion';
 import InstagramFeed from '../sections/InstagramFeed';
@@ -41,6 +42,7 @@ import type {
   FAQ as HomeFAQ,
   FeaturedCategory,
   FeaturedProduct as HomeFeaturedProduct,
+  Testimonial as HomeTestimonial,
 } from '../../features/home/types/home.types';
 import type { Product } from '../../features/products/types/product.types';
 
@@ -208,7 +210,9 @@ function HomepageSections({
   featuredProducts,
   trendingProducts,
   latestProducts,
+  stats,
   categories,
+  testimonials,
   faqs,
   instagramPosts,
   youtubeVideos,
@@ -219,11 +223,18 @@ function HomepageSections({
   trendingProducts: Product[];
   latestProducts: Product[];
   categories: FeaturedCategory[];
+  testimonials: HomeTestimonial[];
   faqs: HomeFAQ[];
   instagramPosts: { id: string; image: string; caption?: string; likes?: number; url: string }[];
   youtubeVideos: { id: string; title: string; thumbnail: string; videoUrl: string }[];
   hasLoadError: boolean;
   onRetry: () => void;
+  stats?: {
+    totalCustomers?: number;
+    totalProducts?: number;
+    projectsSupplied?: number;
+    yearsOfExperience?: number;
+  };
 }) {
   const [activeFilter, setActiveFilter] = useState('All');
   const filterOptions = ['All', 'Marble', 'Granite', 'Tiles'];
@@ -282,7 +293,7 @@ function HomepageSections({
           <div className="pt-4">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#E2BE86]">Mandir &amp; Pooja Room</p>
             <h2 className="max-w-xl font-cinzel text-4xl font-semibold leading-tight text-white sm:text-5xl">
-              A sacred space  <em className="text-[#E2BE86]">pure stone.</em>
+              A sacred space deserves <em className="text-[#E2BE86]">pure stone.</em>
             </h2>
             <p className="mt-5 max-w-xl leading-relaxed text-[#D9CDB8]">
               White marble is a timeless choice for home temples and pooja rooms. Visit our showroom to compare stones for your mandir floor, platform and walls.
@@ -435,6 +446,18 @@ function HomepageSections({
             <ul className="mt-6 grid gap-3 text-sm">
               {['Wide material selection', 'Guidance for homes and projects', 'Showroom in Naugaon, Alwar'].map((item) => <li key={item} className="flex items-center gap-3"><Check className="h-4 w-4 text-gold-dark" />{item}</li>)}
             </ul>
+            {stats && (
+              <div className="mt-8 grid grid-cols-2 gap-4 border-t border-stone-line pt-6 sm:grid-cols-4">
+                {[
+                  ['Customers', stats.totalCustomers],
+                  ['Products', stats.totalProducts],
+                  ['Projects', stats.projectsSupplied],
+                  ['Years', stats.yearsOfExperience],
+                ].filter(([, value]) => typeof value === 'number').map(([label, value]) => (
+                  <div key={label as string}><p className="font-cinzel text-3xl font-semibold text-gold-dark">{value as number}+</p><p className="text-xs text-brown-light">{label}</p></div>
+                ))}
+              </div>
+            )}
             <Link href="/about" className="btn-maroon mt-7">Our story <ArrowRight className="h-4 w-4" /></Link>
           </div>
         </div>
@@ -513,13 +536,13 @@ function HomepageSections({
 
       <section className="process-section relative overflow-hidden bg-brown-dark py-16 text-white md:py-24">
         <div className="container relative z-10">
-          <SectionHeading eyebrow="How it works" title="From first visit to final selection" />
+          <SectionHeading eyebrow="How it works" title="From first visit to final fitting" />
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
               ['01', 'Visit or call', 'Share your plan, budget and taste. Walk the showroom or talk to us.'],
               ['02', 'Choose your stone', 'Compare real stone and finishes before you decide.'],
               ['03', 'Get your quote', 'Discuss your requirement and project quantities with our team.'],
-              ['04', 'Arrange delivery', 'Discuss delivery options for your location.'],
+              ['04', 'Delivered safely', 'Careful packing and dispatch, anywhere in India.'],
             ].map(([number, title, text]) => (
               <article key={number} className="rounded-3xl border border-white/20 bg-white/[0.04] p-6">
                 <span className="font-cinzel text-5xl text-gold-light">{number}</span>
@@ -530,6 +553,15 @@ function HomepageSections({
           </div>
         </div>
       </section>
+
+      {testimonials.length > 0 && (
+        <Testimonials
+          testimonials={testimonials}
+          title="Trusted by families and builders"
+          subtitle="Experiences shared by our customers."
+          displayMode="grid"
+        />
+      )}
 
       <section className="section-padding">
         <div className="container grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
@@ -618,7 +650,9 @@ export default function HomePage() {
         featuredProducts={displayFeaturedProducts}
         trendingProducts={displayTrendingProducts}
         latestProducts={displayLatestProducts}
+        stats={homeData.stats}
         categories={displayCategories}
+        testimonials={homeData.testimonials || []}
         faqs={homeData.faqs || []}
         instagramPosts={instagramPosts}
         youtubeVideos={youtubeVideos}
