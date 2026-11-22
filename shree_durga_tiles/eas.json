@@ -24,7 +24,7 @@
     "EXPO_PUBLIC_NETWORK_PROFILE": "preview",
     "EXPO_PUBLIC_ALLOW_HTTP": "false",
     "EXPO_PUBLIC_USE_MOCK_API": "false",
-    "EXPO_PUBLIC_API_BASE_URL": "https://shree-durga-tiles.onrender.com/api"
+    "EXPO_PUBLIC_API_BASE_URL": "https://api.shreedurgatiles.site/api"
   },
   "android": {
     "buildType": "apk"
