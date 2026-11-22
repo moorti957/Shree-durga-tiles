@@ -3,15 +3,18 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { format } from 'date-fns';
-import { Calendar, User, Tag, ArrowLeft, Share2, Clock } from 'lucide-react';
+import { format, isValid } from 'date-fns';
+import { Calendar, User, ArrowLeft, Clock } from 'lucide-react';
 
 // Components
 import { Container } from '@/components/ui/Container';
-import { Button } from '@/components/ui/Button';
+import { ShareArticleButton } from '@/components/blog/ShareArticleButton';
 
 // Services (server-side fetch)
 import { blogApi, type BlogPost } from '@/services/blogApi';
+import { blogDrafts } from '@/data/blogDrafts';
+import { createPageMetadata } from '@/lib/seo';
+import { getBreadcrumbSchema, JsonLd } from '@/lib/seo';
 
 // ============================================================
 // Generate static params (optional – for static generation)
@@ -19,11 +22,12 @@ import { blogApi, type BlogPost } from '@/services/blogApi';
 export async function generateStaticParams() {
   try {
     const posts = await blogApi.getAll(); // This would be server-side
-    return posts.map((post: BlogPost) => ({
+    return [...blogDrafts, ...posts.filter((post) => !blogDrafts.some((draft) => draft.slug === post.slug))].map((post: BlogPost) => ({
       slug: post.slug,
     }));
-  } catch {
-    return []; // fallback to dynamic rendering
+  } catch (error) {
+    console.error('Unable to load blog posts for static parameters:', error);
+    return blogDrafts.map((post) => ({ slug: post.slug }));
   }
 }
 
@@ -32,30 +36,37 @@ export async function generateStaticParams() {
 // ============================================================
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await blogApi.getBySlug(slug).catch(() => null);
+  let post = blogDrafts.find((draft) => draft.slug === slug) || null;
   if (!post) {
-    return {
+    try {
+      post = await blogApi.getBySlug(slug);
+    } catch (error) {
+      console.error(`Unable to generate metadata for blog post ${slug}:`, error);
+    }
+  }
+  if (!post) {
+    return createPageMetadata({
       title: 'Article Not Found | Shree Durga Tiles',
-    };
+      description: 'This article could not be found. Browse marble and tile guides from Shree Durga Tiles in Alwar.',
+      path: `/blogs/${slug}`,
+      noIndex: true,
+    });
   }
 
+  const title = `${post.title} | Shree Durga Tiles`.slice(0, 60);
+  const description = (post.excerpt || `Read ${post.title} from Shree Durga Tiles in Alwar.`).slice(0, 155);
   return {
-    title: `${post.title} | Shree Durga Tiles Journal`,
-    description: post.excerpt || `Read ${post.title} from Shree Durga Tiles.`,
-    keywords: post.tags?.join(', ') || '',
+    ...createPageMetadata({ title, description, path: `/blogs/${slug}` }),
     openGraph: {
-      title: post.title,
-      description: post.excerpt || `Read about ${post.title}`,
+      title,
+      description,
+      url: `https://www.shreedurgatiles.site/blogs/${slug}`,
+      siteName: 'Shree Durga Tiles',
       images: [{ url: post.coverImage }],
+      locale: 'en_IN',
       type: 'article',
-      publishedTime: post.publishedAt,
+      ...(post.publishedAt ? { publishedTime: post.publishedAt } : {}),
       authors: [post.author],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.excerpt || '',
-      images: [post.coverImage],
     },
   };
 }
@@ -69,8 +80,9 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   let error = false;
 
   try {
-    post = await blogApi.getBySlug(slug);
-  } catch {
+    post = blogDrafts.find((draft) => draft.slug === slug) || await blogApi.getBySlug(slug);
+  } catch (fetchError) {
+    console.error(`Unable to load blog post ${slug}:`, fetchError);
     error = true;
   }
 
@@ -80,9 +92,15 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
   }
 
   // Format date
-  const formattedDate = format(new Date(post.publishedAt), 'MMMM d, yyyy');
+  const publishedDate = post.publishedAt ? new Date(post.publishedAt) : null;
+  const formattedDate = publishedDate && isValid(publishedDate)
+    ? format(publishedDate, 'MMMM d, yyyy')
+    : null;
+  const breadcrumb = getBreadcrumbSchema(`/blogs/${slug}`, post.title);
 
   return (
+    <>
+    <JsonLd data={breadcrumb} />
     <Container className="py-12 md:py-20">
       {/* Back to blogs */}
       <Link
@@ -115,27 +133,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               <User className="w-4 h-4" />
               {post.author}
             </span>
-            <span className="flex items-center gap-1.5">
+            {formattedDate && <span className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4" />
               {formattedDate}
-            </span>
-            <button
-              onClick={() => {
-                if (navigator.share) {
-                  navigator.share({
-                    title: post.title,
-                    url: window.location.href,
-                  });
-                } else {
-                  navigator.clipboard.writeText(window.location.href);
-                  alert('Link copied to clipboard!');
-                }
-              }}
-              className="flex items-center gap-1.5 text-gold-dark hover:text-gold transition-colors ml-auto"
-            >
-              <Share2 className="w-4 h-4" />
-              Share
-            </button>
+            </span>}
+            <ShareArticleButton title={post.title} />
           </div>
         </header>
 
@@ -143,10 +145,9 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-lg mb-10">
           <Image
             src={post.coverImage}
-            alt={post.title}
+            alt={`${post.title} — marble and tile guidance, Alwar`}
             fill
             className="object-cover"
-            priority
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
           />
         </div>
@@ -162,45 +163,6 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
-        {/* Tags */}
-        {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-10 pt-6 border-t border-gold/10">
-            <Tag className="w-4 h-4 text-brown-light shrink-0 mt-1" />
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-sm bg-sand/60 px-3 py-1 rounded-full text-brown-light"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Author Bio (optional) */}
-        <div className="mt-12 p-6 bg-sand/30 rounded-2xl border border-gold/10 flex items-start gap-4">
-          <div className="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center text-2xl shrink-0">
-            {post.authorAvatar ? (
-              <Image
-                src={post.authorAvatar}
-                alt={post.author}
-                width={56}
-                height={56}
-                className="rounded-full"
-              />
-            ) : (
-              <User className="w-6 h-6 text-brown-light" />
-            )}
-          </div>
-          <div>
-            <h4 className="font-cinzel text-lg font-semibold text-brown">
-              {post.author}
-            </h4>
-            <p className="text-sm text-brown-light/80 mt-1">
-              Handcrafted with devotion since 1991. Sharing stories from the heart of Naugaon.
-            </p>
-          </div>
-        </div>
       </article>
 
       {/* Related Posts (if available from API) */}
@@ -229,9 +191,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                   <h3 className="font-cinzel text-base font-semibold text-brown group-hover:text-gold-dark transition-colors line-clamp-2">
                     {related.title}
                   </h3>
-                  <p className="text-xs text-brown-light/70 mt-1">
-                    {format(new Date(related.publishedAt), 'MMM d, yyyy')}
-                  </p>
+                  {related.publishedAt && isValid(new Date(related.publishedAt)) && (
+                    <p className="text-xs text-brown-light/70 mt-1">
+                      {format(new Date(related.publishedAt), 'MMM d, yyyy')}
+                    </p>
+                  )}
                 </div>
               </Link>
             ))}
@@ -239,5 +203,6 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         </section>
       )}
     </Container>
+    </>
   );
 }

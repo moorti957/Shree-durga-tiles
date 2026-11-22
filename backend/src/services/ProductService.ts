@@ -483,7 +483,7 @@ export class ProductService {
   }
 
   /**
-   * Custom murti request
+   * Custom stone enquiry
    */
   static async customRequest(data: any) {
     // In real implementation, save to CustomRequest model

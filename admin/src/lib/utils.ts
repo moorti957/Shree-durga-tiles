@@ -189,7 +189,7 @@ export function truncate(text: string, maxLength: number, suffix: string = '...'
  * 
  * @example
  * ```ts
- * slugify('Ganesh Murti - Premium!') // 'ganesh-murti-premium'
+ * slugify('Italian Marble - Premium!') // 'italian-marble-premium'
  * ```
  */
 export function slugify(text: string): string {
@@ -227,7 +227,7 @@ export function getInitials(name: string): string {
  * 
  * @example
  * ```ts
- * capitalizeWords('ganesh murti') // 'Ganesh Murti'
+ * capitalizeWords('italian marble') // 'Italian Marble'
  * ```
  */
 export function capitalizeWords(text: string): string {

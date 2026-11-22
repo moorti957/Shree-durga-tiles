@@ -2,12 +2,10 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import  Container  from '../../components/ui/Container';
 import  GlassCard  from '../../components/ui/GlassCard';
-import { get } from '@/services/apiClient';
 import {
   ArrowLeft,
   Truck,
@@ -27,26 +25,6 @@ import {
 // Shipping Policy Page
 // ============================================================
 export default function ShippingPolicyPage() {
-  const [settings, setSettings] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response: any = await get('/settings');
-        setSettings(response?.data || response);
-      } catch (error) {
-        console.error('Failed to load shipping settings', error);
-      }
-    };
-
-    fetchSettings();
-  }, []);
-
-  const standardShippingCost = settings?.shipping?.standard ?? settings?.standardShippingCost ?? 500;
-  const expressShippingCost = settings?.shipping?.express ?? settings?.expressShippingCost ?? 1200;
-  const freeShippingThreshold = settings?.freeShippingThreshold ?? 5000;
-  const gstPercentage = settings?.gstPercentage ?? settings?.taxRate ?? 18;
-
   return (
     <div className="bg-ivory dark:bg-brown min-h-screen py-12 md:py-20">
       <Container>
@@ -76,7 +54,7 @@ export default function ShippingPolicyPage() {
               Shipping Policy
             </h1>
             <p className="text-brown-light dark:text-ivory/60 mt-3 text-sm md:text-base max-w-2xl">
-              Last updated: January 1, 2025
+              Last updated: {'{{TODO: confirm shipping policy review date}}'}
             </p>
           </div>
 
@@ -122,54 +100,28 @@ export default function ShippingPolicyPage() {
                 Shipping Methods &amp; Delivery Times
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                We offer multiple shipping options to suit your needs. Delivery times vary based on
-                destination and shipping method selected.
+                Delivery arrangements and estimated timelines depend on the material, order size and destination.
+                Contact us with your pincode and requirements to confirm the available option.
               </p>
 
               <div className="mt-4 overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-gold/10 dark:border-gold/5">
-                      <th className="text-left py-2 font-semibold text-brown dark:text-ivory">Shipping Method</th>
-                      <th className="text-left py-2 font-semibold text-brown dark:text-ivory">Delivery Time</th>
-                      <th className="text-left py-2 font-semibold text-brown dark:text-ivory">Cost</th>
+                      <th className="text-left py-2 font-semibold text-brown dark:text-ivory">Delivery area</th>
+                      <th className="text-left py-2 font-semibold text-brown dark:text-ivory">Timeline</th>
+                      <th className="text-left py-2 font-semibold text-brown dark:text-ivory">Charges</th>
                     </tr>
                   </thead>
                   <tbody className="text-brown-light dark:text-ivory/70">
                     <tr className="border-b border-gold/5 dark:border-gold/5">
-                      <td className="py-2">
-                        <strong>Standard (Domestic)</strong>
-                      </td>
-                      <td className="py-2">5-7 business days</td>
-                      <td className="py-2">{standardShippingCost === 0 ? '0' : standardShippingCost} (Free above {freeShippingThreshold})</td>
-                    </tr>
-                    <tr className="border-b border-gold/5 dark:border-gold/5">
-                      <td className="py-2">
-                        <strong>Express (Domestic)</strong>
-                      </td>
-                      <td className="py-2">2-3 business days</td>
-                      <td className="py-2">{expressShippingCost}</td>
-                    </tr>
-                    <tr className="border-b border-gold/5 dark:border-gold/5">
-                      <td className="py-2">
-                        <strong>International Standard</strong>
-                      </td>
-                      <td className="py-2">7-14 business days</td>
-                      <td className="py-2">Calculated at checkout</td>
-                    </tr>
-                    <tr>
-                      <td className="py-2">
-                        <strong>International Express</strong>
-                      </td>
-                      <td className="py-2">5-7 business days</td>
-                      <td className="py-2">Calculated at checkout</td>
+                      <td className="py-2"><strong>Across India</strong></td>
+                      <td className="py-2">Confirmed for your order</td>
+                      <td className="py-2">Shared before order confirmation</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <p className="text-xs text-brown-light/50 dark:text-ivory/30 mt-3">
-                * Delivery times are estimates and may vary due to unforeseen circumstances, customs delays, or holidays.
-              </p>
             </GlassCard>
 
             {/* Order Processing Time */}
@@ -179,20 +131,8 @@ export default function ShippingPolicyPage() {
                 Order Processing Time
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                Order preparation and dispatch timing depends on the products and project requirements.
-                the time needed for quality checks and packaging:
-              </p>
-              <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
-                <li>
-                  <strong>Standard Orders:</strong> 1-2 business days for processing.
-                </li>
-                <li>
-                  <strong>Custom Orders:</strong> 5-10 business days for processing, depending on complexity.
-                </li>
-              </ul>
-              <p className="text-brown-light dark:text-ivory/70 text-sm mt-3">
-                <strong>Note:</strong> Processing time is separate from shipping time. Orders placed on weekends
-                or holidays will be processed on the next business day.
+                Preparation and dispatch timing depends on material availability and project requirements.
+                We confirm the expected schedule when discussing your order.
               </p>
             </GlassCard>
 
@@ -203,23 +143,8 @@ export default function ShippingPolicyPage() {
                 Shipping Costs
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                Shipping costs are calculated based on the weight, size, and destination of your order.
-                Here&apos;s what you can expect, with current store settings applied:
-              </p>
-              <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
-                <li>
-                  <strong>Domestic (India):</strong> Standard shipping is {standardShippingCost} and becomes free above {freeShippingThreshold}.
-                </li>
-                <li>
-                  <strong>International:</strong> Shipping costs are calculated at checkout based on your
-                  location and the weight of the package.
-                </li>
-                <li>
-                  <strong>Express Shipping:</strong> Express delivery is available for {expressShippingCost}.
-                </li>
-              </ul>
-              <p className="text-brown-light dark:text-ivory/70 text-sm mt-3">
-                GST of {gstPercentage}% is applied to the order subtotal, and the exact shipping cost is shown at checkout before payment.
+                Delivery charges depend on the material, order volume and destination. We share the
+                applicable delivery and tax details with you before confirming an order.
               </p>
             </GlassCard>
 
@@ -230,49 +155,19 @@ export default function ShippingPolicyPage() {
                 Tracking Your Order
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                We provide tracking information for all orders so you can monitor your package&apos;s journey:
+                When carrier tracking is available for a delivery, we share the tracking details after dispatch.
               </p>
-              <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
-                <li>
-                  Once your order is shipped, you will receive a confirmation email with a tracking number.
-                </li>
-                <li>
-                  You can track your package using the link provided in the email or by visiting the
-                  carrier&apos;s website.
-                </li>
-                <li>
-                  Tracking updates may take 24-48 hours to appear after shipment.
-                </li>
-              </ul>
             </GlassCard>
 
             {/* International Shipping */}
             <GlassCard variant="default" hover={false}>
               <h2 className="font-cinzel text-xl font-bold text-brown dark:text-ivory flex items-center gap-2 mb-3">
                 <Shield className="w-5 h-5 text-gold-dark dark:text-gold" />
-                International Shipping
+                Delivery Across India
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                For international orders, please note the following:
+                We discuss delivery availability for your pincode, material and project quantity before confirming an order.
               </p>
-              <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
-                <li>
-                  <strong>Customs &amp; Duties:</strong> International shipments may be subject to customs fees,
-                  import duties, or taxes. These charges are the responsibility of the customer.
-                </li>
-                <li>
-                  <strong>Customs Delays:</strong> Packages may be held by customs for inspection, which can
-                  cause delivery delays. We are not responsible for such delays.
-                </li>
-                <li>
-                  <strong>Shipping Restrictions:</strong> Some countries may have restrictions on importing
-                  religious artifacts or certain materials. Please check with your local customs office
-                  before placing an order.
-                </li>
-                <li>
-                  <strong>Pricing:</strong> International shipping costs do not include customs fees or import taxes.
-                </li>
-              </ul>
             </GlassCard>
 
             {/* Shipping Address */}
@@ -290,10 +185,6 @@ export default function ShippingPolicyPage() {
                 <li>
                   If you need to change your shipping address after placing an order, please contact us immediately.
                   We cannot modify the address once the order has been shipped.
-                </li>
-                <li>
-                  If a package is returned to us due to an incorrect address, you will be responsible for
-                  the reshipping costs.
                 </li>
               </ul>
             </GlassCard>
@@ -326,17 +217,7 @@ export default function ShippingPolicyPage() {
                 Premium Packaging
               </h2>
               <p className="text-brown-light dark:text-ivory/70 text-sm leading-relaxed">
-                Products are packed for transport to help protect them in transit. Contact us for details about your order.
-              </p>
-              <ul className="list-disc list-inside text-brown-light dark:text-ivory/70 text-sm mt-3 space-y-1.5 ml-4">
-                <li>Custom-designed boxes with protective cushioning</li>
-                <li>Bubble wrap and foam padding for fragile items</li>
-                <li>Secure sealing and tamper-proof packaging</li>
-                <li>Gift wrapping options available upon request</li>
-              </ul>
-              <p className="text-brown-light dark:text-ivory/70 text-sm mt-3">
-                If you wish to add a personalized gift message or request special packaging, please add a note
-                at checkout or contact us.
+                Packaging arrangements depend on the material and delivery route. Please discuss handling requirements with us before ordering.
               </p>
             </GlassCard>
 
@@ -382,7 +263,7 @@ export default function ShippingPolicyPage() {
                       </a>
                     </p>
                     <p>
-                      <strong>Business Hours:</strong> Mon–Sat, 9:00 AM – 7:00 PM IST
+                      <strong>Business Hours:</strong> Open 24 hours, 7 days a week
                     </p>
                   </div>
                 </div>

@@ -409,7 +409,7 @@ OrderSchema.pre<IOrder>('save', function (next) {
   if (!this.orderNumber) {
     const timestamp = Date.now().toString().slice(-8);
     const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    this.orderNumber = `PJM${timestamp}${random}`;
+    this.orderNumber = `SDT${timestamp}${random}`;
   }
   next();
 });

@@ -3,7 +3,7 @@
 'use client';
 
 import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react';
-
+import Image from 'next/image';
 import { motion, useInView, useReducedMotion, Variants, HTMLMotionProps, Transition } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
@@ -564,10 +564,12 @@ export function ScrollRevealImage({
   return (
     <ScrollReveal variant={variant} {...props}>
       <div className={cn('relative overflow-hidden rounded-2xl', aspectRatioClasses[aspectRatio], className)}>
-        <img
+        <Image
           src={src}
           alt={alt}
-          className="w-full h-full object-cover"
+          fill
+          sizes="(max-width: 640px) 100vw, 80vw"
+          className="object-cover"
           loading="lazy"
         />
       </div>

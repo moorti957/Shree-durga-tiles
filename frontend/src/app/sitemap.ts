@@ -1,113 +1,74 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from 'next';
+import { blogDrafts } from '@/data/blogDrafts';
+import { landingPages } from '@/data/landingPages';
+import { SITE_URL } from '@/lib/seo';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://www.panditjimarblemurtiarts.in";
+const publicPaths = [
+  '/',
+  '/about',
+  '/contact',
+  '/products',
+  '/categories',
+  '/gallery',
+  '/blogs',
+  '/faq',
+  '/privacy-policy',
+  '/shipping-policy',
+  '/refund-policy',
+  '/terms',
+  ...landingPages.map((page) => `/${page.slug}`),
+];
 
-  const currentDate = new Date();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const updatedAt = new Date();
+  const entries: MetadataRoute.Sitemap = publicPaths.map((path) => ({
+    url: `${SITE_URL}${path}`,
+    lastModified: updatedAt,
+    changeFrequency: path === '/' ? 'daily' : 'weekly',
+    priority: path === '/' ? 1 : path.startsWith('/marble-') || path.startsWith('/granite-') ? 0.85 : 0.7,
+  }));
+  const draftSlugs = new Set(blogDrafts.map((post) => post.slug));
 
-  return [
-    // Home
-    {
-      url: `${baseUrl}/`,
-      lastModified: currentDate,
-      changeFrequency: "daily",
-      priority: 1,
-    },
+  entries.push(...blogDrafts.map((post) => ({
+    url: `${SITE_URL}/blogs/${post.slug}`,
+    ...(post.publishedAt ? { lastModified: new Date(post.publishedAt) } : {}),
+    changeFrequency: 'monthly' as const,
+    priority: 0.65,
+  })));
 
-    // Products
-    {
-      url: `${baseUrl}/products`,
-      lastModified: currentDate,
-      changeFrequency: "daily",
-      priority: 0.95,
-    },
+  try {
+    const { blogApi } = await import('@/services/blogApi');
+    const posts = await blogApi.getAll();
+    entries.push(...posts
+      .filter((post) => !draftSlugs.has(post.slug))
+      .map((post) => ({
+        url: `${SITE_URL}/blogs/${post.slug}`,
+        lastModified: new Date(post.publishedAt),
+        changeFrequency: 'monthly' as const,
+        priority: 0.65,
+      })));
+  } catch (error) {
+    console.error('Unable to include live blog posts in the sitemap:', error);
+  }
 
-    // Categories
-    {
-      url: `${baseUrl}/categories`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
+  try {
+    const { productsApi } = await import('@/features/products/api/productsApi');
+    let page = 1;
+    let totalPages = 1;
+    while (page <= totalPages) {
+      const result = await productsApi.getAll({ page, limit: 100 });
+      totalPages = result.totalPages;
+      entries.push(...result.products.filter((product) => product.slug).map((product) => ({
+        url: `${SITE_URL}/products/${product.slug}`,
+        lastModified: product.updatedAt ? new Date(product.updatedAt) : updatedAt,
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
+      })));
+      page += 1;
+    }
+  } catch (error) {
+    console.error('Unable to include live products in the sitemap:', error);
+  }
 
-    // Gallery
-    {
-      url: `${baseUrl}/gallery`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-
-    // Blogs
-    {
-      url: `${baseUrl}/blogs`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.85,
-    },
-
-    // About
-    {
-      url: `${baseUrl}/about`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-
-    // Contact
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-
-    // FAQ
-    {
-      url: `${baseUrl}/faq`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.75,
-    },
-
-    // Track Order
-    {
-      url: `${baseUrl}/track-order`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-
-    // Privacy Policy
-    {
-      url: `${baseUrl}/privacy-policy`,
-      lastModified: currentDate,
-      changeFrequency: "yearly",
-      priority: 0.4,
-    },
-
-    // Shipping Policy
-    {
-      url: `${baseUrl}/shipping-policy`,
-      lastModified: currentDate,
-      changeFrequency: "yearly",
-      priority: 0.4,
-    },
-
-    // Refund Policy
-    {
-      url: `${baseUrl}/refund-policy`,
-      lastModified: currentDate,
-      changeFrequency: "yearly",
-      priority: 0.4,
-    },
-
-    // Terms & Conditions
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: currentDate,
-      changeFrequency: "yearly",
-      priority: 0.4,
-    },
-  ];
+  return entries;
 }

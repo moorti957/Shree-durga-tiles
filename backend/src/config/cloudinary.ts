@@ -86,8 +86,8 @@ export interface CloudinaryUploadOptions {
  * ```ts
  * const result = await uploadToCloudinary(fileBuffer, {
  *   folder: 'products',
- *   public_id: 'ganesh-murti-001',
- *   tags: ['ganesh', 'murti'],
+ *   public_id: 'white-marble-tile-001',
+ *   tags: ['marble', 'tile'],
  * });
  * console.log(result.secure_url);
  * ```
@@ -97,7 +97,7 @@ export async function uploadToCloudinary(
   options: CloudinaryUploadOptions = {}
 ): Promise<UploadApiResponse> {
   const {
-    folder = 'panditji',
+    folder = 'shree-durga-tiles',
     public_id,
     tags = [],
     quality = 'auto:good',

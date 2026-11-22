@@ -73,11 +73,6 @@ export interface ParallaxImageProps {
    */
   loading?: boolean;
   /**
-   * Whether the image should be priority loaded
-   * @default false
-   */
-  priority?: boolean;
-  /**
    * Overlay gradient on the image
    */
   overlay?: React.ReactNode;
@@ -282,7 +277,6 @@ export function ParallaxImage({
   enableOnTouch = true,
   circular = false,
   loading = false,
-  priority = false,
   overlay,
   damping = 20,
   stiffness = 150,
@@ -390,7 +384,6 @@ export function ParallaxImage({
             'object-cover transition-opacity duration-500',
             imageClassName
           )}
-          priority={priority}
           onLoad={() => setIsImageLoaded(true)}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />

@@ -21,24 +21,30 @@ export default function ContactPage() {
     {
       icon: <MapPin className="w-5 h-5 text-gold-dark" />,
       label: 'Address',
-      value: settings?.address || 'Bhagat Singh Circle Near Kunda Mandir, Naugaon (Alwar) Raj 301604',
+      value: 'Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India',
     },
     {
       icon: <Phone className="w-5 h-5 text-gold-dark" />,
-      label: 'Phone',
-      value: settings?.phone || '+91 85293 88726',
-      link: `tel:${(settings?.phone || '+918529388726').replace(/[^\d+]/g, '')}`,
+      label: 'Phone 1',
+      value: '+91 85293 88726',
+      link: 'tel:+918529388726',
+    },
+    {
+      icon: <Phone className="w-5 h-5 text-gold-dark" />,
+      label: 'Phone 2',
+      value: '+91 80582 85886',
+      link: 'tel:+918058285886',
     },
     {
       icon: <Mail className="w-5 h-5 text-gold-dark" />,
       label: 'Email',
-      value: settings?.email || 'dileepsaini8726@gmail.com',
-      link: `mailto:${settings?.email || 'dileepsaini8726@gmail.com'}`,
+      value: 'dileepsaini8726@gmail.com',
+      link: 'mailto:dileepsaini8726@gmail.com',
     },
     {
       icon: <Clock className="w-5 h-5 text-gold-dark" />,
       label: 'Working Hours',
-      value: settings?.timings || 'Available 24 Hours · 7 Days a Week',
+      value: 'Open 24 hours, 7 days a week',
     },
   ];
 
@@ -60,10 +66,10 @@ export default function ContactPage() {
               Get a free quote
             </span>
             <h1 className="font-cinzel text-gold text-4xl md:text-5xl font-bold mt-4">
-              Let&apos;s find the right <span className="text-gold">stone for your space.</span>
+              Contact Shree Durga Tiles in Naugaon, Alwar
             </h1>
             <p className="text-white/80 text-lg max-w-2xl mx-auto mt-4">
-              Tell us about your project or visit our showroom in Naugaon, Alwar. We&apos;ll help you compare materials and finishes.
+              Tell us about your project or visit our showroom in Naugaon, Alwar.               We&apos;ll help you compare materials and finishes.
             </p>
           </motion.div>
         </Container>
@@ -87,6 +93,10 @@ export default function ContactPage() {
               <p className="text-brown-light text-sm mb-8">
                 Ask us about marble, granite, tiles, quartz, kitchen tops, outdoor flooring or bulk project supply.
               </p>
+              <div className="mb-8 flex flex-wrap gap-3">
+                <a href="tel:+918529388726" onClick={() => void trackVisitorEvent('call_click')} className="btn-maroon">Call +91 85293 88726</a>
+                <a href="https://wa.me/918529388726?text=Hello%20Shree%20Durga%20Tiles%2C%20I%20want%20a%20quote%20for%20marble%2Ftiles." target="_blank" rel="noopener noreferrer" onClick={() => void trackVisitorEvent('whatsapp_click')} className="btn-gold">WhatsApp us</a>
+              </div>
 
               <div className="space-y-6">
                 {contactDetails.map((detail) => (
@@ -201,7 +211,7 @@ export default function ContactPage() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Shree Durga Tiles Location"
+                title="Google Map to Shree Durga Tiles, Delhi–Alwar Road, Naugaon, Alwar"
               />
             </div>
           </div>

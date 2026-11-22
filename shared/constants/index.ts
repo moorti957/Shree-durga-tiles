@@ -1,1 +1,1 @@
-export const APP_NAME = 'Saraswati Murti Kala Kendra';
+export const APP_NAME = 'Shree Durga Tiles';

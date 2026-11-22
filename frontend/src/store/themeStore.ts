@@ -47,7 +47,7 @@ export const useThemeStore = create<ThemeState>()(
       },
     }),
     {
-      name: 'panditji-theme-storage',
+      name: 'shree-durga-theme-storage',
       storage: createJSONStorage(() => localStorage),
     }
   )

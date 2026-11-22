@@ -37,26 +37,26 @@ const defaultSteps: WorkshopStep[] = [
   {
     id: '1',
     number: 1,
-    title: 'Clay Modeling & Refinement',
-    description: 'Every murti begins as a vision, sculpted in clay to perfect every divine detail.',
+    title: 'Plan the room and application',
+    description: 'Share the space, measurements and intended use before comparing suitable stone and tile options.',
   },
   {
     id: '2',
     number: 2,
-    title: 'Mold Making & Casting',
-    description: 'Precision molds are crafted to capture the essence of the original sculpture.',
+    title: 'Compare material and finish',
+    description: 'Review available colours, patterns, dimensions and surface finishes for your project.',
   },
   {
     id: '3',
     number: 3,
-    title: 'Hand Finishing & Detailing',
-    description: 'Master artisans refine every curve and expression with meticulous hand tools.',
+    title: 'Confirm site measurements',
+    description: 'Coordinate final dimensions, quantity, cuts and installation details with your contractor.',
   },
   {
     id: '4',
     number: 4,
-    title: 'Pran Pratishtha (Energization)',
-    description: 'Each murti is consecrated through sacred rituals, infusing it with divine energy.',
+    title: 'Plan delivery and care',
+    description: 'Discuss delivery requirements and ask for product-specific cleaning and maintenance guidance.',
   },
 ];
 
@@ -65,10 +65,10 @@ const defaultSteps: WorkshopStep[] = [
 // ============================================================
 export default function WorkshopSection({
   title = 'From Our Workshop to Your Home',
-  subtitle = 'Every murti is hand-sculpted in Naugaon using traditional techniques passed down through generations.',
-  tag = '✦ Behind the Art',
+  subtitle = 'Compare materials and finishes for homes and projects at our Naugaon showroom.',
+  tag = '✦ Material guidance',
   imageSrc = workshopImage,
-  imageAlt = 'Master artisan at work on a marble murti',
+  imageAlt = 'Marble and tile showroom selection at Shree Durga Tiles, Alwar',
   steps = defaultSteps,
   className,
   loading = false,
@@ -127,7 +127,6 @@ export default function WorkshopSection({
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
-                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brown/20 to-transparent" />
             </div>

@@ -19,7 +19,7 @@ if (typeof window !== 'undefined') {
 
 /* ====== यहाँ अपना नंबर डालें (country code के साथ, बिना + के) ====== */
 const WHATSAPP_NUMBER = '918529388726';
-const CALL_NUMBER = '+918058285886';
+const CALL_NUMBER = '+91 85293 88726';
 
 /* Material swatches — असली फोटो आने तक CSS से बने हुए पत्थर के टेक्सचर */
 
@@ -27,13 +27,13 @@ const CALL_NUMBER = '+918058285886';
 
 const materials = [
   {
-    key: 'Ceramic Tiles',
-    label: 'Ceramic Tiles',
+    key: 'Marble Tiles',
+    label: 'Marble Tiles',
     image: marble,
   },
   {
-    key: 'Gold Metallic Tiles',
-    label: 'Gold Metallic Tiles',
+    key: 'Granite',
+    label: 'Granite',
     image: granite,
   },
   {
@@ -42,8 +42,8 @@ const materials = [
     image: designerTiles,
   },
   {
-    key: 'Natural Tiles',
-    label: 'Natural Tiles',
+    key: 'Natural Stone',
+    label: 'Natural Stone',
     image: naturalStone,
   },
 ];
@@ -129,14 +129,17 @@ export default function Hero() {
         <div className="max-w-2xl">
           <p className="hero-reveal mb-6 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-gold-light">
             <span className="h-px w-10 bg-gold-light" />
-            Shree Durga Tiles · Nogawa
+            Shree Durga Tiles · Naugaon
           </p>
 
-          <h1 className="hero-reveal font-cinzel text-[clamp(44px,6vw,88px)] font-medium leading-[1] tracking-[-0.02em] text-white">
-            Stone that shapes <em className="not-italic text-gold-light">your space.</em>
+          <h1 className="hero-reveal max-w-3xl font-cinzel text-[clamp(38px,5vw,68px)] font-medium leading-[1.08] tracking-[-0.02em] text-white">
+            Marble, Granite &amp; Tiles in Alwar: Shree Durga Tiles
           </h1>
 
-          <p className="hero-reveal mt-6 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
+          <p className="hero-reveal mt-5 font-cinzel text-2xl text-gold-light sm:text-3xl">
+            Stone that shapes your space.
+          </p>
+          <p className="hero-reveal mt-3 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
             Discover marble, granite, designer tiles and natural stone for every corner of your home and project.
           </p>
 
@@ -207,7 +210,7 @@ export default function Hero() {
                     >
                       <Image
                         src={m.image}
-                        alt={m.label}
+                        alt={`${m.label} tile finish, Shree Durga Tiles Alwar`}
                         fill
                         sizes="100px"
                         className="object-cover transition-transform duration-300 group-hover:scale-110"

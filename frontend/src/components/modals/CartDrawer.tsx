@@ -6,26 +6,16 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, Minus, Plus, Trash2, ShoppingBag, Ticket, ChevronRight } from 'lucide-react';
-import { toast } from '@/lib/notifications';
+import { X, Minus, Plus, Trash2, ShoppingBag, ChevronRight } from 'lucide-react';
 
 import { useCartStore } from '@/features/cart/store/cartStore';
-import { formatPrice, cn } from '@/lib/utils';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { GlassCard } from '@/components/ui/GlassCard';
+import { formatPrice } from '@/lib/utils';
 
 // ============================================================
 // CartDrawer Component
 // ============================================================
 export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [couponCode, setCouponCode] = useState('');
-  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState<{
-    code: string;
-    discount: number;
-  } | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -34,8 +24,10 @@ export default function CartDrawer() {
     totalPrice,
     updateQuantity,
     removeItem,
-    clearCart,
   } = useCartStore();
+  const hasUnpricedItems = items.some(
+    ({ product }) => product.quoteOnly || product.price <= 0,
+  );
 
   // Subscribe to cart open/close state (if you have a global store for drawer)
   // For now we'll use a simple local state, but you can integrate with Zustand
@@ -91,41 +83,7 @@ export default function CartDrawer() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  // Handle coupon apply (mock)
-  const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) {
-      toast.error('Please enter a coupon code.', 'We’ll apply it as soon as you’re ready.');
-      return;
-    }
-    setIsApplyingCoupon(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    // Mock validation
-    if (couponCode.toUpperCase() === 'DIVINE10') {
-      setAppliedCoupon({ code: couponCode.toUpperCase(), discount: 10 });
-      toast.success('Offer applied', 'Your discount has been added successfully.');
-      setCouponCode('');
-    } else if (couponCode.toUpperCase() === 'WELCOME20') {
-      setAppliedCoupon({ code: couponCode.toUpperCase(), discount: 20 });
-      toast.success('Offer applied', 'Your discount has been added successfully.');
-      setCouponCode('');
-    } else {
-      toast.error('We couldn’t apply that offer.', 'Please check the coupon code and try again.');
-    }
-    setIsApplyingCoupon(false);
-  };
-
-  const removeCoupon = () => {
-    setAppliedCoupon(null);
-    toast.success('Offer removed', 'Your discount has been removed.');
-  };
-
-  // Calculate totals
   const subtotal = totalPrice;
-  const shipping = subtotal > 5000 ? 0 : 299;
-  const tax = Math.round(subtotal * 0.18);
-  const discount = appliedCoupon ? Math.round(subtotal * (appliedCoupon.discount / 100)) : 0;
-  const grandTotal = subtotal + shipping + tax - discount;
 
   // Overlay and drawer variants
   const overlayVariants = {
@@ -227,7 +185,7 @@ export default function CartDrawer() {
                       >
                         <Image
                           src={item.product.images[0] || '/placeholder.png'}
-                          alt={item.product.name}
+                          alt={`${item.product.name}, Shree Durga Tiles Alwar`}
                           fill
                           className="object-cover"
                           sizes="64px"
@@ -248,7 +206,9 @@ export default function CartDrawer() {
                         </p>
                         <div className="flex items-center justify-between mt-1">
                           <span className="font-cinzel text-sm text-gold-dark dark:text-gold">
-                            {formatPrice(item.product.price)}
+                            {item.product.quoteOnly || item.product.price <= 0
+                              ? 'Price on request'
+                              : formatPrice(item.product.price)}
                           </span>
                           <div className="flex items-center gap-1">
                             <button
@@ -291,97 +251,33 @@ export default function CartDrawer() {
             {/* Footer (summary + checkout) */}
             {items.length > 0 && (
               <div className="border-t border-gold/10 dark:border-gold/5 p-4 bg-white dark:bg-brown-dark shrink-0">
-                {/* Coupon */}
-                <div className="flex gap-2 mb-4">
-                  <div className="relative flex-1">
-                    <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-light" />
-                    <Input
-                      type="text"
-                      placeholder="Coupon code"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                      disabled={!!appliedCoupon}
-                      className="pl-9 pr-4 py-2 text-sm border-gold/10 rounded-full"
-                    />
-                  </div>
-                  <Button
-                    onClick={handleApplyCoupon}
-                    disabled={!!appliedCoupon || isApplyingCoupon}
-                    className="btn-gold px-4 py-2 text-sm whitespace-nowrap"
-                  >
-                    {isApplyingCoupon ? 'Applying...' : 'Apply'}
-                  </Button>
-                </div>
-
-                {appliedCoupon && (
-                  <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 rounded-lg px-3 py-1.5 mb-3 border border-green-200 dark:border-green-800">
-                    <span className="text-sm text-green-700 dark:text-green-400">
-                      Coupon {appliedCoupon.code} applied
-                      <span className="text-xs ml-1">(-{appliedCoupon.discount}%)</span>
-                    </span>
-                    <button
-                      onClick={removeCoupon}
-                      className="text-green-700/60 hover:text-red-500 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-
-                {/* Totals */}
                 <div className="space-y-2 text-sm mb-3">
                   <div className="flex justify-between">
-                    <span className="text-brown-light dark:text-ivory/60">Subtotal</span>
+                    <span className="text-brown-light dark:text-ivory/60">Product subtotal</span>
                     <span className="font-medium text-brown dark:text-ivory">
-                      {formatPrice(subtotal)}
+                      {hasUnpricedItems ? 'Price to be confirmed' : formatPrice(subtotal)}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-brown-light dark:text-ivory/60">Shipping</span>
-                    <span className="font-medium text-brown dark:text-ivory">
-                      {shipping === 0 ? 'Shipping included' : formatPrice(shipping)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-brown-light dark:text-ivory/60">Tax (GST 18%)</span>
-                    <span className="font-medium text-brown dark:text-ivory">
-                      {formatPrice(tax)}
-                    </span>
-                  </div>
-                  {appliedCoupon && (
-                    <div className="flex justify-between text-green-600 dark:text-green-400">
-                      <span>Discount ({appliedCoupon.discount}%)</span>
-                      <span>-{formatPrice(discount)}</span>
-                    </div>
-                  )}
                 </div>
 
-                <div className="border-t border-gold/10 dark:border-gold/5 pt-3 mb-4">
-                  <div className="flex justify-between text-lg font-semibold">
-                    <span className="font-cinzel text-brown dark:text-ivory">Total</span>
-                    <span className="font-cinzel text-gold-dark dark:text-gold">
-                      {formatPrice(grandTotal)}
-                    </span>
-                  </div>
-                  <p className="text-xs text-brown-light/50 dark:text-ivory/30 mt-1 text-right">
-                    Inclusive of all taxes
-                  </p>
-                </div>
+                <p className="mb-4 border-t border-gold/10 pt-3 text-xs leading-relaxed text-brown-light dark:text-ivory/60">
+                  Delivery charges and applicable taxes are confirmed with your quote.
+                </p>
 
                 <div className="flex gap-3">
                   <Link
-                    href="/cart"
+                    href="/products"
                     className="flex-1 btn-outline-gold text-center py-2.5 text-sm"
                     onClick={() => setIsOpen(false)}
                   >
-                    View Cart
+                    Keep browsing
                   </Link>
                   <Link
-                    href="/checkout"
+                    href="/contact"
                     className="flex-1 btn-gold text-center py-2.5 text-sm flex items-center justify-center gap-1"
                     onClick={() => setIsOpen(false)}
                   >
-                    Checkout
+                    Request a quote
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>

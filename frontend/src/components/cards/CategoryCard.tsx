@@ -28,7 +28,6 @@ interface CategoryCardProps {
   category: Category;
   variant?: 'default' | 'featured' | 'compact';
   className?: string;
-  priority?: boolean;
 }
 
 // ============================================================
@@ -38,7 +37,6 @@ export function CategoryCard({
   category,
   variant = 'default',
   className,
-  priority = false,
 }: CategoryCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -109,14 +107,14 @@ export function CategoryCard({
             {image ? (
               <Image
                 src={image}
-                alt={name}
+                alt={`${name} collection at Shree Durga Tiles, Alwar`}
                 fill
                 className={cn(
                   'object-cover transition-transform duration-700 group-hover:scale-105',
                   !imageLoaded && 'blur-sm scale-105'
                 )}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                loading={priority ? 'eager' : 'lazy'}
+                loading="lazy"
                 onLoad={() => setImageLoaded(true)}
               />
             ) : <div aria-hidden="true" className={`absolute inset-0 ${textureClass}`} />}
@@ -188,14 +186,14 @@ export function CategoryCard({
           {image ? (
             <Image
               src={image}
-              alt={name}
+              alt={`${name} collection at Shree Durga Tiles, Alwar`}
               fill
               className={cn(
                 'object-cover transition-transform duration-700 group-hover:scale-110',
                 !imageLoaded && 'blur-sm scale-105'
               )}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-             loading={priority ? 'eager' : 'lazy'}
+             loading="lazy"
               onLoad={() => setImageLoaded(true)}
             />
           ) : <div aria-hidden="true" className={`absolute inset-0 ${textureClass}`} />}

@@ -41,7 +41,7 @@ export default function RefundPolicyPage() {
               Refund &amp; Return Policy
             </h1>
             <p className="text-brown-light dark:text-ivory/60 mt-3 text-sm md:text-base max-w-2xl">
-              Last updated: January 1, 2025
+              Last updated: {'{{TODO: confirm refund policy review date}}'}
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export default function RefundPolicyPage() {
                   >
                     dileepsaini8726@gmail.com
                   </a>
-                  {' '}or WhatsApp us at +91 72403 64772 with your order number and reason for return.
+                  {' '}or WhatsApp us at +91 85293 88726 with your order number and reason for return.
                 </li>
                 <li>
                   <strong>Receive Approval:</strong> Our team will review your request and provide return authorization

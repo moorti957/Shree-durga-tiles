@@ -1,13 +1,8 @@
 // backend/src/controllers/OrderController.ts
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth';
-import mongoose from 'mongoose';
-import { Order, IOrder } from '../models/Order';
+import { Order } from '../models/Order';
 import { Product } from '../models/Product';
-import { User } from '../models/User';
-import { Coupon } from '../models/Coupon';
-import { Setting } from '../models/Setting';
-import { ShippingService } from '../services/ShippingService';
 
 
 export class OrderController {
@@ -15,208 +10,10 @@ export class OrderController {
    * Create a new order
    */
   static async createOrder(req: AuthRequest, res: Response): Promise<Response> {
-    try {
-      const userId = req.user?.id;
-      const {
-        items,
-        shippingAddress,
-        billingAddress,
-        paymentMethod,
-        couponCode,
-        giftWrap = false,
-        shippingMethod = 'standard',
-        notes,
-      } = req.body;
-
-      const settings = await Setting.findOne({}) || await Setting.create({});
-
-      // Validate items and calculate totals
-      let subtotal = 0;
-      const orderItems = [];
-
-      for (const item of items) {
-        const product = await Product.findById(item.productId);
-        if (!product) {
-          return res.status(404).json({
-            success: false,
-            message: `Product ${item.productId} not found`,
-          });
-        }
-
-        // Check stock
-       if ((product.stockQuantity ?? 0) < item.quantity) {
-  return res.status(400).json({
-    success: false,
-    message: `Insufficient stock for ${product.name}. Available: ${product.stockQuantity ?? 0}`,
-  });
-}
-
-        const price = item.price || product.price;
-        subtotal += price * item.quantity;
-
-        orderItems.push({
-          product: product._id,
-          name: product.name,
-          image: product.images?.[0] || '',
-          quantity: item.quantity,
-          price: price,
-          total: price * item.quantity,
-        });
-      }
-
-      // Calculate dynamic shipping cost using ShippingService
-      // Shipping is calculated based on customer address, product weight and distance from Govindgarh, Alwar
-      let shippingCost = 0;
-      try {
-        const shippingItems = orderItems.map((oi: any, idx: number) => ({
-          productId: items[idx]?.productId,
-          quantity: oi.quantity,
-        }));
-        const shippingCalc = await ShippingService.calculateShipping(
-          shippingAddress,
-          shippingItems,
-          subtotal
-        );
-        shippingCost = shippingMethod === 'express'
-          ? shippingCalc.expressShippingCost
-          : shippingCalc.standardShippingCost;
-      } catch (shippingErr) {
-        // Fallback to formula-based estimate using weight only if address geocoding fails
-        console.warn('Shipping calculation fallback in createOrder:', shippingErr);
-        const totalWeight = await ShippingService.calculateTotalWeight(
-          orderItems.map((oi: any, idx: number) => ({
-            productId: items[idx]?.productId,
-            quantity: oi.quantity,
-          }))
-        );
-        const fallbackStandard = ShippingService.calculateStandardShippingCost(300, totalWeight);
-        shippingCost = shippingMethod === 'express'
-          ? ShippingService.calculateExpressShippingCost(fallbackStandard, subtotal)
-          : fallbackStandard;
-      }
-
-      // Calculate tax from settings
-      const gstPercentage = settings.gstPercentage ?? settings.taxRate ?? 18;
-      const tax = Math.round(subtotal * (Number(gstPercentage) / 100));
-
-      // Apply coupon if provided
-      let discount = 0;
-      let couponApplied = null;
-      if (couponCode) {
-        const coupon = await Coupon.findOne({
-          code: couponCode.toUpperCase(),
-          isActive: true,
-          expiresAt: { $gt: new Date() },
-        });
-        if (coupon) {
-          if (coupon.discountType === 'percentage') {
-            discount = Math.round((subtotal * coupon.discountValue) / 100);
-          } else {
-            discount = Math.min(coupon.discountValue, subtotal);
-          }
-          couponApplied = {
-            code: coupon.code,
-            discountType: coupon.discountType,
-            discountValue: coupon.discountValue,
-            discountAmount: discount,
-          };
-        }
-      }
-
-      // Gift wrap
-      const giftWrapCost = giftWrap ? (settings.giftWrapCharge ?? 99) : 0;
-
-      // Calculate grand total
-      const grandTotal = subtotal + shippingCost + tax + giftWrapCost - discount;
-      const advancePercent = settings.advancePaymentPercentage ?? settings.advancePaymentPercent ?? 25;
-      const advancePaid = paymentMethod === 'cod' ? Math.round((grandTotal * advancePercent) / 100) : grandTotal;
-      const remainingAmount = paymentMethod === 'cod' ? Math.max(grandTotal - advancePaid, 0) : 0;
-
-      // Generate order number
-      const orderNumber = 'PJM' + Date.now().toString().slice(-8);
-
-      if (paymentMethod === 'cod' && advancePaid > 0) {
-        const paymentStatus = 'advance_paid';
-        const order = new Order({
-          orderNumber,
-          user: userId,
-          items: orderItems,
-          subtotal,
-          shippingCost,
-          tax,
-          discount,
-          giftWrapCost: giftWrapCost,
-          grandTotal,
-          advancePaid,
-          remainingAmount,
-          shippingAddress,
-          billingAddress: billingAddress || shippingAddress,
-          paymentMethod,
-          shippingMethod,
-          coupon: couponApplied,
-          notes,
-          status: paymentStatus === 'advance_paid' ? 'advance_paid' : 'pending',
-          paymentStatus,
-          paymentHistory: [{ type: 'advance', amount: advancePaid, paymentMethod: 'cod', paymentStatus: 'pending', createdAt: new Date() }],
-        });
-
-        await order.save();
-
-        for (const item of items) {
-          await Product.findByIdAndUpdate(item.productId, {
-            $inc: { stockQuantity: -item.quantity },
-          });
-        }
-
-        return res.status(201).json({ success: true, message: 'Order created successfully. Advance payment required.', data: order });
-      }
-
-      const order = new Order({
-        orderNumber,
-        user: userId,
-        items: orderItems,
-        subtotal,
-        shippingCost,
-        tax,
-        discount,
-        giftWrapCost: giftWrapCost,
-        grandTotal,
-        advancePaid: paymentMethod === 'cod' ? advancePaid : grandTotal,
-        remainingAmount: paymentMethod === 'cod' ? remainingAmount : 0,
-        shippingAddress,
-        billingAddress: billingAddress || shippingAddress,
-        paymentMethod,
-        shippingMethod,
-        coupon: couponApplied,
-        notes,
-        status: paymentMethod === 'cod' ? 'advance_paid' : 'pending',
-        paymentStatus: paymentMethod === 'cod' ? 'advance_paid' : 'pending',
-        paymentHistory: paymentMethod === 'cod' ? [{ type: 'advance', amount: advancePaid, paymentMethod: 'cod', paymentStatus: 'pending', createdAt: new Date() }] : [],
-      });
-
-      await order.save();
-
-      for (const item of items) {
-        await Product.findByIdAndUpdate(item.productId, {
-          $inc: { stockQuantity: -item.quantity },
-        });
-      }
-
-      // Send order confirmation email
-      // await sendOrderConfirmationEmail(order);
-
-      return res.status(201).json({
-        success: true,
-        message: 'Order created successfully',
-        data: order,
-      });
-    } catch (error) {
-      console.error('Create order error:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Internal server error',
-      });
-    }
+    return res.status(503).json({
+      success: false,
+      message: 'Online ordering is paused until Shree Durga Tiles confirms delivery charges and applicable taxes in a quote.',
+    });
   }
 
   /**
@@ -739,6 +536,6 @@ export class OrderController {
   static generateOrderNumber(): string {
     const timestamp = Date.now().toString().slice(-8);
     const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    return `PJM${timestamp}${random}`;
+    return `SDT${timestamp}${random}`;
   }
 }

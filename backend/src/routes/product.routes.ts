@@ -295,7 +295,7 @@ router.get(
   ProductController.getById
 );
 
-// Custom murti request (public, with rate limit)
+// Custom stone enquiry (public, with rate limit)
 if (legacyCommerceEnabled) {
   router.post(
     '/custom-request',

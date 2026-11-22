@@ -484,9 +484,9 @@ export interface ProductAvailability {
 // ============================================================
 
 /**
- * Custom murti request data
+ * Custom stone enquiry data
  */
-export interface CustomMurtiRequest {
+export interface CustomStoneRequest {
   /** Requester name */
   name: string;
   
@@ -496,7 +496,7 @@ export interface CustomMurtiRequest {
   /** Requester phone */
   phone: string;
   
-  /** Request description (details of the custom murti) */
+  /** Request description for the selected stone or tile */
   description: string;
   
   /** Budget range */
@@ -519,9 +519,9 @@ export interface CustomMurtiRequest {
 }
 
 /**
- * Custom murti request response
+ * Custom stone enquiry response
  */
-export interface CustomMurtiRequestResponse {
+export interface CustomStoneRequestResponse {
   /** Request ID for tracking */
   requestId: string;
   

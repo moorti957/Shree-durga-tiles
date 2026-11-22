@@ -61,9 +61,9 @@ interface InstagramFeedProps {
 // ============================================================
 export function InstagramFeed({
   posts,
-  title = 'Follow Us on Instagram',
-  subtitle = 'Explore our divine creations and behind-the-scenes craftsmanship.',
-  username = '@panditjimurti',
+  title = 'Shree Durga Tiles Updates',
+  subtitle = 'See stone and tile selections from our Naugaon, Alwar showroom.',
+  username = 'Shree Durga Tiles',
   displayMode = 'grid',
   columns = 4,
   slidesPerView = 4,
@@ -140,7 +140,7 @@ export function InstagramFeed({
               Follow us on Instagram for daily divine inspiration.
             </p>
             <Link
-              href="https://www.instagram.com/panditjimarblemurtiart/"
+              href="/contact"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-gold inline-block mt-4 text-sm"
@@ -183,7 +183,7 @@ export function InstagramFeed({
               )}
             </div>
             <Link
-              href="https://www.instagram.com/panditjimarblemurtiart/"
+              href="/contact"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-medium text-gold-dark dark:text-gold hover:text-gold transition-colors group"
@@ -207,7 +207,7 @@ export function InstagramFeed({
                 <Link href={post.url} target="_blank" rel="noopener noreferrer">
                   <Image
                     src={post.image}
-                    alt={post.caption || 'Instagram post'}
+                    alt={`${post.caption || 'Showroom materials'} — Shree Durga Tiles, Alwar`}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
@@ -253,13 +253,13 @@ export function InstagramFeed({
             className="text-center mt-8"
           >
             <Link
-              href="https://www.instagram.com/panditjimarblemurtiart/"
+              href="/contact"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:shadow-lg transition-shadow"
             >
               <Instagram className="w-4 h-4" />
-              Follow @panditjimurti
+              Contact Shree Durga Tiles
               <Sparkles className="w-4 h-4" />
             </Link>
           </motion.div>
@@ -296,7 +296,7 @@ export function InstagramFeed({
             )}
           </div>
           <Link
-            href="https://www.instagram.com/panditjimarblemurtiart/"
+            href="/contact"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-gold-dark dark:text-gold hover:text-gold transition-colors group"
@@ -342,7 +342,7 @@ export function InstagramFeed({
                   <Link href={post.url} target="_blank" rel="noopener noreferrer">
                     <Image
                       src={post.image}
-                      alt={post.caption || 'Instagram post'}
+                      alt={`${post.caption || 'Showroom materials'} — Shree Durga Tiles, Alwar`}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
@@ -408,13 +408,13 @@ export function InstagramFeed({
           className="text-center mt-8"
         >
           <Link
-            href="https://www.instagram.com/panditjimarblemurtiart/"
+            href="/contact"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:shadow-lg transition-shadow"
           >
             <Instagram className="w-4 h-4" />
-            Follow @panditjimurti
+            Contact Shree Durga Tiles
             <Sparkles className="w-4 h-4" />
           </Link>
         </motion.div>
@@ -485,12 +485,12 @@ export function CompactInstagramFeed({
         </div>
         <p className="text-xs text-brown-light dark:text-ivory/50">Follow us for daily inspiration.</p>
         <Link
-          href="https://www.instagram.com/panditjimarblemurtiart/"
+          href="/contact"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block mt-2 text-xs text-gold-dark hover:text-gold"
         >
-          @panditjimurti
+          Shree Durga Tiles
         </Link>
       </div>
     );
@@ -504,7 +504,7 @@ export function CompactInstagramFeed({
           <h3 className="font-cinzel text-lg font-semibold text-brown dark:text-ivory">Instagram</h3>
         </div>
         <Link
-          href="https://www.instagram.com/panditjimarblemurtiart/"
+          href="/contact"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs text-gold-dark hover:text-gold transition-colors"
@@ -523,7 +523,7 @@ export function CompactInstagramFeed({
           >
             <Image
               src={post.image}
-              alt="Instagram post"
+              alt="Marble, granite and tile selection at Shree Durga Tiles, Alwar"
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="50vw"

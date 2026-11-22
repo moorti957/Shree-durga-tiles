@@ -40,7 +40,7 @@ export default function GalleryPage() {
   // Categories for filter
   const categories = [
     { id: 'all', label: 'All' },
-    { id: 'murti', label: 'Stone & Tile' },
+    { id: 'stone', label: 'Stone & Tile' },
     { id: 'temple', label: 'Mandir & Pooja Spaces' },
     { id: 'workshop', label: 'Showroom & Selection' },
     { id: 'ceremony', label: 'Project Highlights' },
@@ -81,7 +81,7 @@ export default function GalleryPage() {
     return (
       <Container className="py-12 md:py-20">
         <div className="text-center mb-12">
-          <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">Our Gallery</h1>
+          <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">Marble and Tile Gallery in Alwar</h1>
           <p className="text-brown-light mt-3 max-w-2xl mx-auto">
             Explore material details and spaces featuring marble, granite, tiles and stone.
           </p>
@@ -104,7 +104,8 @@ export default function GalleryPage() {
   if (error || !galleryItems) {
     return (
       <Container className="py-20 text-center">
-        <h2 className="font-cinzel text-2xl text-brown">Unable to load gallery</h2>
+        <h1 className="font-cinzel text-2xl text-brown">Marble and Tile Gallery in Alwar</h1>
+        <h2 className="mt-2 font-cinzel text-xl text-brown">Unable to load gallery</h2>
         <p className="text-brown-light mt-2">Please try again later.</p>
         <button
           onClick={() => window.location.reload()}
@@ -120,7 +121,8 @@ export default function GalleryPage() {
   if (filteredItems.length === 0) {
     return (
       <Container className="py-20 text-center">
-        <h2 className="font-cinzel text-2xl text-brown">No images found</h2>
+        <h1 className="font-cinzel text-2xl text-brown">Marble and Tile Gallery in Alwar</h1>
+        <h2 className="mt-2 font-cinzel text-xl text-brown">No images found</h2>
         <p className="text-brown-light mt-2">Try selecting a different category.</p>
       </Container>
     );
@@ -140,7 +142,7 @@ export default function GalleryPage() {
             <span className="diamond">✦</span>
           </div>
           <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">
-            Our Gallery
+            Marble and Tile Gallery in Alwar
           </h1>
           <p className="text-brown-light mt-3 max-w-2xl mx-auto">
             Browse our gallery of materials and project spaces.
@@ -209,7 +211,7 @@ export default function GalleryPage() {
                 <div className="relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
                   <Image
                     src={item.image}
-                    alt={item.title}
+                    alt={`${item.title}, marble and tile work by Shree Durga Tiles, Alwar`}
                     width={600}
                     height={800}
                     className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
@@ -254,7 +256,7 @@ export default function GalleryPage() {
                 <div className="relative aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 bg-sand">
                   <Image
                     src={item.image}
-                    alt={item.title}
+                    alt={`${item.title}, marble and tile work by Shree Durga Tiles, Alwar`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -325,11 +327,10 @@ export default function GalleryPage() {
                 <div className="relative w-full h-[80vh] md:h-[85vh]">
                   <Image
                     src={selectedItem.image}
-                    alt={selectedItem.title}
+                    alt={`${selectedItem.title}, marble and tile work by Shree Durga Tiles, Alwar`}
                     fill
                     className="object-contain"
                     sizes="100vw"
-                    priority
                   />
                 </div>
 

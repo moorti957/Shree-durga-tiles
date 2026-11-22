@@ -38,12 +38,15 @@ export default function Footer() {
   ];
 
   const categoryLinks = [
-    { href: '/products?search=marble', label: 'Marble' },
-    { href: '/products?search=granite', label: 'Granite' },
-    { href: '/products?search=tiles', label: 'Designer Tiles' },
-    { href: '/products?search=quartz', label: 'Quartz' },
-    { href: '/products?search=kitchen', label: 'Kitchen Tops' },
-    { href: '/products?search=outdoor', label: 'Outdoor Stone' },
+    { href: '/marble-tiles-alwar', label: 'Marble Tiles' },
+    { href: '/italian-marble-alwar', label: 'Italian Marble' },
+    { href: '/granite-alwar', label: 'Granite' },
+    { href: '/designer-tiles-alwar', label: 'Designer Tiles' },
+    { href: '/bathroom-tiles-alwar', label: 'Bathroom Tiles' },
+    { href: '/kitchen-tops-alwar', label: 'Kitchen Tops' },
+    { href: '/mandir-marble-alwar', label: 'Mandir Marble' },
+    { href: '/outdoor-stone-alwar', label: 'Outdoor Stone' },
+    { href: '/tiles-shop-naugaon', label: 'Tiles Shop Naugaon' },
   ];
 
   const legalLinks = [
@@ -105,7 +108,6 @@ export default function Footer() {
       alt="Shree Durga Tiles - Tiles, Granite and Marble"
       width={440}
       height={147}
-      priority
       className="h-12 w-auto max-w-[220px] object-contain sm:h-14 sm:max-w-[250px]"
     />
   </div>
@@ -206,27 +208,37 @@ export default function Footer() {
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-3 text-white/60">
                   <MapPin className="w-4 h-4 text-gold shrink-0 mt-0.5" />
-                  <span>{settings?.address || 'Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.'}</span>
+                  <span>Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India</span>
                 </li>
                 <li className="flex items-center gap-3 text-white/60">
                   <Phone className="w-4 h-4 text-gold shrink-0" />
                   <a
-                    href={`tel:${(settings?.phone || '+918529388726').replace(/[^\d+]/g, '')}`}
+                    href="tel:+918529388726"
                     onClick={() => void trackVisitorEvent('call_click')}
                     className="hover:text-gold transition-colors"
                   >
-                    {settings?.phone || '+91 85293 88726'}
+                    +91 85293 88726
+                  </a>
+                </li>
+                <li className="flex items-center gap-3 text-white/60">
+                  <Phone className="w-4 h-4 text-gold shrink-0" />
+                  <a
+                    href="tel:+918058285886"
+                    onClick={() => void trackVisitorEvent('call_click')}
+                    className="hover:text-gold transition-colors"
+                  >
+                    +91 80582 85886
                   </a>
                 </li>
                 <li className="flex items-center gap-3 text-white/60">
                   <Mail className="w-4 h-4 text-gold shrink-0" />
-                  <a href={`mailto:${settings?.email || 'dileepsaini8726@gmail.com'}`} className="hover:text-gold transition-colors">
-                    {settings?.email || 'dileepsaini8726@gmail.com'}
+                  <a href="mailto:dileepsaini8726@gmail.com" className="hover:text-gold transition-colors">
+                    dileepsaini8726@gmail.com
                   </a>
                 </li>
                 <li className="flex items-center gap-3 text-white/60">
                   <Clock className="w-4 h-4 text-gold shrink-0" />
-                  <span>{settings?.timings || 'Available 24 Hours · 7 Days a Week'}</span>
+                  <span>Open 24 hours, 7 days a week</span>
                 </li>
               </ul>
 

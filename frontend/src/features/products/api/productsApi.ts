@@ -306,9 +306,9 @@ export const productsApi = {
   },
 
   /**
-   * Request a custom murti (inquiry)
+   * Request a custom stone enquiry
    */
-  requestCustomMurti: async (data: {
+  requestCustomStone: async (data: {
     name: string;
     email: string;
     phone: string;

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { Search, Calendar, User, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Components
@@ -22,6 +22,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 
 // Services
 import { blogApi, type BlogPost } from '@/services/blogApi';
+import { blogDrafts } from '@/data/blogDrafts';
 
 // ============================================================
 // BLOGS PAGE
@@ -36,10 +37,15 @@ export default function BlogsPage() {
   const debouncedSearch = useDebounce(searchQuery, 300);
 
   // Fetch all blog posts (you can add server-side pagination later)
-  const { data: allPosts, isLoading, error } = useQuery<BlogPost[], Error>({
+  const { data: remotePosts, isLoading, error } = useQuery<BlogPost[], Error>({
     queryKey: ['blogs'],
     queryFn: blogApi.getAll,
   });
+  const draftSlugs = new Set(blogDrafts.map((post) => post.slug));
+  const allPosts = [
+    ...blogDrafts,
+    ...(remotePosts || []).filter((post) => !draftSlugs.has(post.slug)),
+  ];
 
   // Get unique categories from posts
   const categories = allPosts
@@ -77,10 +83,11 @@ export default function BlogsPage() {
   }
 
   // Error state
-  if (error || !allPosts) {
+  if (error && allPosts.length === 0) {
     return (
       <Container className="py-20 text-center">
-        <h2 className="font-cinzel text-2xl text-brown">Unable to load blog posts</h2>
+        <h1 className="font-cinzel text-2xl text-brown">Marble and Tile Guides from Shree Durga Tiles</h1>
+        <h2 className="mt-2 font-cinzel text-xl text-brown">Unable to load live blog posts</h2>
         <p className="text-brown-light mt-2">Please try again later.</p>
         <button
           onClick={() => window.location.reload()}
@@ -93,10 +100,11 @@ export default function BlogsPage() {
   }
 
   // Empty state
-  if (filteredPosts.length === 0) {
+  if (!isLoading && filteredPosts.length === 0) {
     return (
       <Container className="py-20 text-center">
-        <h2 className="font-cinzel text-2xl text-brown">No blog posts found</h2>
+        <h1 className="font-cinzel text-2xl text-brown">Marble and Tile Guides from Shree Durga Tiles</h1>
+        <h2 className="mt-2 font-cinzel text-xl text-brown">No blog posts found</h2>
         <p className="text-brown-light mt-2">Try adjusting your search or category filter.</p>
         <button
           onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
@@ -121,7 +129,7 @@ export default function BlogsPage() {
           <span className="diamond">✦</span>
         </div>
         <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">
-          Stone &amp; Tile Journal
+          Marble and Tile Guides from Naugaon, Alwar
         </h1>
         <p className="text-brown-light mt-3 max-w-2xl mx-auto">
           Ideas, material guides and updates from Shree Durga Tiles.
@@ -172,7 +180,7 @@ export default function BlogsPage() {
               <div className="relative aspect-[16/9] bg-sand overflow-hidden">
                 <Image
                   src={post.coverImage}
-                  alt={post.title}
+                  alt={`${post.title} — Shree Durga Tiles, Alwar`}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -194,25 +202,13 @@ export default function BlogsPage() {
                       <User className="w-3 h-3" />
                       {post.author}
                     </span>
-                    <span className="flex items-center gap-1">
+                    {post.publishedAt && isValid(new Date(post.publishedAt)) && <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {format(new Date(post.publishedAt), 'MMM d, yyyy')}
-                    </span>
+                    </span>}
                   </div>
                   <span>{post.readTime} min read</span>
                 </div>
-                {post.tags && post.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-3">
-                    {post.tags.slice(0, 2).map((tag) => (
-                      <span key={tag} className="text-xs bg-sand/50 px-2 py-0.5 rounded-full text-brown-light">
-                        #{tag}
-                      </span>
-                    ))}
-                    {post.tags.length > 2 && (
-                      <span className="text-xs text-brown-light/50">+{post.tags.length - 2}</span>
-                    )}
-                  </div>
-                )}
               </div>
             </Link>
           </motion.article>
@@ -272,7 +268,7 @@ function BlogsSkeleton() {
   return (
     <Container className="py-12 md:py-20">
       <div className="text-center mb-12">
-        <Skeleton className="h-12 w-64 mx-auto" />
+        <h1 className="font-cinzel text-3xl font-bold text-brown text-center">Marble and Tile Guides from Naugaon, Alwar</h1>
         <Skeleton className="h-6 w-96 mx-auto mt-3" />
       </div>
       <div className="flex flex-col md:flex-row gap-4 mb-10">

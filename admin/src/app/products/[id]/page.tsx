@@ -371,7 +371,7 @@ const onError = () => {
 </label>
                 <Input
                   {...register('name')}
-                  placeholder="e.g., Ganesh Murti (Marble)"
+                  placeholder="e.g., Italian Marble Slab"
                   className={errors.name ? 'border-red-400' : ''}
                 />
                 {errors.name && (
@@ -385,7 +385,7 @@ const onError = () => {
                 </label>
                 <Input
                   {...register('slug')}
-                  placeholder="e.g., ganesh-murti-marble"
+                  placeholder="e.g., italian-marble-slab"
                 />
                 <p className="text-xs text-brown-light mt-1">
                   Leave blank to auto-generate from name

@@ -298,7 +298,7 @@ export const useAuthStore = create<AuthState>()(
       },
     })),
     {
-      name: 'panditji-auth-storage',
+      name: 'shree-durga-auth-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,

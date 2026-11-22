@@ -147,7 +147,7 @@ export class UploadController {
 
     const image = await processUploadImage(file.buffer);
     const result = await uploadToCloudinary(image.buffer, {
-      folder: `panditji/avatars`,
+      folder: `shree-durga-tiles/avatars`,
       tags: ['avatar', userId],
       public_id: `${userId}_${Date.now()}`,
       quality: 'auto:good',
@@ -184,7 +184,7 @@ export class UploadController {
     const uploadPromises = files.map(async (file) => {
       const image = await processUploadImage(file.buffer);
       return uploadToCloudinary(image.buffer, {
-        folder: `panditji/${folder}`,
+        folder: `shree-durga-tiles/${folder}`,
         tags: ['gallery', galleryId],
         public_id: uuidv4(),
         quality: 'auto:good',
@@ -220,7 +220,7 @@ export class UploadController {
     const uploadPromises = files.map(async (file) => {
       const image = await processUploadImage(file.buffer);
       return uploadToCloudinary(image.buffer, {
-        folder: `panditji/${folder}`,
+        folder: `shree-durga-tiles/${folder}`,
         tags: ['blog', blogId],
         public_id: uuidv4(),
         quality: 'auto:good',

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, MessageCircle, Phone, Search, X } from 'lucide-react';
-import { usePublicSettings } from '@/features/site/usePublicSettings';
 import { trackVisitorEvent } from '@/services/visitorAnalytics';
 import Image from "next/image";
 import shreeDurgaLogo from "../../assets/shree-durga-tiles-logo.png";
@@ -14,10 +13,25 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/categories', label: 'Collections' },
   { href: '/products', label: 'Catalogue' },
-  { href: '/products?search=mandir', label: 'Mandir Stone' },
+  { href: '/blogs', label: 'Guides' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
+
+const materialLinks = [
+  { href: '/marble-tiles-alwar', label: 'Marble Tiles' },
+  { href: '/italian-marble-alwar', label: 'Italian Marble' },
+  { href: '/granite-alwar', label: 'Granite' },
+  { href: '/designer-tiles-alwar', label: 'Designer Tiles' },
+  { href: '/bathroom-tiles-alwar', label: 'Bathroom Tiles' },
+  { href: '/kitchen-tops-alwar', label: 'Kitchen Tops' },
+  { href: '/mandir-marble-alwar', label: 'Mandir Marble' },
+  { href: '/outdoor-stone-alwar', label: 'Outdoor Stone' },
+  { href: '/tiles-shop-naugaon', label: 'Tiles Shop Naugaon' },
+];
+
+const phone = '+91 85293 88726';
+const whatsappUrl = 'https://wa.me/918529388726?text=Hello%20Shree%20Durga%20Tiles%2C%20I%20want%20a%20quote%20for%20marble%2Ftiles.';
 
 function TrishulMark() {
   return (
@@ -30,7 +44,6 @@ function TrishulMark() {
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: settings } = usePublicSettings();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -57,13 +70,8 @@ export default function Navbar() {
     setIsSearchOpen(false);
   };
 
-  const phone = settings?.phone || '+918529388726';
-  const phoneHref = `tel:${phone.replace(/[^\d+]/g, '')}`;
-  const whatsapp = (settings?.whatsapp || phone).replace(/\D/g, '');
-
   const openWhatsApp = () => {
     void trackVisitorEvent('whatsapp_click');
-    window.open(`https://wa.me/${whatsapp}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -83,7 +91,6 @@ export default function Navbar() {
     alt="Shree Durga Tiles - Marble, Granite and Tiles"
     width={440}
     height={147}
-    priority
     className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[230px]"
   />
 </Link>
@@ -102,6 +109,16 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <details className="relative">
+            <summary className="cursor-pointer list-none text-sm font-semibold text-brown hover:text-gold-dark">Materials</summary>
+            <div className="absolute right-0 top-full z-50 mt-3 grid min-w-56 gap-1 rounded-2xl border border-stone-line bg-white p-3 shadow-xl">
+              {materialLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="rounded-lg px-3 py-2 text-sm font-medium text-brown hover:bg-sand">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </details>
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
@@ -125,15 +142,15 @@ export default function Navbar() {
             </button>
           )}
           <a
-            href={phoneHref}
+            href="tel:+918529388726"
             onClick={() => void trackVisitorEvent('call_click')}
             className="inline-flex min-h-10 items-center gap-2 rounded-full border border-brown px-4 text-sm font-semibold text-brown hover:bg-brown hover:text-white"
           >
             <Phone className="h-4 w-4" /> Call
           </a>
-          <button type="button" onClick={openWhatsApp} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-maroon px-4 text-sm font-semibold text-white hover:bg-maroon-dark">
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={openWhatsApp} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-maroon px-4 text-sm font-semibold text-white hover:bg-maroon-dark">
             <MessageCircle className="h-4 w-4" /> WhatsApp
-          </button>
+          </a>
         </div>
 
         <button
@@ -173,14 +190,19 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              {materialLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="border-b border-stone-line py-3 pl-4 text-sm font-medium text-brown">
+                  {link.label}
+                </Link>
+              ))}
             </nav>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <a href={phoneHref} onClick={() => void trackVisitorEvent('call_click')} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-brown font-semibold text-brown">
-                <Phone className="h-4 w-4" /> Call
+              <a href="tel:+918529388726" onClick={() => void trackVisitorEvent('call_click')} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-brown font-semibold text-brown">
+                <Phone className="h-4 w-4" /> Call {phone}
               </a>
-              <button type="button" onClick={openWhatsApp} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-maroon font-semibold text-white">
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={openWhatsApp} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-maroon font-semibold text-white">
                 <MessageCircle className="h-4 w-4" /> WhatsApp
-              </button>
+              </a>
             </div>
           </motion.div>
         )}

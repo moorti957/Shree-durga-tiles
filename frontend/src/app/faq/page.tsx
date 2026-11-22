@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 
 import { Container } from '@/components/ui/Container';
 import { Input } from '@/components/ui/Input';
+import { JsonLd, SITE_URL } from '@/lib/seo';
 
 const faqItems = [
   {
@@ -42,7 +43,7 @@ const faqItems = [
 export default function FAQPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
-  const [openItems, setOpenItems] = useState<Set<string>>(() => new Set(['delivery']));
+  const [openItems, setOpenItems] = useState<Set<string>>(() => new Set(faqItems.map(({ id }) => id)));
   const categories = ['All', ...new Set(faqItems.map(({ category }) => category))];
   const filteredFaqs = useMemo(() => faqItems.filter((item) => {
     const matchesText = `${item.question} ${item.answer}`.toLowerCase().includes(searchQuery.toLowerCase());
@@ -58,13 +59,33 @@ export default function FAQPage() {
       return next;
     });
   };
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'FAQs', item: `${SITE_URL}/faq` },
+    ],
+  };
 
   return (
+    <>
+    <JsonLd data={faqSchema} />
+    <JsonLd data={breadcrumbSchema} />
     <div className="min-h-screen bg-ivory">
       <section className="bg-brown-dark py-16 text-white md:py-20">
         <Container>
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-gold-light">Questions</p>
-          <h1 className="font-cinzel text-5xl font-medium text-white sm:text-6xl">Good to know before you visit.</h1>
+          <h1 className="font-cinzel text-5xl font-medium text-white sm:text-6xl">Marble, Tile and Delivery FAQs in Alwar</h1>
           <p className="mt-4 max-w-2xl leading-relaxed text-white/70">Find answers about our showroom, products, projects and delivery.</p>
         </Container>
       </section>
@@ -121,5 +142,6 @@ export default function FAQPage() {
         </div>
       </Container>
     </div>
+    </>
   );
 }

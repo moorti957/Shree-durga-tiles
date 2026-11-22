@@ -50,10 +50,10 @@ export interface CartState {
   totalItems: number;
   totalPrice: number;
   subtotal: number;
-  shippingCost: number;
-  tax: number;
+  shippingCost: number | null;
+  tax: number | null;
   discountAmount: number;
-  grandTotal: number;
+  grandTotal: number | null;
   
   // Actions
   addItem: (product: Product, quantity?: number) => void;
@@ -80,10 +80,10 @@ export interface CartState {
   prepareCheckout: () => {
     items: CartItem[];
     subtotal: number;
-    shippingCost: number;
-    tax: number;
+    shippingCost: number | null;
+    tax: number | null;
     discountAmount: number;
-    grandTotal: number;
+    grandTotal: number | null;
     coupon: AppliedCoupon | null;
     giftWrap: boolean;
     shippingMethod: 'standard' | 'express';
@@ -97,10 +97,6 @@ export interface CartState {
 // Constants
 // ============================================================
 
-const TAX_RATE = 0.18; // 18% GST
-const STANDARD_SHIPPING_COST = 299;
-const EXPRESS_SHIPPING_COST = 499;
-
 // ============================================================
 // Initial state
 // ============================================================
@@ -113,29 +109,15 @@ const initialState = {
   totalItems: 0,
   totalPrice: 0,
   subtotal: 0,
-  shippingCost: 0,
-  tax: 0,
+  shippingCost: null,
+  tax: null,
   discountAmount: 0,
-  grandTotal: 0,
+  grandTotal: null,
 };
 
 // ============================================================
 // Helper functions
 // ============================================================
-
-/**
- * Calculate shipping cost based on subtotal and method
- */
-const calculateShippingCost = (_subtotal: number, method: 'standard' | 'express'): number => {
-  return method === 'standard' ? STANDARD_SHIPPING_COST : EXPRESS_SHIPPING_COST;
-};
-
-/**
- * Calculate tax (GST)
- */
-const calculateTax = (subtotal: number): number => {
-  return Math.round(subtotal * TAX_RATE);
-};
 
 /**
  * Calculate discount amount from coupon
@@ -153,59 +135,27 @@ const calculateDiscount = (subtotal: number, coupon: AppliedCoupon | null): numb
  */
 const calculateTotals = (
   items: CartItem[],
-  coupon: AppliedCoupon | null,
-  shippingMethod: 'standard' | 'express',
-  giftWrap: boolean
+  coupon: AppliedCoupon | null
 ) => {
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const shippingCost = calculateShippingCost(subtotal, shippingMethod);
-  const tax = calculateTax(subtotal);
   const discountAmount = calculateDiscount(subtotal, coupon);
-  const giftWrapCost = giftWrap ? 99 : 0;
-  const grandTotal = subtotal + shippingCost + tax + giftWrapCost - discountAmount;
 
   return {
     subtotal,
     totalItems,
-    shippingCost,
-    tax,
+    shippingCost: null,
+    tax: null,
     discountAmount,
-    grandTotal,
-    giftWrapCost,
+    grandTotal: null,
   };
 };
 
 // ============================================================
-// Mock coupon validation (replace with API call)
+// Coupon validation is intentionally empty until verified offers are configured.
 // ============================================================
 
-const VALID_COUPONS: Record<string, AppliedCoupon> = {
-  'DIVINE10': {
-    code: 'DIVINE10',
-    discountType: 'percentage',
-    discountValue: 10,
-    description: '10% off on all murtis',
-  },
-  'WELCOME20': {
-    code: 'WELCOME20',
-    discountType: 'percentage',
-    discountValue: 20,
-    description: '20% off for new devotees',
-  },
-  'FREESHIP': {
-    code: 'FREESHIP',
-    discountType: 'fixed',
-    discountValue: 500,
-    description: '500 off on shipping',
-  },
-  'MARBLE10': {
-    code: 'MARBLE10',
-    discountType: 'percentage',
-    discountValue: 10,
-    description: '10% off on marble murtis',
-  },
-};
+const VALID_COUPONS: Record<string, AppliedCoupon> = {};
 
 // ============================================================
 // Zustand Store with persistence
@@ -231,9 +181,7 @@ export const useCartStore = create<CartState>()(
           // Recalculate totals
           const totals = calculateTotals(
             state.items,
-            state.coupon,
-            state.shippingMethod,
-            state.giftWrap
+            state.coupon
           );
           
           state.subtotal = totals.subtotal;
@@ -246,7 +194,7 @@ export const useCartStore = create<CartState>()(
         });
 
         // Toast notification
-        toast.success('Added to Cart', 'Your selected murti has been added successfully.');
+        toast.success('Added to Cart', 'Your selected product has been added successfully.');
 
         // Activity tracking (non-blocking)
         logCart(product.id, 'added', quantity);
@@ -260,9 +208,7 @@ export const useCartStore = create<CartState>()(
           // Recalculate totals
           const totals = calculateTotals(
             state.items,
-            state.coupon,
-            state.shippingMethod,
-            state.giftWrap
+            state.coupon
           );
           
           state.subtotal = totals.subtotal;
@@ -296,9 +242,7 @@ export const useCartStore = create<CartState>()(
           // Recalculate totals
           const totals = calculateTotals(
             state.items,
-            state.coupon,
-            state.shippingMethod,
-            state.giftWrap
+            state.coupon
           );
           
           state.subtotal = totals.subtotal;
@@ -319,10 +263,10 @@ export const useCartStore = create<CartState>()(
           state.giftWrap = false;
           state.subtotal = 0;
           state.totalItems = 0;
-          state.shippingCost = 0;
-          state.tax = 0;
+          state.shippingCost = null;
+          state.tax = null;
           state.discountAmount = 0;
-          state.grandTotal = 0;
+          state.grandTotal = null;
           state.totalPrice = 0;
         });
       },
@@ -346,9 +290,7 @@ export const useCartStore = create<CartState>()(
           // Recalculate totals
           const totals = calculateTotals(
             state.items,
-            state.coupon,
-            state.shippingMethod,
-            state.giftWrap
+            state.coupon
           );
           
           state.subtotal = totals.subtotal;
@@ -372,9 +314,7 @@ export const useCartStore = create<CartState>()(
           // Recalculate totals
           const totals = calculateTotals(
             state.items,
-            state.coupon,
-            state.shippingMethod,
-            state.giftWrap
+            state.coupon
           );
           
           state.subtotal = totals.subtotal;
@@ -397,9 +337,7 @@ export const useCartStore = create<CartState>()(
           // Recalculate totals
           const totals = calculateTotals(
             state.items,
-            state.coupon,
-            state.shippingMethod,
-            state.giftWrap
+            state.coupon
           );
           
           state.subtotal = totals.subtotal;
@@ -420,9 +358,7 @@ export const useCartStore = create<CartState>()(
           // Recalculate totals
           const totals = calculateTotals(
             state.items,
-            state.coupon,
-            state.shippingMethod,
-            state.giftWrap
+            state.coupon
           );
           
           state.subtotal = totals.subtotal;
@@ -475,7 +411,7 @@ export const useCartStore = create<CartState>()(
       },
     })),
     {
-      name: 'panditji-cart-storage', // Storage key
+      name: 'shree-durga-cart-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         items: state.items,

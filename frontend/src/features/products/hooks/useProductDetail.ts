@@ -124,7 +124,7 @@ export interface UseProductDetailReturn {
  * @example
  * ```tsx
  * const { product, relatedProducts, reviews, isLoading } = useProductDetail({
- *   slug: 'ganesh-murti',
+ *   slug: 'white-marble-tile',
  *   fetchRelated: true,
  *   fetchReviews: true,
  * });
@@ -246,7 +246,7 @@ export function useProductDetail(options: UseProductDetailOptions = {}): UseProd
  * 
  * @example
  * ```tsx
- * const { product, isLoading } = useProductDetailSimple({ slug: 'ganesh-murti' });
+ * const { product, isLoading } = useProductDetailSimple({ slug: 'white-marble-tile' });
  * ```
  */
 export function useProductDetailSimple(options: {

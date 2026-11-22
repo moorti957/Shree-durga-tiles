@@ -12,7 +12,6 @@ interface ProductCardProps {
   product: Product;
   viewMode?: 'grid' | 'list';
   className?: string;
-  priority?: boolean;
 }
 
 const cardVariants: Variants = {
@@ -38,7 +37,6 @@ export function ProductCard({
   product,
   viewMode = 'grid',
   className,
-  priority = false,
 }: ProductCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const categoryLabel = product.categoryName || product.material || 'Stone & tile';
@@ -76,7 +74,7 @@ export function ProductCard({
           {image ? (
             <Image
               src={image}
-              alt={product.name}
+              alt={`${product.name}, Shree Durga Tiles Alwar`}
               fill
               className={cn(
                 'object-cover transition-transform duration-700 group-hover:scale-105',
@@ -85,7 +83,6 @@ export function ProductCard({
               sizes={viewMode === 'list'
                 ? '(max-width: 640px) 100vw, 224px'
                 : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw'}
-              priority={priority}
               onLoad={() => setImageLoaded(true)}
             />
           ) : (

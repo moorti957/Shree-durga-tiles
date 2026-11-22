@@ -24,7 +24,7 @@ export interface ApiResponse<T = any> {
 // ============================================================
 // Constants
 // ============================================================
-const TOKEN_KEY = 'panditji-admin-token';
+const TOKEN_KEY = 'shree-durga-admin-token';
 
 // ============================================================
 // Token Helpers

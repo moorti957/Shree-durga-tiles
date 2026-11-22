@@ -84,7 +84,7 @@ const getApiBaseUrl = (): string => {
 };
 
 const BASE_URL = getApiBaseUrl();
-const TOKEN_KEY = 'panditji-auth-storage';
+const TOKEN_KEY = 'shree-durga-auth-storage';
 const REFRESH_TOKEN_ENDPOINT = '/auth/refresh-token';
 
 // ============================================================

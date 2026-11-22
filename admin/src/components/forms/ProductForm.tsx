@@ -270,7 +270,7 @@ export function ProductForm({
             </label>
             <Input
               {...register('name')}
-              placeholder="e.g., Ganesh Murti (Brass)"
+              placeholder="e.g., White Marble Tile"
               className={errors.name ? 'border-red-400' : ''}
             />
             {errors.name && (
@@ -282,7 +282,7 @@ export function ProductForm({
             <label className="block text-sm font-medium text-brown dark:text-ivory mb-1">
               Slug
             </label>
-            <Input {...register('slug')} placeholder="e.g., ganesh-murti-brass" />
+            <Input {...register('slug')} placeholder="e.g., white-marble-tile" />
             <p className="text-xs text-brown-light mt-1">
               Leave blank to auto-generate from name
             </p>
@@ -457,7 +457,7 @@ export function ProductForm({
             </label>
             <Input
               {...register('tags')}
-              placeholder="e.g., ganesh, brass, murti, handcrafted"
+              placeholder="e.g., marble, white, polished"
             />
           </div>
         </div>

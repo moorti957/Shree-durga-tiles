@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
               Privacy Policy
             </h1>
             <p className="text-brown-light dark:text-ivory/60 mt-3 text-sm md:text-base max-w-2xl">
-              Last updated: January 1, 2025
+              Last updated: {'{{TODO: confirm privacy policy review date}}'}
             </p>
           </div>
 
@@ -268,8 +268,9 @@ export default function PrivacyPolicyPage() {
                   </p>
                   <div className="mt-2 space-y-1 text-sm text-brown-light dark:text-ivory/70">
                     <p><strong>Email:</strong> <a href="mailto:dileepsaini8726@gmail.com" className="text-gold-dark dark:text-gold hover:text-gold transition-colors">dileepsaini8726@gmail.com</a></p>
-                    <p><strong>Phone:</strong> <a href="tel:+918529388726" className="text-gold-dark dark:text-gold hover:text-gold transition-colors">+91 72403 64772</a></p>
-                    <p><strong>Address:</strong> 123, Murti Marg, Naugaon, Rajasthan 302001, India</p>
+                    <p><strong>Phone:</strong> <a href="tel:+918529388726" className="text-gold-dark dark:text-gold hover:text-gold transition-colors">+91 85293 88726</a></p>
+                    <p><strong>Phone:</strong> <a href="tel:+918058285886" className="text-gold-dark dark:text-gold hover:text-gold transition-colors">+91 80582 85886</a></p>
+                    <p><strong>Address:</strong> Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India</p>
                   </div>
                 </div>
                 <Link

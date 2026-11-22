@@ -165,9 +165,9 @@ export interface ReviewData {
 }
 
 /**
- * Custom murti request
+ * Custom stone enquiry
  */
-export interface CustomMurtiRequest {
+export interface CustomStoneRequest {
   name: string;
   email: string;
   phone: string;

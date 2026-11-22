@@ -69,12 +69,15 @@ export default function MobileNavbar() {
 
   // Quick categories
   const quickCategories = [
-    { name: 'Marble', href: '/products?material=marble' },
-    { name: 'Granite', href: '/products?material=granite' },
-    { name: 'Designer Tiles', href: '/products?material=tiles' },
-    { name: 'Quartz', href: '/products?material=quartz' },
-    { name: 'Kitchen Tops', href: '/products?material=kitchen-tops' },
-    { name: 'Outdoor Stone', href: '/products?material=outdoor' },
+    { name: 'Marble Tiles', href: '/marble-tiles-alwar' },
+    { name: 'Italian Marble', href: '/italian-marble-alwar' },
+    { name: 'Granite', href: '/granite-alwar' },
+    { name: 'Designer Tiles', href: '/designer-tiles-alwar' },
+    { name: 'Bathroom Tiles', href: '/bathroom-tiles-alwar' },
+    { name: 'Kitchen Tops', href: '/kitchen-tops-alwar' },
+    { name: 'Mandir Marble', href: '/mandir-marble-alwar' },
+    { name: 'Outdoor Stone', href: '/outdoor-stone-alwar' },
+    { name: 'Tiles Shop Naugaon', href: '/tiles-shop-naugaon' },
   ];
 
   // Profile links (when logged in)
@@ -141,13 +144,6 @@ export default function MobileNavbar() {
 
   // WhatsApp click
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/918529388726', '_blank');
-    setIsOpen(false);
-  };
-
-  // Call click
-  const handleCallClick = () => {
-    window.location.href = 'tel:+918529388726';
     setIsOpen(false);
   };
 
@@ -456,20 +452,24 @@ export default function MobileNavbar() {
                 {/* Quick Actions Footer */}
                 <div className="p-4 border-t border-gold/10 dark:border-gold/5 space-y-2">
                   <div className="grid grid-cols-2 gap-2">
-                    <button
+                    <a
+                      href="https://wa.me/918529388726?text=Hello%20Shree%20Durga%20Tiles%2C%20I%20want%20a%20quote%20for%20marble%2Ftiles."
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={handleWhatsAppClick}
                       className="flex items-center justify-center gap-2 px-4 py-2.5 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors text-sm font-medium"
                     >
                       <MessageCircle className="w-4 h-4" />
                       WhatsApp
-                    </button>
-                    <button
-                      onClick={handleCallClick}
+                    </a>
+                    <a
+                      href="tel:+918529388726"
+                      onClick={() => setIsOpen(false)}
                       className="flex items-center justify-center gap-2 px-4 py-2.5 bg-maroon text-white rounded-xl hover:bg-maroon-dark transition-colors text-sm font-medium"
                     >
                       <Phone className="w-4 h-4" />
-                      Call Now
-                    </button>
+                      Call +91 85293 88726
+                    </a>
                   </div>
                   <div className="text-center text-xs text-brown-light/50 dark:text-ivory/30">
                     🕉️ Bringing divinity to your home

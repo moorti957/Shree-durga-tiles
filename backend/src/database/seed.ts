@@ -255,7 +255,6 @@ async function seed(): Promise<void> {
           stats: { yearsExperience: 0, happyCustomers: 0, projectsSupplied: 0 },
           invoicePrefix: 'SDT-',
           nextBillNumber: 1,
-          defaultGstRate: 18,
           qrMode: 'upi',
         },
       },

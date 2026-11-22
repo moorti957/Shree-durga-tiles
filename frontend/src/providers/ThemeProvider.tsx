@@ -137,7 +137,7 @@ export function getThemeScript() {
   return `
     (function() {
       try {
-        const stored = localStorage.getItem('panditji-theme-storage');
+        const stored = localStorage.getItem('shree-durga-theme-storage');
         if (stored) {
           const parsed = JSON.parse(stored);
           const theme = parsed.state?.theme || 'light';

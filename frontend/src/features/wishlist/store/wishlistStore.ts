@@ -84,7 +84,7 @@ export const useWishlistStore = create<WishlistState>()(
       },
     }),
     {
-      name: 'panditji-wishlist-storage',
+      name: 'shree-durga-wishlist-storage',
       storage: createJSONStorage(() => localStorage),
     }
   )

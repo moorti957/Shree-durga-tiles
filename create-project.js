@@ -151,7 +151,7 @@ const files = {};
 
 // -------- FRONTEND CONFIG --------
 files["frontend/package.json"] = JSON.stringify({
-  name: "panditji-frontend",
+  name: "shree-durga-tiles-frontend",
   version: "1.0.0",
   private: true,
   scripts: {
@@ -279,8 +279,8 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const cinzel = Cinzel({ subsets: ['latin'], variable: '--font-cinzel' });
 
 export const metadata: Metadata = {
-  title: 'Pandit Ji Marble Murti Arts – Handcrafted Divine Sculptures',
-  description: 'Handcrafted marble, brass, and wood murtis by master artisans in Naugaon, Alwar.',
+  title: 'Marble, Granite & Tiles in Alwar | Shree Durga Tiles',
+  description: 'Explore marble, granite, tiles and natural stone at Shree Durga Tiles in Naugaon, Alwar.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -400,7 +400,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gold/10">
       <Container className="flex items-center justify-between h-16">
-        <Link href="/" className="font-cinzel text-xl font-bold">Pandit Ji <span className="text-gold-dark">Murti</span></Link>
+        <Link href="/" className="font-cinzel text-xl font-bold">Shree Durga Tiles</Link>
         <nav className="hidden md:flex items-center gap-6">
           <Link href="/products">Products</Link>
           <Link href="/categories">Categories</Link>
@@ -437,12 +437,12 @@ files["frontend/src/components/layout/Footer.tsx"] = `export default function Fo
   return (
     <footer className="bg-brown text-white/80 py-12">
       <div className="container grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div><h4 className="font-cinzel text-lg">Pandit Ji Marble Murti Art</h4><p className="text-sm mt-2">Luxury marble and brass murtis handcrafted in Naugaon.</p></div>
+        <div><h4 className="font-cinzel text-lg">Shree Durga Tiles</h4><p className="text-sm mt-2">Marble, granite, designer tiles and natural stone in Naugaon, Alwar.</p></div>
         <div><h5>Quick Links</h5><ul className="text-sm space-y-1"><li><Link href="/about">About</Link></li><li><Link href="/products">Products</Link></li><li><Link href="/contact">Contact</Link></li></ul></div>
         <div><h5>Categories</h5><ul className="text-sm space-y-1"><li>Ganesh</li><li>Krishna</li><li>Shiva</li></ul></div>
-        <div><h5>Contact</h5><ul className="text-sm space-y-1"><li>📞 +91 72403 64772</li><li>✉️ info@panditjimurti.com</li></ul></div>
+        <div><h5>Contact</h5><ul className="text-sm space-y-1"><li>📞 +91 85293 88726</li><li>📞 +91 80582 85886</li><li>✉️ dileepsaini8726@gmail.com</li></ul></div>
       </div>
-      <div className="container border-t border-white/10 mt-8 pt-4 text-center text-xs">© 2026 Pandit Ji Marble Murti Arts</div>
+      <div className="container border-t border-white/10 mt-8 pt-4 text-center text-xs">© 2026 Shree Durga Tiles</div>
     </footer>
   );
 }`;
@@ -529,7 +529,7 @@ files["frontend/src/styles/globals.css"] = `@tailwind base; @tailwind components
 
 // -------- ADMIN CONFIG --------
 files["admin/package.json"] = JSON.stringify({
-  name: "panditji-admin",
+  name: "shree-durga-admin",
   version: "1.0.0",
   private: true,
   scripts: { dev: "next dev", build: "next build", start: "next start" },
@@ -558,7 +558,7 @@ files["admin/src/app/settings/page.tsx"] = `export default function AdminSetting
 
 // -------- BACKEND CONFIG --------
 files["backend/package.json"] = JSON.stringify({
-  name: "panditji-backend",
+  name: "shree-durga-backend",
   version: "1.0.0",
   scripts: { dev: "nodemon src/server.ts", build: "tsc", start: "node dist/server.js" },
   dependencies: { express: "^4.18.2", mongoose: "^8.0.0", dotenv: "^16.3.1", cors: "^2.8.5", helmet: "^7.1.0", morgan: "^1.10.0", compression: "^1.7.4", jsonwebtoken: "^9.0.2", bcryptjs: "^2.4.3", multer: "^1.4.5", "express-rate-limit": "^7.1.5", cloudinary: "^1.41.0", nodemailer: "^6.9.7", "express-validator": "^7.0.1" },
@@ -569,7 +569,7 @@ files["backend/tsconfig.json"] = JSON.stringify({
   include: ["src/**/*"],
   exclude: ["node_modules"]
 }, null, 2);
-files["backend/.env"] = `PORT=5000\nMONGODB_URI=mongodb://localhost:27017/panditji\nJWT_SECRET=your_secret\nCLOUDINARY_CLOUD_NAME=\nCLOUDINARY_API_KEY=\nCLOUDINARY_API_SECRET=`;
+files["backend/.env"] = `PORT=5000\nMONGODB_URI=mongodb://localhost:27017/shree-durga-tiles\nJWT_SECRET=your_secret\nCLOUDINARY_CLOUD_NAME=\nCLOUDINARY_API_KEY=\nCLOUDINARY_API_SECRET=`;
 
 // -------- BACKEND SOURCE --------
 files["backend/src/server.ts"] = `import app from './app';
@@ -617,7 +617,7 @@ dotenv.config();
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/panditji');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/shree-durga-tiles');
     console.log('MongoDB connected');
   } catch (err) {
     console.error(err);
@@ -781,14 +781,14 @@ files["backend/src/utils/logger.ts"] = `export const logger = { info: console.lo
 
 // -------- SHARED --------
 files["shared/types/index.ts"] = `export interface SharedType { id: string; }`;
-files["shared/constants/index.ts"] = `export const APP_NAME = 'Pandit Ji Marble Murti Art';`;
+files["shared/constants/index.ts"] = `export const APP_NAME = 'Shree Durga Tiles';`;
 
 // -------- DOCS, DOCKER, NGINX --------
 files["docs/API.md"] = `# API Documentation\n\nAll endpoints under /api`;
 files["docker/docker-compose.yml"] = `version: '3'\nservices:\n  backend:\n    build: ./backend\n    ports:\n      - "5000:5000"\n  frontend:\n    build: ./frontend\n    ports:\n      - "3000:3000"`;
 files["nginx/nginx.conf"] = `server { listen 80; location / { proxy_pass http://frontend:3000; } location /api { proxy_pass http://backend:5000; } }`;
 files["scripts/build.sh"] = `#!/bin/bash\nnpm install --workspaces\nnpm run build --workspaces`;
-files["README.md"] = `# Pandit Ji Marble Murti Arts - E-Commerce Platform`;
+files["README.md"] = `# Shree Durga Tiles Platform`;
 
 // ============================================================
 // 3. CREATE FOLDERS & FILES

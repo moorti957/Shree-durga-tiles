@@ -113,7 +113,7 @@ export function EnquiryForm({
             autoComplete="tel"
             required
             maxLength={20}
-            placeholder="+91 98765 43210"
+            placeholder="+91 85293 88726"
             className="mt-1 w-full rounded-xl border border-stone-line bg-white px-3 py-2.5 font-normal"
           />
         </label>

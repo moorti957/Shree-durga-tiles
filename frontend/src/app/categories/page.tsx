@@ -11,6 +11,7 @@ import { Container } from '@/components/ui/Container';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { categoriesApi } from '@/features/categories/api/categoriesApi';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { SeoCategoryLinks } from '@/components/sections/SeoCategoryLinks';
 
 
 // ============================================================
@@ -30,9 +31,10 @@ export default function CategoriesPage() {
   // Loading state
   if (isLoading) {
     return (
+      <>
       <Container className="py-12 md:py-20">
         <div className="text-center mb-12">
-          <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">Explore our collections</h1>
+          <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">Marble, Granite and Tile Collections in Alwar</h1>
           <p className="text-brown-light mt-3 max-w-2xl mx-auto">
             Find marble, granite, tile, quartz and stone collections for every space.
           </p>
@@ -43,6 +45,8 @@ export default function CategoriesPage() {
           ))}
         </div>
       </Container>
+      <SeoCategoryLinks />
+      </>
     );
   }
 
@@ -50,7 +54,8 @@ export default function CategoriesPage() {
   if (error || !categories) {
     return (
       <Container className="py-20 text-center">
-        <h2 className="font-cinzel text-2xl text-brown">Unable to load categories</h2>
+        <h1 className="font-cinzel text-2xl text-brown">Marble, Granite and Tile Collections in Alwar</h1>
+        <h2 className="mt-2 font-cinzel text-xl text-brown">Unable to load categories</h2>
         <p className="text-brown-light mt-2">Please try again later.</p>
         <button
           onClick={() => window.location.reload()}
@@ -83,7 +88,7 @@ export default function CategoriesPage() {
           <span className="diamond">✦</span>
         </div>
         <h1 className="font-cinzel text-4xl md:text-5xl font-bold text-brown">
-          Browse by collection
+          Marble, Granite and Tile Collections in Alwar
         </h1>
         <p className="text-brown-light mt-3 max-w-2xl mx-auto">
           Browse available product categories and find materials for your project.
@@ -112,7 +117,7 @@ export default function CategoriesPage() {
                 {category.image ? (
                   <Image
                     src={category.image}
-                    alt={category.name}
+                    alt={`${category.name} collection at Shree Durga Tiles, Alwar`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -194,7 +199,7 @@ export default function CategoriesPage() {
                       {category.image ? (
                         <Image
                           src={category.image}
-                          alt={category.name}
+                          alt={`${category.name} collection at Shree Durga Tiles, Alwar`}
                           fill
                           className="object-cover transition-transform duration-700 group-hover:scale-105"
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

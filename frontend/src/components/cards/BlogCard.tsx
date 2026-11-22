@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, type Variants } from 'framer-motion';
 import { Calendar, User, Clock, ArrowRight, Tag, BookOpen } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 
 import { cn } from '@/lib/utils';
 
@@ -34,7 +34,6 @@ interface BlogCardProps {
   post: BlogPost;
   variant?: 'default' | 'featured' | 'compact' | 'horizontal';
   className?: string;
-  priority?: boolean;
   showExcerpt?: boolean;
   showTags?: boolean;
   showAuthor?: boolean;
@@ -47,7 +46,6 @@ export function BlogCard({
   post,
   variant = 'default',
   className,
-  priority = false,
   showExcerpt = true,
   showTags = true,
   showAuthor = true,
@@ -71,7 +69,8 @@ export function BlogCard({
   } = post;
 
   // Format date
-  const formattedDate = format(new Date(publishedAt), 'MMM d, yyyy');
+  const date = publishedAt ? new Date(publishedAt) : null;
+  const formattedDate = date && isValid(date) ? format(date, 'MMM d, yyyy') : null;
 
   // Card variants
   const cardVariants: Variants = {
@@ -89,7 +88,7 @@ export function BlogCard({
     'Craftsmanship': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
     'Festivals': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
     'Temple': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    'Murti': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    'Stone': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
     'Culture': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
     'Devotion': 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400',
     'default': 'bg-gold/10 text-gold-dark dark:bg-gold/20 dark:text-gold',
@@ -111,7 +110,7 @@ export function BlogCard({
           {coverImage && (
             <Image
               src={coverImage}
-              alt={title}
+              alt={`${title} — marble and tile guide, Shree Durga Tiles Alwar`}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-110"
               sizes="48px"
@@ -123,7 +122,7 @@ export function BlogCard({
             {title}
           </h4>
           <p className="text-xs text-brown-light dark:text-ivory/40">
-            {formattedDate} · {readTime} min read
+            {formattedDate ? `${formattedDate} · ` : ''}{readTime} min read
           </p>
         </div>
       </Link>
@@ -150,14 +149,13 @@ export function BlogCard({
           <div className="relative sm:w-64 md:w-72 aspect-[16/9] sm:aspect-[4/3] bg-sand dark:bg-brown overflow-hidden shrink-0">
             <Image
               src={coverImage}
-              alt={title}
+              alt={`${title} — marble and tile guide, Shree Durga Tiles Alwar`}
               fill
               className={cn(
                 'object-cover transition-transform duration-700 group-hover:scale-105',
                 !imageLoaded && 'blur-sm scale-105'
               )}
               sizes="(max-width: 640px) 100vw, 288px"
-              priority={priority}
               onLoad={() => setImageLoaded(true)}
             />
             {isNew && (
@@ -200,7 +198,7 @@ export function BlogCard({
                       key={tag}
                       className="text-xs bg-sand/50 dark:bg-brown/50 text-brown-light dark:text-ivory/50 px-2 py-0.5 rounded-full"
                     >
-                      #{tag}
+                      {tag}
                     </span>
                   ))}
                   {tags.length > 3 && (
@@ -231,10 +229,10 @@ export function BlogCard({
                     {author}
                   </span>
                 )}
-                <span className="flex items-center gap-1.5">
+                {formattedDate && <span className="flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5" />
                   {formattedDate}
-                </span>
+                </span>}
                 <span className="flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5" />
                   {readTime} min
@@ -276,7 +274,6 @@ export function BlogCard({
               !imageLoaded && 'blur-sm scale-105'
             )}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority={priority}
             onLoad={() => setImageLoaded(true)}
           />
 
@@ -320,7 +317,7 @@ export function BlogCard({
                   key={tag}
                   className="text-xs bg-sand/50 dark:bg-brown/50 text-brown-light dark:text-ivory/50 px-2 py-0.5 rounded-full"
                 >
-                  #{tag}
+                  {tag}
                 </span>
               ))}
               {tags.length > 2 && (
@@ -350,10 +347,10 @@ export function BlogCard({
                   {author}
                 </span>
               )}
-              <span className="flex items-center gap-1.5">
+              {formattedDate && <span className="flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
                 {formattedDate}
-              </span>
+              </span>}
               <span className="flex items-center gap-1.5">
                 <BookOpen className="w-3 h-3" />
                 {readTime} min

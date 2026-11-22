@@ -2,6 +2,7 @@
 
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { getLocalBusinessSchema, JsonLd } from '../lib/seo';
 
 // Providers
 import { ReactQueryProvider } from '../providers/ReactQueryProvider';
@@ -20,49 +21,16 @@ import { Sparkles } from 'lucide-react';
 // Metadata & Viewport (SEO + PWA ready)
 // ------------------------------------------------------------------
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.panditjimarblemurtiarts.in"),
-  title: {
-    default: 'Shree Durga Tiles | Marble, Granite & Designer Tiles',
-    template: '%s | Shree Durga Tiles',
-  },
+  metadataBase: new URL('https://www.shreedurgatiles.site'),
+  title: 'Shree Durga Tiles | Marble, Granite & Tiles in Alwar',
   description:
-    'Explore premium marble, granite, designer tiles, quartz and stone for homes and projects. Visit Shree Durga Tiles in Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India.',
-  keywords:
-    'marble, granite, designer tiles, quartz, kitchen tops, outdoor flooring, stone showroom, Naugaon, Alwar',
+    'Shree Durga Tiles (श्री दुर्गा टाइल्स), Naugaon, Alwar: marble, granite, designer tiles and mandir stone. Visit our showroom or WhatsApp for a free quote.',
   authors: [{ name: 'Shree Durga Tiles' }],
   creator: 'Shree Durga Tiles',
   publisher: 'Shree Durga Tiles',
-  robots: 'index, follow',
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: 'Shree Durga Tiles | Marble, Granite & Designer Tiles',
-    description: 'Premium marble, granite, tiles and stone in Naugaon, Alwar.',
-    url: 'https://www.panditjimarblemurtiarts.in',
-    siteName: 'Shree Durga Tiles',
-    images: [
-      {
-        url: 'https://images.unsplash.com/photo-1584925906119-eaf7bbd206c3?w=1200&q=80',
-        width: 1200,
-        height: 630,
-        alt: 'Premium stone and tile showroom',
-      },
-    ],
-    locale: 'en_IN',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Shree Durga Tiles | Marble, Granite & Designer Tiles',
-    description: 'Premium marble, granite, tiles and stone in Naugaon, Alwar.',
-    images: ['https://images.unsplash.com/photo-1584925906119-eaf7bbd206c3?w=1200&q=80'],
-  },
   icons: {
     icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
   },
-  
 };
 
 export const viewport: Viewport = {
@@ -82,11 +50,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-    >
+    <html lang="en-IN" suppressHydrationWarning>
       <body className="bg-ivory text-brown antialiased">
+        <JsonLd data={getLocalBusinessSchema()} />
         <ReactQueryProvider>
           <>
             <ScrollReset />

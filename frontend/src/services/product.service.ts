@@ -489,13 +489,13 @@ class ProductService {
   }
 
   // ============================================================
-  // Custom Murti Request
+  // Custom stone enquiry
   // ============================================================
 
   /**
-   * Request a custom murti
+   * Request a custom stone enquiry
    */
-  async requestCustomMurti(data: {
+  async requestCustomStone(data: {
     name: string;
     email: string;
     phone: string;

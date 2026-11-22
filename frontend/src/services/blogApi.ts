@@ -20,6 +20,7 @@ export interface BlogPost {
   author: string;
   authorAvatar?: string;
   publishedAt: string;
+  isDraft?: boolean;
   readTime: number;
   tags: string[];
   relatedPosts?: BlogPost[];

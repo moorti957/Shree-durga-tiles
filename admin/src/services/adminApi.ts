@@ -68,8 +68,8 @@
   };
 
   const BASE_URL = getApiBaseUrl();
-  const TOKEN_KEY = 'panditji-admin-token';
-  const REFRESH_TOKEN_KEY = 'panditji-admin-refresh-token';
+  const TOKEN_KEY = 'shree-durga-admin-token';
+  const REFRESH_TOKEN_KEY = 'shree-durga-admin-refresh-token';
 
   // Create axios instance
   export const apiClient: AxiosInstance = axios.create({

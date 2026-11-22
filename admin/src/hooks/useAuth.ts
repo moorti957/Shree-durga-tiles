@@ -46,7 +46,7 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('panditji-admin-token');
+    const token = localStorage.getItem('shree-durga-admin-token');
 
     if (!token) {
       setIsLoading(false);

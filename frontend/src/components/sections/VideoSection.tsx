@@ -53,7 +53,7 @@ interface VideoSectionProps {
 export default function VideoSection({
   videos,
   title = 'Watch Our Divine Creations',
-  subtitle = 'Explore our YouTube channel for behind-the-scenes, rituals, and spiritual insights.',
+  subtitle = 'Ask our team about stone, tile and showroom selections in Naugaon, Alwar.',
   displayMode = 'grid',
   columns = 3,
   slidesPerView = 3,
@@ -118,7 +118,7 @@ export default function VideoSection({
         <div className="relative aspect-video bg-sand dark:bg-brown overflow-hidden">
           <Image
             src={video.thumbnail}
-            alt={video.title}
+            alt={`${video.title} — marble, granite and tiles at Shree Durga Tiles, Alwar`}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -200,10 +200,10 @@ export default function VideoSection({
               {title}
             </h3>
             <p className="text-brown-light dark:text-ivory/60 text-sm mt-2">
-              Subscribe to our YouTube channel for divine content.
+              Contact Shree Durga Tiles for product information.
             </p>
             <a
-              href="https://www.youtube.com/@panditjimurtiart/featured"
+              href="/contact"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-gold inline-block mt-4 text-sm"
@@ -246,13 +246,13 @@ export default function VideoSection({
               )}
             </div>
             <a
-              href="https://www.youtube.com/@panditjimurtiart/featured"
+              href="/contact"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-medium text-gold-dark dark:text-gold hover:text-gold transition-colors group"
             >
               <span className="text-xl">🎥</span>
-              Visit Channel
+              Contact Us
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </motion.div>
@@ -296,13 +296,13 @@ export default function VideoSection({
             )}
           </div>
           <a
-            href="https://www.youtube.com/@panditjimurtiart/featured"
+            href="/contact"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-gold-dark dark:text-gold hover:text-gold transition-colors group"
           >
             <span className="text-xl">🎥</span>
-            Visit Channel
+            Contact Us
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </a>
         </motion.div>

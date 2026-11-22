@@ -38,7 +38,7 @@ const storeSchema = z.object({
 type StoreFormData = z.input<typeof storeSchema>;
 
 const paymentSchema = z.object({
-  taxRate: z.number().min(0).max(100).default(18),
+  taxRate: z.number().min(0).max(100).optional(),
   gstin: z.string().max(15).optional(),
   upiId: z.string().max(100).optional(),
   invoicePrefix: z.string().min(1).max(20).default('SDT-'),
@@ -362,7 +362,7 @@ function PaymentSettings({
   } = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
-      taxRate: 18,
+      taxRate: undefined,
       gstin: '',
       upiId: '',
       invoicePrefix: 'SDT-',
@@ -375,7 +375,7 @@ function PaymentSettings({
   useEffect(() => {
     if (settings) {
       reset({
-        taxRate: settings.taxRate ?? 18,
+        taxRate: undefined,
         gstin: settings.gstin || '',
         upiId: settings.upiId || '',
         invoicePrefix: settings.invoicePrefix || 'SDT-',
@@ -416,9 +416,11 @@ function PaymentSettings({
               Default GST Rate (%)
             </label>
             <Input
-              {...register('taxRate', { valueAsNumber: true })}
+              {...register('taxRate', {
+                setValueAs: (value) => value === '' ? undefined : Number(value),
+              })}
               type="number"
-              placeholder="18"
+              placeholder="{{TODO: confirm applicable tax rate}}"
               className={errors.taxRate ? 'border-red-400' : ''}
             />
             {errors.taxRate && (
@@ -716,7 +718,7 @@ function SEOSettings({
             </label>
             <Input
               {...register('metaKeywords')}
-              placeholder="murti, marble, brass, handcrafted"
+              placeholder="marble, granite, tiles, natural stone"
             />
           </div>
           <div>
@@ -803,7 +805,7 @@ function ContactSettings({
             <Input
               {...register('contactEmail')}
               type="email"
-              placeholder="support@panditjimurti.com"
+              placeholder="dileepsaini8726@gmail.com"
               className={errors.contactEmail ? 'border-red-400' : ''}
             />
             {errors.contactEmail && (
@@ -816,7 +818,7 @@ function ContactSettings({
             </label>
             <Input
               {...register('contactPhone')}
-              placeholder="+91 72403 64772"
+              placeholder="+91 85293 88726"
             />
           </div>
           <div className="md:col-span-2">
@@ -826,7 +828,7 @@ function ContactSettings({
             <Textarea
               {...register('contactAddress')}
               rows={3}
-              placeholder="123, Murti Marg, Naugaon, Rajasthan 302001, India"
+              placeholder="Delhi–Alwar Road, Near Kapoor Dharamshala, Naugaon, Alwar, Rajasthan, India"
             />
           </div>
           <div>
@@ -835,7 +837,7 @@ function ContactSettings({
             </label>
             <Input
               {...register('whatsappNumber')}
-              placeholder="+91 72403 64772"
+              placeholder="+91 80582 85886"
             />
           </div>
         </div>

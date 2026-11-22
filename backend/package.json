@@ -1,7 +1,7 @@
 {
-  "name": "panditji-backend",
+  "name": "shree-durga-backend",
   "version": "1.0.0",
-  "description": "Backend API for Pandit Ji Marble Murti Arts E-Commerce",
+  "description": "Backend API for Shree Durga Tiles",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",

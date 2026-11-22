@@ -10,10 +10,10 @@ export interface ISetting extends Document {
   currency: string;
 
   // Payment Settings
-  taxRate: number;
-  gstPercentage: number;
+  taxRate?: number;
+  gstPercentage?: number;
   codEnabled: boolean;
-  codFee: number;
+  codFee?: number;
   upiEnabled: boolean;
   cardEnabled: boolean;
   walletEnabled: boolean;
@@ -27,12 +27,12 @@ export interface ISetting extends Document {
   };
 
   // Shipping Settings
-  freeShippingThreshold: number;
-  standardShippingCost: number;
-  expressShippingCost: number;
-  shipping: {
-    standard: number;
-    express: number;
+  freeShippingThreshold?: number;
+  standardShippingCost?: number;
+  expressShippingCost?: number;
+  shipping?: {
+    standard?: number;
+    express?: number;
   };
   internationalShippingEnabled: boolean;
 
@@ -62,9 +62,9 @@ export interface ISetting extends Document {
     whatsapp: string;
   };
 
-  giftWrapCharge: number;
-  advancePaymentPercent: number;
-  advancePaymentPercentage: number;
+  giftWrapCharge?: number;
+  advancePaymentPercent?: number;
+  advancePaymentPercentage?: number;
   shopName: string;
   tagline: string;
   phone: string;
@@ -78,7 +78,7 @@ export interface ISetting extends Document {
   upiId: string;
   invoicePrefix: string;
   nextBillNumber: number;
-  defaultGstRate: number;
+  defaultGstRate?: number;
   invoiceTerms: string;
   invoiceFooterNote: string;
   logo: string;
@@ -118,10 +118,10 @@ const SettingSchema = new Schema<ISetting>(
     currency: { type: String, default: 'INR' },
 
     // Payment
-    taxRate: { type: Number, default: 18 },
-    gstPercentage: { type: Number, default: 18 },
+    taxRate: { type: Number },
+    gstPercentage: { type: Number },
     codEnabled: { type: Boolean, default: false },
-    codFee: { type: Number, default: 0 },
+    codFee: { type: Number },
     upiEnabled: { type: Boolean, default: false },
     cardEnabled: { type: Boolean, default: false },
     walletEnabled: { type: Boolean, default: false },
@@ -135,12 +135,12 @@ const SettingSchema = new Schema<ISetting>(
     },
 
     // Shipping
-    freeShippingThreshold: { type: Number, default: 5000 },
-    standardShippingCost: { type: Number, default: 500 },
-    expressShippingCost: { type: Number, default: 1200 },
+    freeShippingThreshold: { type: Number },
+    standardShippingCost: { type: Number },
+    expressShippingCost: { type: Number },
     shipping: {
-      standard: { type: Number, default: 500 },
-      express: { type: Number, default: 1200 },
+      standard: { type: Number },
+      express: { type: Number },
     },
     internationalShippingEnabled: { type: Boolean, default: false },
 
@@ -170,9 +170,9 @@ const SettingSchema = new Schema<ISetting>(
       whatsapp: { type: String, default: '' },
     },
 
-    giftWrapCharge: { type: Number, default: 99 },
-    advancePaymentPercent: { type: Number, default: 25 },
-    advancePaymentPercentage: { type: Number, default: 25 },
+    giftWrapCharge: { type: Number },
+    advancePaymentPercent: { type: Number },
+    advancePaymentPercentage: { type: Number },
     shopName: { type: String, default: 'Shree Durga Tiles', trim: true },
     tagline: { type: String, default: '', trim: true },
     phone: { type: String, default: '', trim: true },
@@ -186,7 +186,7 @@ const SettingSchema = new Schema<ISetting>(
     upiId: { type: String, default: '', trim: true },
     invoicePrefix: { type: String, default: 'SDT-', trim: true },
     nextBillNumber: { type: Number, default: 1, min: 1 },
-    defaultGstRate: { type: Number, default: 18, min: 0, max: 100 },
+    defaultGstRate: { type: Number, min: 0, max: 100 },
     invoiceTerms: { type: String, default: '' },
     invoiceFooterNote: { type: String, default: '' },
     logo: { type: String, default: '' },

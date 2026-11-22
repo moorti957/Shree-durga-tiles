@@ -13,7 +13,7 @@ export interface GalleryItem {
   id: string;
   image: string;
   title: string;
-  category: 'murti' | 'temple' | 'workshop' | 'ceremony';
+  category: string;
   description?: string;
 }
 
@@ -22,7 +22,7 @@ export interface GalleryItem {
 // ============================================================
 
 /**
- * Gallery API – fetches gallery images (murtis, temples, workshop, ceremonies).
+ * Gallery API – fetches stone, tile and showroom imagery.
  */
 export const galleryApi = {
   /**

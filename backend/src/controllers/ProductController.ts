@@ -789,7 +789,7 @@ export class ProductController {
   }
 
   /**
-   * Custom murti request
+   * Custom stone enquiry
    */
   static async customRequest(req: AuthRequest, res: Response): Promise<Response> {
     try {

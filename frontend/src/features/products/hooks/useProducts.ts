@@ -279,7 +279,7 @@ export interface UseProductOptions extends UseQueryOptions<Product, Error> {
  * 
  * @example
  * ```tsx
- * const { data: product, isLoading } = useProduct({ slug: 'ganesh-murti' });
+ * const { data: product, isLoading } = useProduct({ slug: 'white-marble-tile' });
  * ```
  */
 export function useProduct({ 

@@ -31,7 +31,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_30%,rgba(176,141,87,.18),transparent_38%)]" aria-hidden="true" />
         <Container className="relative">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-gold-light">About Shree Durga Tiles</p>
-          <h1 className="max-w-3xl font-cinzel text-5xl font-medium leading-tight text-white sm:text-6xl">Stone for the spaces <em className="text-gold-light">you call home.</em></h1>
+          <h1 className="max-w-3xl font-cinzel text-5xl font-medium leading-tight text-white sm:text-6xl">Marble and Tile Showroom in Naugaon, Alwar</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/70">A showroom for marble, granite, tiles and natural stone in Naugaon, Alwar.</p>
         </Container>
       </section>
@@ -42,9 +42,8 @@ export default function AboutPage() {
 
   <Image
     src={outdoor}
-    alt="Shree Durga Tiles Showroom"
+    alt="Shree Durga Tiles marble and tile showroom in Naugaon, Alwar"
     fill
-    priority
     sizes="(max-width: 1024px) 100vw, 50vw"
     className="z-0 object-cover object-center transition-transform duration-700 hover:scale-105"
   />

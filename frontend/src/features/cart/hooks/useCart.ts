@@ -15,10 +15,10 @@ export interface UseCartReturn {
   items: CartItem[];
   totalItems: number;
   subtotal: number;
-  shippingCost: number;
-  tax: number;
+  shippingCost: number | null;
+  tax: number | null;
   discountAmount: number;
-  grandTotal: number;
+  grandTotal: number | null;
   coupon: AppliedCoupon | null;
   shippingMethod: 'standard' | 'express';
   giftWrap: boolean;
@@ -37,10 +37,10 @@ export interface UseCartReturn {
   prepareCheckout: () => {
     items: CartItem[];
     subtotal: number;
-    shippingCost: number;
-    tax: number;
+    shippingCost: number | null;
+    tax: number | null;
     discountAmount: number;
-    grandTotal: number;
+    grandTotal: number | null;
     coupon: AppliedCoupon | null;
     giftWrap: boolean;
     shippingMethod: 'standard' | 'express';

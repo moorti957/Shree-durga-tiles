@@ -15,7 +15,7 @@ import type { Product } from '@/features/products/types/product.types';
  *
  * @example
  * ```tsx
- * const { data: product, isLoading, error } = useProduct('ganesh-murti');
+ * const { data: product, isLoading, error } = useProduct('white-marble-tile');
  * ```
  */
 export function useProduct(slug: string | undefined): UseQueryResult<Product, Error> {

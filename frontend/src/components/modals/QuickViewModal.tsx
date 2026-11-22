@@ -95,8 +95,9 @@ export function QuickViewModal({
   const isInWishlist = wishlistItems.some((item) => item.id === product.id);
 
   // Calculate rating
-  const avgRating = product.rating || 4.5;
-  const reviewCount = product.reviewCount || 12;
+  const avgRating = product.rating ?? 0;
+  const reviewCount = product.reviewCount ?? 0;
+  const hasReviews = avgRating > 0 && reviewCount > 0;
 
   // Render stars
   const renderStars = (rating: number) => {
@@ -213,14 +214,13 @@ export function QuickViewModal({
                 <div className="relative aspect-square rounded-xl overflow-hidden bg-white dark:bg-brown-dark">
                   <Image
                     src={product.images[selectedImage] || product.images[0] || '/placeholder.png'}
-                    alt={product.name}
+                    alt={`${product.name}, Shree Durga Tiles Alwar`}
                     fill
                     className={cn(
                       'object-cover transition-opacity duration-500',
                       isImageLoaded ? 'opacity-100' : 'opacity-0'
                     )}
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    priority
                     onLoad={() => setIsImageLoaded(true)}
                   />
                   {!isImageLoaded && (
@@ -258,7 +258,7 @@ export function QuickViewModal({
                       >
                         <Image
                           src={img}
-                          alt={`Thumbnail ${idx + 1}`}
+                          alt={`${product.name} image ${idx + 1}, Shree Durga Tiles Alwar`}
                           fill
                           className="object-cover"
                           sizes="56px"
@@ -285,12 +285,14 @@ export function QuickViewModal({
                   </h2>
 
                   {/* Rating */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center">{renderStars(avgRating)}</div>
-                    <span className="text-sm text-brown-light dark:text-ivory/50">
-                      ({reviewCount} reviews)
-                    </span>
-                  </div>
+                  {hasReviews && (
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center">{renderStars(avgRating)}</div>
+                      <span className="text-sm text-brown-light dark:text-ivory/50">
+                        ({reviewCount} reviews)
+                      </span>
+                    </div>
+                  )}
 
                   {/* Price */}
                   <div className="flex items-center gap-3">
