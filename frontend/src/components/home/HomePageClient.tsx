@@ -282,7 +282,7 @@ function HomepageSections({
           <div className="pt-4">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#E2BE86]">Mandir &amp; Pooja Room</p>
             <h2 className="max-w-xl font-cinzel text-4xl font-semibold leading-tight text-white sm:text-5xl">
-              A sacred space deserves <em className="text-[#E2BE86]">pure stone.</em>
+              A sacred space  <em className="text-[#E2BE86]">pure stone.</em>
             </h2>
             <p className="mt-5 max-w-xl leading-relaxed text-[#D9CDB8]">
               White marble is a timeless choice for home temples and pooja rooms. Visit our showroom to compare stones for your mandir floor, platform and walls.
